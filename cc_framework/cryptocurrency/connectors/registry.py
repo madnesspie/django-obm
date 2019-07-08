@@ -1,3 +1,4 @@
+import os
 import importlib
 from collections import OrderedDict
 
@@ -5,43 +6,65 @@ from django.conf import settings
 
 
 class ConnectorRegistry:
+    PACKAGE = 'cryptocurrency.connectors'
+
     def __init__(self):
         self.connector_map = OrderedDict()
         self.loaded = False
 
-    def get_list(self, request=None):
-        self.load()
-        return [
-            connector_cls(request)
-            for connector_cls in self.connector_map.values()]
+    def __register(self, cls):
+        self.connector_map[cls.node_name] = cls
 
-    def register(self, cls):
-        self.connector_map[cls.id] = cls
+    @property
+    def built_in(self):
+        path = os.path.dirname(os.path.abspath(__file__))
+        return [file for file in os.listdir(path)
+                if os.path.isdir(os.path.join(path, file)) and file[0] != '_']
 
-    def by_symbol(self, symbol, request=None):
+    def get(self, node_name):
         self.load()
-        return self.connector_map[symbol](request=request)
+        return self.connector_map[node_name]
 
-    def as_choices(self):
+    def symbols_as_choices(self):
         self.load()
-        for connector_cls in self.connector_map.values():
-            yield (connector_cls.symbol, connector_cls.name)
+        return set((cls.symbol, cls.symbol)
+                   for cls in self.connector_map.values())
+
+    def connectors_as_choices(self):
+        self.load()
+        return [(cls.node_name, cls.node_name)
+                for cls in self.connector_map.values()]
 
     def load(self):
         if not self.loaded:
-            for app in settings.INSTALLED_APPS:
+            connector_dirs = self.built_in
+            for connector_dir in connector_dirs:
                 try:
                     connector_module = importlib.import_module(
-                        app + '.connector'
+                        name=f".{connector_dir}.connector",
+                        package=self.PACKAGE
                     )
                 except ImportError:
-                    pass
+                    # TODO: Add warning
+                    raise
                 else:
                     for cls in getattr(
                         connector_module, 'connector_classes', []
                     ):
-                        self.register(cls)
+                        self.__register(cls)
             self.loaded = True
 
 
 register = ConnectorRegistry()
+
+
+if __name__ == '__main__':
+    rpc = register.get('bitcoin-core')(
+        rpc_host='127.0.0.1',
+        rpc_port=18332,
+        rpc_username='bitcoin',
+        rpc_password='qwerty54'
+
+    )
+    from pprint import pprint
+    pprint(rpc.get_addresses())

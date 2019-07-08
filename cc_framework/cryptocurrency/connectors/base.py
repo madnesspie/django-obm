@@ -2,10 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class BaseConnector(ABC):
-    # @abstractmethod
-    # def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):
-    #     pass
-
     @property
     @abstractmethod
     def symbol(self):
@@ -13,9 +9,18 @@ class BaseConnector(ABC):
 
     @property
     @abstractmethod
-    def name(self):
+    def currency_name(self):
+        pass
+
+    @property
+    @abstractmethod
+    def node_name(self):
         pass
 
     @abstractmethod
-    def check_txs(self):
+    def get_receipts(self):
+        pass
+
+    @abstractmethod
+    def get_new_address(self):
         pass
