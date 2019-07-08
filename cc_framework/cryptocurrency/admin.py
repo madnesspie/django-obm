@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Node, Currency, Address, Transaction
+
+admin.site.register(Node)
+admin.site.register(Currency)
+admin.site.register(Address)
+admin.site.register(Transaction)
