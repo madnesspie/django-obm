@@ -1,5 +1,5 @@
-from django.apps import AppConfig
+from django import apps
 
 
-class CryptocurrencyConfig(AppConfig):
+class CryptocurrencyConfig(apps.AppConfig):
     name = 'cryptocurrency'

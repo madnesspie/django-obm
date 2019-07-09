@@ -3,7 +3,7 @@ from typing import List, Dict
 
 from django.test import SimpleTestCase
 
-from .connector import BitcoinCoreConnector
+from cryptocurrency import connectors
 
 TXS = [
     {
@@ -38,7 +38,7 @@ TXS = [
 
 class BitcoinCoreConnectorTests(SimpleTestCase):
     def setUp(self):
-        self.connector = BitcoinCoreConnector(
+        self.connector = connectors.BitcoinCoreConnector(
             rpc_username='bitcoin',
             rpc_password='qwerty54',
             rpc_host='http://example.com',
@@ -51,4 +51,3 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
         self.assertIsInstance(receipts, List)
         self.assertIsInstance(receipts[0], Dict)
         self.assertTrue(all([r['category'] == 'receive' for r in receipts]))
-

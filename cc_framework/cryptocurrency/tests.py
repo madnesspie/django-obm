@@ -3,9 +3,9 @@ from copy import deepcopy
 
 from django.test import TestCase
 
-from .models import Node, Currency, Transaction
-from .connectors.btc.tests import TXS
-from .connectors.btc.connector import BitcoinCoreConnector
+from cryptocurrency import models
+from cryptocurrency import connectors
+from cryptocurrency.connectors.btc.tests import TXS
 
 
 class NodeTestCase(TestCase):
@@ -15,27 +15,24 @@ class NodeTestCase(TestCase):
         # has no attribute 'cls_atomics'
         super(NodeTestCase, cls).setUpClass()
 
-        currency = Currency.objects.create(
-            symbol='BTC',
-            name='Bitcoin',
-            confirmations_number=2
-        )
-        Node.objects.create(
-            name='bitcoin-core',
-            currency=currency,
-            rpc_username='bitcoin',
-            rpc_password='qwerty54',
-            rpc_host='example.com',
-            rpc_port=18332
-        )
+        currency = models.Currency.objects.create(symbol='BTC',
+                                                  name='Bitcoin',
+                                                  min_confirmations=2)
+        models.Node.objects.create(name='bitcoin-core',
+                                   currency=currency,
+                                   rpc_username='bitcoin',
+                                   rpc_password='qwerty54',
+                                   rpc_host='example.com',
+                                   rpc_port=18332)
 
     def test_charge_new_receipts(self):
-        with patch.object(BitcoinCoreConnector, 'get_txs', return_value=TXS) \
-                as mock_method:
-            Node.objects.process_receipts()
+        with patch.object(connectors.BitcoinCoreConnector,
+                          'get_txs',
+                          return_value=TXS) as mock_method:
+            models.Node.objects.process_receipts()
 
         mock_method.assert_called_once()
-        txs = Transaction.objects.all()
+        txs = models.Transaction.objects.all()
         self.assertEqual(txs.count(), 2)
         self.assertEqual(txs.filter(is_confirmed=True).count(), 1)
 
@@ -44,11 +41,11 @@ class NodeTestCase(TestCase):
         return_txs = deepcopy(TXS)
         return_txs[0]['confirmations'] = 666
 
-        with patch.object(
-                BitcoinCoreConnector, 'get_txs', return_value=return_txs) \
-                as mock_method:
-            Node.objects.process_receipts()
+        with patch.object(connectors.BitcoinCoreConnector,
+                          'get_txs',
+                          return_value=return_txs) as mock_method:
+            models.Node.objects.process_receipts()
 
         mock_method.assert_called_once()
-        txs = Transaction.objects.all()
+        txs = models.Transaction.objects.all()
         self.assertEqual(txs.filter(is_confirmed=True).count(), 2)

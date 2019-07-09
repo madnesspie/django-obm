@@ -1,26 +1,26 @@
-from abc import ABC, abstractmethod
+import abc
 
 
-class BaseConnector(ABC):
+class BaseConnector(abc.ABC):
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def symbol(self):
         pass
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def currency_name(self):
         pass
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def node_name(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_receipts(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_new_address(self):
         pass

@@ -2,8 +2,6 @@ import os
 import importlib
 from collections import OrderedDict
 
-from django.conf import settings
-
 
 class ConnectorRegistry:
     PACKAGE = 'cryptocurrency.connectors'
@@ -45,12 +43,10 @@ class ConnectorRegistry:
                         package=self.PACKAGE
                     )
                 except ImportError:
-                    # TODO: Add warning
-                    raise
+                    pass
                 else:
                     for cls in getattr(
-                        connector_module, 'connector_classes', []
-                    ):
+                            connector_module, 'CONNECTOR_CLASSES', []):
                         self.__register(cls)
             self.loaded = True
 

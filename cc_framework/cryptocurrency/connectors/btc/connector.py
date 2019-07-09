@@ -1,7 +1,7 @@
-import requests
 import json
+import requests
 
-from .. import base
+from cryptocurrency.connectors import base
 
 
 class BitcoinCoreConnector(base.BaseConnector):
@@ -12,8 +12,8 @@ class BitcoinCoreConnector(base.BaseConnector):
     def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):
         self.rpc_url = f"{rpc_host}:{rpc_port}"
         self.auth = (rpc_username, rpc_password)
-        self.headers = {'content-type': "application/json",
-                        'cache-control': "no-cache"}
+        self.headers = {'content-type': 'application/json',
+                        'cache-control': 'no-cache'}
 
     def __request(self, payload):
         response = requests.post(
@@ -26,8 +26,8 @@ class BitcoinCoreConnector(base.BaseConnector):
         return response['result']
 
     def get_txs(self):
-        payload = json.dumps({"method": 'listtransactions',
-                              "params": ['*', 1000]})
+        payload = json.dumps({'method': 'listtransactions',
+                              'params': ['*', 1000]})
         return self.__request(payload)
 
     def get_receipts(self):
@@ -38,12 +38,12 @@ class BitcoinCoreConnector(base.BaseConnector):
         return list(recently_receipts)
 
     def get_new_address(self):
-        payload = json.dumps({"method": 'getrawchangeaddress'})
+        payload = json.dumps({'method': 'getrawchangeaddress'})
         return self.__request(payload)
 
     def get_addresses(self):
-        payload = json.dumps({"method": 'listaddressgroupings'})
+        payload = json.dumps({'method': 'listaddressgroupings'})
         return self.__request(payload)
 
 
-connector_classes = [BitcoinCoreConnector]
+CONNECTOR_CLASSES = [BitcoinCoreConnector]
