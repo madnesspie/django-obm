@@ -8,4 +8,4 @@ install:
   - pip install -r requirements/requirements.dev.txt
 script:
   - python cc_framework/manage.py test
-  - pylint cryptocurrency --load-plugins pylint_django -d C,W
+  - pylint cc_framework/cryptocurrency --load-plugins pylint_django -d C,W
