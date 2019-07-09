@@ -1,6 +1,6 @@
 from django.db import models
 
-from . import connectors
+from cryptocurrency import connectors
 
 
 class NodeManager(models.Manager):  # pylint: disable=too-few-public-methods
