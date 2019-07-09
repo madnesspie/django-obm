@@ -1,0 +1,11 @@
+dist: xenial
+language: python
+python:
+  - "3.7"
+  - "3.7-dev"  # 3.7 development branch
+  - "3.8-dev"  # 3.8 development branch
+install:
+  - pip install -r requirements/requirements.txt
+  - pip install -r requirements/requirements.dev.txt
+script:
+  - python cc_framework/manage.py test
