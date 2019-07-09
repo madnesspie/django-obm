@@ -7,5 +7,5 @@ class Command(BaseCommand):
     help = 'Check cryptocurrency receipts and enroll if any exists'
 
     def handle(self, *args, **options):
-        Node.objects.check_receipts()
+        Node.objects.process_receipts()
         # self.stdout.write(self.style.SUCCESS('Successfully ....'))

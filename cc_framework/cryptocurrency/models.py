@@ -4,7 +4,7 @@ from . import connectors
 
 
 class NodeManager(models.Manager):
-    def check_receipts(self):
+    def process_receipts(self):
         for node in self.all():
             charged_receipts = node.txs.filter(category='receive')
             recently_receipts = node.connector.get_receipts()
@@ -16,34 +16,18 @@ class NodeManager(models.Manager):
                 recently_receipts
             )
             Transaction.objects.bulk_create([
-                Transaction(
-                    node=node,
-                    address=Address.objects.get_or_create(
-                        address=receipt['address'],
-                        currency=node.currency
-                    )[0],
-                    txid=receipt['txid'],
-                    category=receipt['category'],
-                    amount=receipt['amount'],
-                    fee=receipt.get('fee', 0),
-                    is_confirmed=True if receipt['confirmations'] > 2 else False,
-                    ts=receipt['time'],
-                    ts_received=receipt['timereceived']
-                ) for receipt in new_receipts
+                Transaction.from_dict(receipt, node)
+                for receipt in new_receipts
             ])
 
             # Confirm already charged transaction
-            def confirm(receipt):
-                receipt.is_confirmed = True
-                return receipt
-
-            confirmed_receipts = [r['txid'] for r in recently_receipts
-                                  if r['confirmations'] > 2]
-            charged_not_confirmed_receipts = charged_receipts.filter(
-                is_confirmed=False)
+            confirmed_receipts = [
+                r['txid'] for r in recently_receipts
+                if r['confirmations'] >= node.currency.confirmations_number
+            ]
             new_confirmed_receipts = [
-                confirm(receipt)
-                for receipt in charged_not_confirmed_receipts
+                Transaction.confirm(receipt)
+                for receipt in charged_receipts.filter(is_confirmed=False)
                 if receipt in confirmed_receipts
             ]
             Transaction.objects.bulk_update(
@@ -56,6 +40,9 @@ class Currency(models.Model):
                               unique=True)
     name = models.CharField(max_length=200,
                             unique=True)
+    confirmations_number = models.IntegerField(
+        help_text='Minimum confirmations number after which a transaction will '
+                  'get the status "is confirmed"')
 
     class Meta:
         verbose_name_plural = 'currencies'
@@ -66,15 +53,15 @@ class Currency(models.Model):
 
 class Node(models.Model):
     name = models.CharField(max_length=200,
-                            choices=connectors.register.connectors_as_choices(),
-                            unique=True)
+                            choices=connectors.register.connectors_as_choices())
     currency = models.ForeignKey(Currency,
                                  on_delete=models.CASCADE,
                                  related_name="nodes",
                                  related_query_name="node")
     rpc_username = models.CharField(verbose_name='RPC username',
-                                max_length=200,
-                                help_text='Username for JSON-RPC connections')
+                                    max_length=200,
+                                    help_text='Username for JSON-RPC '
+                                              'connections')
     rpc_password = models.CharField(verbose_name='RPC password',
                                     max_length=200,
                                     help_text='Password for JSON-RPC '
@@ -93,7 +80,7 @@ class Node(models.Model):
             ('rpc_username', 'rpc_password', 'rpc_host', 'rpc_port'), )
 
     def __str__(self):
-        return self.get_name_display()
+        return f"{self.get_name_display()} {self.rpc_host}:{self.rpc_port}"
 
     @property
     def connector(self):
@@ -149,3 +136,27 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.txid[:100]}..."
+
+    @staticmethod
+    def from_dict(tx_dict, node):
+        addr, _ = Address.objects.get_or_create(
+            address=tx_dict['address'], currency=node.currency)
+        is_confirmed = True if tx_dict['confirmations'] \
+            > node.currency.confirmations_number else False
+        tx = Transaction(
+            node=node,
+            address=addr,
+            txid=tx_dict['txid'],
+            category=tx_dict['category'],
+            amount=tx_dict['amount'],
+            fee=tx_dict.get('fee', 0),
+            is_confirmed=is_confirmed,
+            ts=tx_dict['time'],
+            ts_received=tx_dict['timereceived']
+        )
+        return tx
+
+    @staticmethod
+    def confirm(tx):
+        tx.is_confirmed = True
+        return tx

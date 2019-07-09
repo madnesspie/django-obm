@@ -56,15 +56,3 @@ class ConnectorRegistry:
 
 
 register = ConnectorRegistry()
-
-
-if __name__ == '__main__':
-    rpc = register.get('bitcoin-core')(
-        rpc_host='127.0.0.1',
-        rpc_port=18332,
-        rpc_username='bitcoin',
-        rpc_password='qwerty54'
-
-    )
-    from pprint import pprint
-    pprint(rpc.get_addresses())

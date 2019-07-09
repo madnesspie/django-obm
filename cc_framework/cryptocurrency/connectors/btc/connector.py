@@ -10,25 +10,32 @@ class BitcoinCoreConnector(base.BaseConnector):
     node_name = 'bitcoin-core'
 
     def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):
-        self.rpc_url = f"{rpc_host}:{rpc_port}/"
+        self.rpc_url = f"{rpc_host}:{rpc_port}"
         self.auth = (rpc_username, rpc_password)
         self.headers = {'content-type': "application/json",
                         'cache-control': "no-cache"}
 
     def __request(self, payload):
         response = requests.post(
-            self.rpc_url, data=payload, headers=self.headers, auth=self.auth
+            self.rpc_url,
+            data=payload,
+            headers=self.headers,
+            auth=self.auth,
+            timeout=5
         ).json()
         return response['result']
 
-    def get_receipts(self):
+    def get_txs(self):
         payload = json.dumps({"method": 'listtransactions',
                               "params": ['*', 1000]})
+        return self.__request(payload)
+
+    def get_receipts(self):
         recently_receipts = filter(
             lambda tx: tx['category'] == 'receive',
-            self.__request(payload)
+            self.get_txs()
         )
-        return recently_receipts
+        return list(recently_receipts)
 
     def get_new_address(self):
         payload = json.dumps({"method": 'getrawchangeaddress'})
