@@ -1,5 +1,5 @@
-import requests
 import json
+import requests
 
 from .. import base
 
@@ -46,4 +46,4 @@ class BitcoinCoreConnector(base.BaseConnector):
         return self.__request(payload)
 
 
-connector_classes = [BitcoinCoreConnector]
+CONNECTOR_CLASSES = [BitcoinCoreConnector]

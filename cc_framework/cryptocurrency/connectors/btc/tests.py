@@ -51,4 +51,3 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
         self.assertIsInstance(receipts, List)
         self.assertIsInstance(receipts[0], Dict)
         self.assertTrue(all([r['category'] == 'receive' for r in receipts]))
-

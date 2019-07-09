@@ -18,7 +18,7 @@ class NodeTestCase(TestCase):
         currency = Currency.objects.create(
             symbol='BTC',
             name='Bitcoin',
-            confirmations_number=2
+            min_confirmations=2
         )
         Node.objects.create(
             name='bitcoin-core',
