@@ -1,5 +1,13 @@
 import abc
 
+from django.conf import settings
+
+TIMEOUT = getattr(settings, 'NODE_TIMEOUT', 5)
+TX_KEYS_FORMAT = [
+    'address', 'amount', 'category', 'confirmations', 'timestamp',
+    'timestamp_received', 'txid', 'fee'
+]
+
 
 class BaseConnector(abc.ABC):
     @property
@@ -15,6 +23,15 @@ class BaseConnector(abc.ABC):
     @property
     @abc.abstractmethod
     def node_name(self):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def default_min_confirmations(self):
+        pass
+
+    @abc.abstractmethod
+    def format(self, txs):
         pass
 
     @abc.abstractmethod

@@ -1,0 +1,14 @@
+class ConnectorWarning(Warning):
+    """Base warning for connectors."""
+
+
+class BadRequestWarning(ConnectorWarning):
+    """An error occurred during the request."""
+
+
+class InvalidNodeResponseWarning(ConnectorWarning):
+    """Node've returned invalid result."""
+
+
+class TimeoutNodeResponseWarning(ConnectorWarning):
+    """The request to node timed out. """

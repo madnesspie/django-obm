@@ -15,8 +15,7 @@ class NodeTestCase(TestCase):
         # has no attribute 'cls_atomics'
         super(NodeTestCase, cls).setUpClass()
 
-        currency = models.Currency.objects.create(symbol='BTC',
-                                                  name='Bitcoin',
+        currency = models.Currency.objects.create(name='BTC',
                                                   min_confirmations=2)
         models.Node.objects.create(name='bitcoin-core',
                                    currency=currency,
@@ -27,7 +26,7 @@ class NodeTestCase(TestCase):
 
     def test_charge_new_receipts(self):
         with patch.object(connectors.BitcoinCoreConnector,
-                          'get_txs',
+                          '_request',
                           return_value=TXS) as mock_method:
             models.Node.objects.process_receipts()
 
@@ -42,7 +41,7 @@ class NodeTestCase(TestCase):
         return_txs[0]['confirmations'] = 666
 
         with patch.object(connectors.BitcoinCoreConnector,
-                          'get_txs',
+                          '_request',
                           return_value=return_txs) as mock_method:
             models.Node.objects.process_receipts()
 
