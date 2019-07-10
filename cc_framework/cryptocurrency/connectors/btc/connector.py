@@ -1,7 +1,7 @@
 import json
 import requests
 
-from cryptocurrency.connectors import base
+from cryptocurrency.connectors import base, utils
 
 
 class BitcoinCoreConnector(base.BaseConnector):
@@ -12,29 +12,32 @@ class BitcoinCoreConnector(base.BaseConnector):
     def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):
         self.rpc_url = f"{rpc_host}:{rpc_port}"
         self.auth = (rpc_username, rpc_password)
-        self.headers = {'content-type': 'application/json',
-                        'cache-control': 'no-cache'}
+        self.headers = {
+            'content-type': 'application/json',
+            'cache-control': 'no-cache'
+        }
 
+    @utils.validate_responce
     def __request(self, payload):
         response = requests.post(
             self.rpc_url,
             data=payload,
             headers=self.headers,
             auth=self.auth,
-            timeout=5
+            timeout=base.TIMEOUT,
         ).json()
         return response['result']
 
     def get_txs(self):
-        payload = json.dumps({'method': 'listtransactions',
-                              'params': ['*', 1000]})
+        payload = json.dumps({
+            'method': 'listtransactions',
+            'params': ['*', 1000]
+        })
         return self.__request(payload)
 
     def get_receipts(self):
-        recently_receipts = filter(
-            lambda tx: tx['category'] == 'receive',
-            self.get_txs()
-        )
+        recently_receipts = filter(lambda tx: tx['category'] == 'receive',
+                                   self.get_txs())
         return list(recently_receipts)
 
     def get_new_address(self):

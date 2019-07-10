@@ -1,5 +1,9 @@
 import abc
 
+from django.conf import settings
+
+TIMEOUT = getattr(settings, 'NODE_TIMEOUT', 5)
+
 
 class BaseConnector(abc.ABC):
     @property
