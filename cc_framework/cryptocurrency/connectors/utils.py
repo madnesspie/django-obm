@@ -3,8 +3,7 @@ import warnings
 
 import requests
 
-from cryptocurrency import connectors
-from cryptocurrency.connectors import base
+from cryptocurrency.connectors import base, exceptions
 
 
 def validate_responce(func):
@@ -16,17 +15,17 @@ def validate_responce(func):
         except KeyError:
             warnings.warn(
                 f'Node\'ve returned invalid result: {result}',
-                connectors.exceptions.InvalidNodeResponseWarning,
+                exceptions.InvalidNodeResponseWarning,
             )
         except requests.exceptions.Timeout:
             warnings.warn(
                 f'The request to node longer than timed out: {base.TIMEOUT}',
-                connectors.exceptions.TimeoutNodeResponseWarning,
+                exceptions.TimeoutNodeResponseWarning,
             )
         except requests.exceptions.RequestException as error:
             warnings.warn(
                 f'RequestException: {error}',
-                connectors.exceptions.BadRequestWarning,
+                exceptions.BadRequestWarning,
             )
         return result
 

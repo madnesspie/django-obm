@@ -1,5 +1,5 @@
+#  pylint: disable=protected-access
 import warnings
-import unittest
 from unittest import mock
 from typing import List, Dict
 
@@ -7,7 +7,6 @@ import requests
 from django.test import SimpleTestCase
 
 from cryptocurrency import connectors
-from cryptocurrency.connectors import utils
 
 TXS = [{
     'address': '2MsYTTPi276Q7yTZXxEiuCiAmfk9naKE7Gh',
@@ -50,22 +49,24 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
             rpc_host='http://example.com',
             rpc_port=18332)
 
+    def test_get_receipts_format(self):
+        stash = self.connector._request
+        self.connector._request = mock.MagicMock(return_value=TXS)
 
-    def test_get_receipts(self):
-        stash = self.connector.get_txs 
-        self.connector.get_txs = mock.MagicMock(return_value=TXS)
-        
         receipts = self.connector.get_receipts()
         self.assertIsInstance(receipts, List)
         self.assertIsInstance(receipts[0], Dict)
         self.assertTrue(all([r['category'] == 'receive' for r in receipts]))
-        
-        self.connector.get_txs = stash
+        for tx in receipts:
+            self.assertTrue(
+                all([key in connectors.base.TX_KEYS_FORMAT for key in tx]))
+
+        self.connector._request = stash
 
     def test_bad_response_warning(self):
         stash = requests.post
         requests.post = mock.Mock(side_effect=KeyError())
-        
+
         with warnings.catch_warnings(record=True) as warns:
             self.connector.get_receipts()
             assert len(warns) == 1
@@ -77,7 +78,7 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
     def test_timeout_warning(self):
         stash = requests.post
         requests.post = mock.Mock(side_effect=requests.exceptions.Timeout)
-        
+
         with warnings.catch_warnings(record=True) as warns:
             self.connector.get_receipts()
             assert len(warns) == 1
@@ -90,7 +91,7 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
         stash = requests.post
         requests.post = mock.Mock(
             side_effect=requests.exceptions.RequestException)
-        
+
         with warnings.catch_warnings(record=True) as warns:
             self.connector.get_receipts()
             assert len(warns) == 1

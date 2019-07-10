@@ -27,7 +27,7 @@ class NodeTestCase(TestCase):
 
     def test_charge_new_receipts(self):
         with patch.object(connectors.BitcoinCoreConnector,
-                          'get_txs',
+                          '_request',
                           return_value=TXS) as mock_method:
             models.Node.objects.process_receipts()
 
@@ -42,7 +42,7 @@ class NodeTestCase(TestCase):
         return_txs[0]['confirmations'] = 666
 
         with patch.object(connectors.BitcoinCoreConnector,
-                          'get_txs',
+                          '_request',
                           return_value=return_txs) as mock_method:
             models.Node.objects.process_receipts()
 

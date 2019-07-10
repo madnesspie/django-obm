@@ -61,8 +61,8 @@ class TransactionManager(models.Manager):
                 amount=tx_dict['amount'],
                 fee=tx_dict.get('fee', 0),
                 is_confirmed=is_confirmed,
-                ts=tx_dict['time'],
-                ts_received=tx_dict['timereceived'],
+                timestamp=tx_dict['timestamp'],
+                timestamp_received=tx_dict['timestamp_received'],
             )
             txs.append(tx)
         self.bulk_create(txs)
@@ -80,7 +80,7 @@ class Currency(models.Model):
     )
     min_confirmations = models.IntegerField(
         help_text='Minimum confirmations number after which a transaction will '
-        'get the status "is confirmed"', 
+        'get the status "is confirmed"',
     )
 
     class Meta:
@@ -138,7 +138,7 @@ class Node(models.Model):
 
 class Address(models.Model):
     address = models.CharField(
-        max_length=500, 
+        max_length=500,
     )
     currency = models.ForeignKey(
         to=Currency,
@@ -172,24 +172,24 @@ class Transaction(models.Model):
         max_length=500,
     )
     category = models.CharField(
-        max_length=30, 
+        max_length=30,
     )
     amount = models.FloatField(
         help_text='The transaction amount in currency',
     )
     fee = models.FloatField(
         help_text='The amount of the fee in currency. This is negative and '
-        'only available for the "send" category of transactions.', 
+        'only available for the "send" category of transactions.',
     )
     is_confirmed = models.BooleanField(
         verbose_name='confirmed',
         default=False,
     )
-    ts = models.IntegerField(
+    timestamp = models.PositiveIntegerField(
         verbose_name='time',
         help_text='transaction creation time in timestamp',
     )
-    ts_received = models.IntegerField(
+    timestamp_received = models.PositiveIntegerField(
         verbose_name='receipt time',
         help_text='transaction receipt time in timestamp',
     )

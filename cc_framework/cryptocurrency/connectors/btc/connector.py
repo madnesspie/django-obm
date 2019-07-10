@@ -18,7 +18,7 @@ class BitcoinCoreConnector(base.BaseConnector):
         }
 
     @utils.validate_responce
-    def __request(self, payload):
+    def _request(self, payload):
         response = requests.post(
             self.rpc_url,
             data=payload,
@@ -28,25 +28,37 @@ class BitcoinCoreConnector(base.BaseConnector):
         ).json()
         return response['result']
 
-    def get_txs(self):
+    def format(self, txs):
+        formated_txs = []
+        for tx in txs:
+            formated_txs.append({
+                'txid': tx['txid'],
+                'address': tx['address'],
+                'category': tx['category'],
+                'amount': tx['amount'],
+                'fee': tx.get('fee', 0),
+                'confirmations': tx['confirmations'],
+                'timestamp': tx['time'],
+                'timestamp_received': tx['timereceived'],
+            })
+        return formated_txs
+
+    def get_receipts(self):
         payload = json.dumps({
             'method': 'listtransactions',
             'params': ['*', 1000]
         })
-        return self.__request(payload)
-
-    def get_receipts(self):
         recently_receipts = filter(lambda tx: tx['category'] == 'receive',
-                                   self.get_txs())
-        return list(recently_receipts)
+                                   self._request(payload))
+        return self.format(recently_receipts)
 
     def get_new_address(self):
         payload = json.dumps({'method': 'getrawchangeaddress'})
-        return self.__request(payload)
+        return self._request(payload)
 
     def get_addresses(self):
         payload = json.dumps({'method': 'listaddressgroupings'})
-        return self.__request(payload)
+        return self._request(payload)
 
 
 CONNECTOR_CLASSES = [BitcoinCoreConnector]
