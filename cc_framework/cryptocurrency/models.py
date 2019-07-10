@@ -69,13 +69,9 @@ class TransactionManager(models.Manager):
 
 
 class Currency(models.Model):
-    symbol = models.CharField(
-        max_length=20,
-        choices=connectors.register.symbols_as_choices(),
-        unique=True,
-    )
     name = models.CharField(
-        max_length=200,
+        max_length=100,
+        choices=connectors.register.symbol_as_choices(),
         unique=True,
     )
     min_confirmations = models.IntegerField(
@@ -87,7 +83,7 @@ class Currency(models.Model):
         verbose_name_plural = 'currencies'
 
     def __str__(self):
-        return self.name
+        return self.get_name_display()
 
 
 class Node(models.Model):
@@ -115,7 +111,7 @@ class Node(models.Model):
         verbose_name='RPC host',
         help_text='Listen for JSON-RPC connections on this IP address',
     )
-    rpc_port = models.IntegerField(
+    rpc_port = models.PositiveIntegerField(
         verbose_name='RPC port',
         help_text='Listen for JSON-RPC connections on this port',
     )
@@ -123,15 +119,14 @@ class Node(models.Model):
     objects = NodeManager()
 
     class Meta:
-        unique_together = (('rpc_username', 'rpc_password', 'rpc_host',
-                            'rpc_port'), )
+        unique_together = (('rpc_host', 'rpc_port'), )
 
     def __str__(self):
-        return f"{self.get_name_display()} {self.rpc_host}:{self.rpc_port}"
+        return self.name
 
     @property
     def connector(self):
-        node_connector = connectors.register.get(self.name)
+        node_connector = connectors.register.get_by_node_name(self.name)
         return node_connector(self.rpc_host, self.rpc_port, self.rpc_username,
                               self.rpc_password)
 
@@ -200,7 +195,7 @@ class Transaction(models.Model):
         unique_together = (('node', 'txid'), )
 
     def __str__(self):
-        return f"{self.txid[:100]}..."
+        return self.txid
 
     @staticmethod
     def confirm(tx):

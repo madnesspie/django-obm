@@ -1,12 +1,17 @@
+import abc
 import json
 import requests
 
 from cryptocurrency.connectors import base, utils
 
 
-class BitcoinCoreConnector(base.BaseConnector):
+class BaseBitcoinConnector(base.BaseConnector, abc.ABC):  # pylint: disable=abstract-method
     symbol = 'BTC'
     currency_name = 'Bitcoin'
+    default_min_confirmations = 2
+
+
+class BitcoinCoreConnector(BaseBitcoinConnector):
     node_name = 'bitcoin-core'
 
     def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):

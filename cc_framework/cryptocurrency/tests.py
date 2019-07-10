@@ -15,8 +15,7 @@ class NodeTestCase(TestCase):
         # has no attribute 'cls_atomics'
         super(NodeTestCase, cls).setUpClass()
 
-        currency = models.Currency.objects.create(symbol='BTC',
-                                                  name='Bitcoin',
+        currency = models.Currency.objects.create(name='BTC',
                                                   min_confirmations=2)
         models.Node.objects.create(name='bitcoin-core',
                                    currency=currency,

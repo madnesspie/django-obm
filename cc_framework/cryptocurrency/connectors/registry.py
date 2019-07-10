@@ -19,13 +19,13 @@ class ConnectorRegistry:
         return [file for file in os.listdir(path)
                 if os.path.isdir(os.path.join(path, file)) and file[0] != '_']
 
-    def get(self, node_name):
+    def get_by_node_name(self, node_name):
         self.load()
         return self.connector_map[node_name]
 
-    def symbols_as_choices(self):
+    def symbol_as_choices(self):
         self.load()
-        return set((cls.symbol, cls.symbol)
+        return set((cls.symbol, cls.currency_name)
                    for cls in self.connector_map.values())
 
     def connectors_as_choices(self):

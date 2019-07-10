@@ -25,8 +25,13 @@ class BaseConnector(abc.ABC):
     def node_name(self):
         pass
 
+    @property
     @abc.abstractmethod
-    def format(self):
+    def default_min_confirmations(self):
+        pass
+
+    @abc.abstractmethod
+    def format(self, txs):
         pass
 
     @abc.abstractmethod
