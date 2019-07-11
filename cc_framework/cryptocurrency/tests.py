@@ -1,10 +1,9 @@
-from unittest.mock import patch
 from copy import deepcopy
+from unittest.mock import patch
 
 from django.test import TestCase
 
-from cryptocurrency import models
-from cryptocurrency import connectors
+from cryptocurrency import connectors, exceptions, models
 from cryptocurrency.connectors.btc.tests import TXS
 
 
@@ -15,10 +14,10 @@ class NodeTestCase(TestCase):
         # has no attribute 'cls_atomics'
         super(NodeTestCase, cls).setUpClass()
 
-        currency = models.Currency.objects.create(name='BTC',
-                                                  min_confirmations=2)
+        cls.currency = models.Currency.objects.create(name='BTC',
+                                                      min_confirmations=2)
         models.Node.objects.create(name='bitcoin-core',
-                                   currency=currency,
+                                   currency=cls.currency,
                                    rpc_username='bitcoin',
                                    rpc_password='qwerty54',
                                    rpc_host='example.com',
@@ -48,3 +47,23 @@ class NodeTestCase(TestCase):
         mock_method.assert_called_once()
         txs = models.Transaction.objects.all()
         self.assertEqual(txs.filter(is_confirmed=True).count(), 2)
+
+    def test_node_does_not_exist_error(self):
+        with self.assertRaises(exceptions.NodeDoesNotExistError):
+            models.Node.objects.create(
+                name='bitcoin-lol',
+                currency=self.currency,
+                rpc_username='bitcoin',
+                rpc_password='qwerty54',
+                rpc_host='example.com',
+                rpc_port=18332,
+            )
+
+
+class CurrencyTestCase(TestCase):
+    def test_node_does_not_exist_error(self):
+        with self.assertRaises(exceptions.CurrencyDoesNotExistError):
+            models.Currency.objects.create(
+                name='LOL',
+                min_confirmations=2,
+            )
