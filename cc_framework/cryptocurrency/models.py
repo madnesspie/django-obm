@@ -1,6 +1,6 @@
 from django.db import models
 
-from cryptocurrency import connectors
+from cryptocurrency import connectors, exceptions
 
 
 class NodeManager(models.Manager):  # pylint: disable=too-few-public-methods
@@ -71,13 +71,18 @@ class TransactionManager(models.Manager):
 class Currency(models.Model):
     name = models.CharField(
         max_length=100,
-        choices=connectors.register.symbol_as_choices(),
+        choices=connectors.register.currency_as_choices(),
         unique=True,
     )
     min_confirmations = models.IntegerField(
         help_text='Minimum confirmations number after which a transaction will '
-        'get the status "is confirmed"',
-    )
+        'get the status "is confirmed"', )
+
+    def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
+        if self.name not in connectors.register.available_currencies:
+            raise exceptions.CurrencyDoesNotExistError(
+                f'The "{self.name}" node does\'t supported.')
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'currencies'
@@ -124,6 +129,12 @@ class Node(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
+        if self.name not in connectors.register.available_conectors:
+            raise exceptions.NodeDoesNotExistError(
+                f'The "{self.name}" node does\'t supported.')
+        super().save(*args, **kwargs)
+
     @property
     def connector(self):
         node_connector = connectors.register.get_by_node_name(self.name)
@@ -134,7 +145,7 @@ class Node(models.Model):
 class Address(models.Model):
     address = models.CharField(
         max_length=500,
-    )
+    )  # yapf: disable
     currency = models.ForeignKey(
         to=Currency,
         on_delete=models.CASCADE,
@@ -168,14 +179,13 @@ class Transaction(models.Model):
     )
     category = models.CharField(
         max_length=30,
-    )
+    )  # yapf: disable
     amount = models.FloatField(
         help_text='The transaction amount in currency',
-    )
+    )  # yapf: disable
     fee = models.FloatField(
         help_text='The amount of the fee in currency. This is negative and '
-        'only available for the "send" category of transactions.',
-    )
+        'only available for the "send" category of transactions.', )
     is_confirmed = models.BooleanField(
         verbose_name='confirmed',
         default=False,
