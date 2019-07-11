@@ -122,4 +122,6 @@ STATIC_URL = '/static/'
 
 
 # Cryptocurrency framework setting 
-NODE_TIMEOUT = 5
+CC_FRAMEWORK = {
+    'NODE_TIMEOUT': 5,
+}
