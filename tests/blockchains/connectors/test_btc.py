@@ -7,8 +7,7 @@ import requests
 from django.test import SimpleTestCase
 
 from cryptocurrency import blockchains
-from cryptocurrency.blockchains import connectors
-from cryptocurrency.blockchains.connectors import _base as base
+from cryptocurrency.blockchains.connectors import base, btc
 
 TXS = [{
     'address': '2MsYTTPi276Q7yTZXxEiuCiAmfk9naKE7Gh',
@@ -45,7 +44,7 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
         super(BitcoinCoreConnectorTests, cls).setUpClass()
 
         warnings.simplefilter("always")
-        cls.connector = connectors.BitcoinCoreConnector(
+        cls.connector = btc.BitcoinCoreConnector(
             rpc_username='bitcoin',
             rpc_password='qwerty54',
             rpc_host='http://example.com',

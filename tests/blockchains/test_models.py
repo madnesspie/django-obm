@@ -3,8 +3,9 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from cryptocurrency.blockchains import connectors, exceptions, models
-from tests.blockchains.connectors.test_btc import TXS
+from cryptocurrency.blockchains import exceptions, models
+from cryptocurrency.blockchains.connectors import btc
+from tests.blockchains.connectors import test_btc
 
 
 class NodeTestCase(TestCase):
@@ -24,9 +25,9 @@ class NodeTestCase(TestCase):
                                    rpc_port=18332)
 
     def test_charge_new_receipts(self):
-        with patch.object(connectors.BitcoinCoreConnector,
+        with patch.object(btc.BitcoinCoreConnector,
                           '_request',
-                          return_value=TXS) as mock_method:
+                          return_value=test_btc.TXS) as mock_method:
             models.Node.objects.process_receipts()
 
         mock_method.assert_called_once()
@@ -36,10 +37,10 @@ class NodeTestCase(TestCase):
 
     def test_confirm_charged_receipts(self):
         # Now increase confirmations for first tx in TXS
-        return_txs = deepcopy(TXS)
+        return_txs = deepcopy(test_btc.TXS)
         return_txs[0]['confirmations'] = 666
 
-        with patch.object(connectors.BitcoinCoreConnector,
+        with patch.object(btc.BitcoinCoreConnector,
                           '_request',
                           return_value=return_txs) as mock_method:
             models.Node.objects.process_receipts()

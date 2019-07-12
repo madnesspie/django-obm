@@ -4,11 +4,10 @@ import json
 import requests
 
 from cryptocurrency.blockchains import utils
-from cryptocurrency.blockchains import connectors
-from cryptocurrency.blockchains.connectors import _base as base
+from cryptocurrency.blockchains.connectors import base
 
 
-class BaseBitcoinConnector(connectors.BaseConnector, abc.ABC):  # pylint: disable=abstract-method
+class BaseBitcoinConnector(base.BaseConnector, abc.ABC):  # pylint: disable=abstract-method
     symbol = 'BTC'
     currency_name = 'Bitcoin'
     default_min_confirmations = 2
