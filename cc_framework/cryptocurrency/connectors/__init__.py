@@ -1,2 +1,0 @@
-from cryptocurrency.connectors.registry import register
-from cryptocurrency.connectors.btc.connector import BitcoinCoreConnector
