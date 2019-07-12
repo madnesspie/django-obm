@@ -5,12 +5,10 @@ from cryptocurrency.blockchains import connectors, exceptions
 
 class NodeManager(models.Manager):  # pylint: disable=too-few-public-methods
     @staticmethod
-    def __get_new_receipts(recently_receipts, charged_receipts):
-        charged_receipt_txids = [tx.txid for tx in charged_receipts]
-        new_receipts = filter(
-            lambda tx: tx['txid'] not in charged_receipt_txids,
-            recently_receipts)
-        return new_receipts
+    def __get_new_receipts(recently_receipts, enrolled_receipts):
+        enrolled_receipt_txids = [tx.txid for tx in enrolled_receipts]
+        return filter(lambda tx: tx['txid'] not in enrolled_receipt_txids,
+                      recently_receipts)
 
     @staticmethod
     def __get_recently_confirmed_txids(recently_receipts, min_confirmations):
@@ -18,15 +16,16 @@ class NodeManager(models.Manager):  # pylint: disable=too-few-public-methods
                       recently_receipts)
 
     def process_receipts(self):
+        """Fetches txs from nodes then enrolls new and confirms if needed."""
         for node in self.all():
             recently_receipts = node.connector.get_receipts()
             if not recently_receipts:
                 continue
-            charged_receipts = node.txs.filter(category='receive')
+            enrolled_receipts = node.txs.filter(category='receive')
 
             # Create new transaction
             new_receipts = self.__get_new_receipts(recently_receipts,
-                                                   charged_receipts)
+                                                   enrolled_receipts)
             Transaction.objects.bulk_create_from_dicts(new_receipts, node)
 
             # Confirm already charged transaction
@@ -38,13 +37,26 @@ class NodeManager(models.Manager):  # pylint: disable=too-few-public-methods
 
 class TransactionManager(models.Manager):
     def bulk_confirm(self, txids):
+        """Confirms transactions group.
+
+        Args:
+            txids: A sequence of strings representing the txid that
+                needed to confirm.
+        """
         confirmed_txs = [
-            Transaction.confirm(receipt)
-            for receipt in self.filter(is_confirmed=False) if receipt in txids
+            tx.confirm() for tx in self.filter(is_confirmed=False)
+            if tx in txids
         ]
         self.bulk_update(confirmed_txs, ['is_confirmed'])
 
     def bulk_create_from_dicts(self, tx_dicts, node):
+        """Creates transactions from dicts.
+
+        Args:
+            tx_dicts: A sequence of dicts with transaction data that
+                needed to write in database.
+            node: A node that receive that transactions.
+        """
         txs = []
         for tx_dict in tx_dicts:
             addr, _ = Address.objects.get_or_create(
@@ -95,6 +107,7 @@ class Node(models.Model):
     name = models.CharField(
         max_length=200,
         choices=connectors.registry.connectors_as_choices(),
+        unique=True,
     )
     currency = models.ForeignKey(
         to=Currency,
@@ -130,16 +143,21 @@ class Node(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
-        if self.name not in connectors.registry.available_conectors:
+        if self.name not in connectors.registry.available_nodes:
             raise exceptions.NodeDoesNotExistError(
                 f'The "{self.name}" node does\'t supported.')
         super().save(*args, **kwargs)
 
     @property
     def connector(self):
-        node_connector = connectors.registry.get_by_node_name(self.name)
-        return node_connector(self.rpc_host, self.rpc_port, self.rpc_username,
-                              self.rpc_password)
+        """Fetches a connector from registry.
+
+        Returns:
+            A connector to node that can to interact with blockchain.
+        """
+        NodeConnector = connectors.registry.get_by_node_name(self.name)
+        return NodeConnector(self.rpc_host, self.rpc_port, self.rpc_username,
+                             self.rpc_password)
 
 
 class Address(models.Model):
@@ -207,7 +225,11 @@ class Transaction(models.Model):
     def __str__(self):
         return self.txid
 
-    @staticmethod
-    def confirm(tx):
-        tx.is_confirmed = True
-        return tx
+    def confirm(self):
+        """Confirms the transaction.
+
+        Returns:
+            A transaction that was confirmed.
+        """
+        self.is_confirmed = True
+        return self

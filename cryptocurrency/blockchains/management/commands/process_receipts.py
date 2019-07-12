@@ -4,7 +4,7 @@ from cryptocurrency.blockchains import models
 
 
 class Command(BaseCommand):
-    help = 'Check cryptocurrency receipts and enroll if any exists'
+    help = 'Fetches txs from nodes then enrolls new and confirms if needed.'
 
     def handle(self, *args, **options):
         models.Node.objects.process_receipts()

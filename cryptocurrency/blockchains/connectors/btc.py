@@ -17,7 +17,8 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
     node_name = 'bitcoin-core'
 
     def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):
-        self.rpc_url = f"{rpc_host}:{rpc_port}"
+        url = f"{rpc_host}:{rpc_port}"
+        self.rpc_url = 'http://' + url if 'http://' not in url else url
         self.auth = (rpc_username, rpc_password)
         self.headers = {
             'content-type': 'application/json',

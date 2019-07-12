@@ -16,8 +16,8 @@ class ConnectorRegistry:
         self.available_currencies.add(cls.symbol)
 
     @property
-    def available_conectors(self):
-        return self.connector_map.keys()
+    def available_nodes(self):
+        return set(self.connector_map.keys())
 
     @property
     def built_in(self):
