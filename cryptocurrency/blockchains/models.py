@@ -107,6 +107,7 @@ class Node(models.Model):
     name = models.CharField(
         max_length=200,
         choices=connectors.registry.connectors_as_choices(),
+        unique=True,
     )
     currency = models.ForeignKey(
         to=Currency,
@@ -142,7 +143,7 @@ class Node(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
-        if self.name not in connectors.registry.available_conectors:
+        if self.name not in connectors.registry.available_nodes:
             raise exceptions.NodeDoesNotExistError(
                 f'The "{self.name}" node does\'t supported.')
         super().save(*args, **kwargs)
