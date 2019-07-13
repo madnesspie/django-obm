@@ -14,9 +14,7 @@ The project is now under active development. But in this moment it can much faci
 
 ## Installation
 ```bash
-git clone git@github.com:HelloCreepy/django-cryptocurrency-framework.git
-cd django-cryptocurrency-framework
-pip install .
+$ pip install django-cryptocurrency-framework
 ```
 
 ## Example 
