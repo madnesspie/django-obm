@@ -3,7 +3,7 @@ from django.db import models
 from cryptocurrency.blockchains import connectors, exceptions
 
 
-class NodeManager(models.Manager):  # pylint: disable=too-few-public-methods
+class NodeManager(models.Manager):
     @staticmethod
     def __get_new_receipts(recently_receipts, enrolled_receipts):
         enrolled_receipt_txids = [tx.txid for tx in enrolled_receipts]
@@ -155,7 +155,7 @@ class Node(models.Model):
         Returns:
             A connector to node that can to interact with blockchain.
         """
-        NodeConnector = connectors.registry.get_by_node_name(self.name)
+        NodeConnector = connectors.registry.get_by_node_name(self.name)  # pylint: disable=invalid-name
         return NodeConnector(self.rpc_host, self.rpc_port, self.rpc_username,
                              self.rpc_password)
 

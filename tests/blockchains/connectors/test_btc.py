@@ -1,4 +1,3 @@
-#  pylint: disable=protected-access
 import warnings
 from typing import Dict, List
 from unittest import mock
@@ -50,6 +49,8 @@ class BitcoinCoreConnectorTests(SimpleTestCase):
             rpc_host='http://example.com',
             rpc_port=18332,
         )
+
+        cls.CoSD = None
 
     def test_get_receipts_format(self):
         stash = self.connector._request
