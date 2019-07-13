@@ -73,10 +73,8 @@ $ python manage.py process_receipts
 ```
 This method or command one fetch receive transactions from each node object and write them into database. Each trasaction will get status `tx.is_confirmed == True` if conformations number of transaction greater than `tx.node.currency.min_conformations`, in our case it's 2.
 
-You can use any job scheduler or queue (celery, crontab, etc.) that will check your nodes as often as you want.
-
-### Celerey example 
-
+You can use any job scheduler or queue (celery, crontab, etc.) that will check your nodes as often as you want. 
+Example with `Celery` you can find in this repo [example](https://github.com/HelloCreepy/django-cryptocurrency-framework/tree/master/example) dir. 
 
 
 ## Future features
