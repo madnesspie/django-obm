@@ -6,4 +6,4 @@ python:
 script:
   - pip install -e .[dev]
   - python runtests.py 
-  - pylint tests cryptocurrency --load-plugins pylint_django -d C,W
+  - pylint --rcfile=pylintrc tests cryptocurrency
