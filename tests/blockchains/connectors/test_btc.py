@@ -1,3 +1,4 @@
+import pytest
 import requests
 
 from cryptocurrency import blockchains
@@ -53,14 +54,28 @@ class TestBitcoinCoreConnector:
             assert all([key in connectors.base.TX_KEYS_FORMAT for key in tx])
 
     @staticmethod
-    def test_bad_response_rises_warning(
+    @pytest.mark.parametrize(
+        'error',
+        (
+            KeyError,
+            requests.exceptions.RequestException,
+            requests.exceptions.Timeout,
+        ),
+        ids=[
+            'bad response',
+            'bad request',
+            'timeout',
+        ]
+    )
+    def test_get_receipts_rises_warning(
             monkeypatch,
             recwarn,
+            error,
             bitcoin_core_connector,
     ):
 
         def mock(*_, **__):
-            raise KeyError()
+            raise error()
 
         monkeypatch.setattr(requests, 'post', mock)
 
@@ -68,55 +83,5 @@ class TestBitcoinCoreConnector:
         assert len(recwarn) == 1
         assert issubclass(
             recwarn[-1].category,
-            blockchains.exceptions.InvalidNodeResponseWarning,
+            blockchains.exceptions.ConnectorWarning,
         )
-
-
-# class BitcoinCoreConnector:
-
-#     @classmethod
-#     def setUpClass(cls):
-#         warnings.simplefilter("always")
-#         cls.connector = connectors.btc.BitcoinCoreConnector(
-#             rpc_username='bitcoin',
-#             rpc_password='qwerty54',
-#             rpc_host='http://example.com',
-#             rpc_port=18332,
-#         )
-
-#     def test_bad_response_warning(self):
-#         stash = requests.post
-#         requests.post = mock.Mock(side_effect=KeyError())
-
-#         with warnings.catch_warnings(record=True) as warns:
-#             self.connector.get_receipts()
-#             assert len(warns) == 1
-#             assert issubclass(warns[-1].category,
-#                               blockchains.exceptions.InvalidNodeResponseWarning)
-
-#         requests.post = stash
-
-#     def test_timeout_warning(self):
-#         stash = requests.post
-#         requests.post = mock.Mock(side_effect=requests.exceptions.Timeout)
-
-#         with warnings.catch_warnings(record=True) as warns:
-#             self.connector.get_receipts()
-#             assert len(warns) == 1
-#             assert issubclass(warns[-1].category,
-#                               blockchains.exceptions.TimeoutNodeResponseWarning)
-
-#         requests.post = stash
-
-#     def test_requests_warning(self):
-#         stash = requests.post
-#         requests.post = mock.Mock(
-#             side_effect=requests.exceptions.RequestException)
-
-#         with warnings.catch_warnings(record=True) as warns:
-#             self.connector.get_receipts()
-#             assert len(warns) == 1
-#             assert issubclass(warns[-1].category,
-#                               blockchains.exceptions.BadRequestWarning)
-
-#         requests.post = stash
