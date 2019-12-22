@@ -3,14 +3,13 @@ import abc
 from django.conf import settings
 
 CC_FRAMEWORK = getattr(settings, 'CC_FRAMEWORK', {})
-TIMEOUT = CC_FRAMEWORK.get('NODE_TIMEOUT', 5)
-TX_KEYS_FORMAT = (
-    'address', 'amount', 'category', 'confirmations', 'timestamp',
-    'timestamp_received', 'txid', 'fee'
-)
+TIMEOUT = CC_FRAMEWORK.get('TIMEOUT', 5)
+TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
+                  'timestamp_received', 'txid', 'fee')
 
 
 class BaseConnector(abc.ABC):
+
     @property
     @abc.abstractmethod
     def symbol(self):
