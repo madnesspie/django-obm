@@ -1,5 +1,3 @@
-import warnings
-
 import requests
 
 from cryptocurrency import blockchains
@@ -45,12 +43,33 @@ class TestBitcoinCoreConnector:
             '_request',
             lambda *_: TXS,
         )
+
         receipts = bitcoin_core_connector.get_receipts()
         assert isinstance(receipts, list)
         assert isinstance(receipts[0], dict)
         assert all([r['category'] == 'receive' for r in receipts])
+        # Check that keys mutch the format
         for tx in receipts:
             assert all([key in connectors.base.TX_KEYS_FORMAT for key in tx])
+
+    @staticmethod
+    def test_bad_response_rises_warning(
+            monkeypatch,
+            recwarn,
+            bitcoin_core_connector,
+    ):
+
+        def mock(*_, **__):
+            raise KeyError()
+
+        monkeypatch.setattr(requests, 'post', mock)
+
+        bitcoin_core_connector.get_receipts()
+        assert len(recwarn) == 1
+        assert issubclass(
+            recwarn[-1].category,
+            blockchains.exceptions.InvalidNodeResponseWarning,
+        )
 
 
 # class BitcoinCoreConnector:

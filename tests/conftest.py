@@ -3,7 +3,7 @@ import os
 import pytest
 from django.conf import settings
 
-from cryptocurrency.blockchains.connectors import base, btc
+from cryptocurrency.blockchains.connectors import btc
 
 
 def pytest_configure():
