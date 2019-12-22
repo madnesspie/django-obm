@@ -1,6 +1,7 @@
 from copy import deepcopy
 from unittest.mock import patch
 
+import pytest
 from django.test import TestCase
 
 from cryptocurrency.blockchains import exceptions, models
@@ -60,10 +61,10 @@ from tests.blockchains.connectors import test_btc
 #             )
 
 
-# class CurrencyTestCase(TestCase):
-#     def test_node_does_not_exist_error(self):
-#         with self.assertRaises(exceptions.CurrencyDoesNotExistError):
-#             models.Currency.objects.create(
-#                 name='LOL',
-#                 min_confirmations=2,
-#             )
+class TestCurrency:
+    def test_create_rises_node_does_not_exist_error(self):
+        with pytest.raises(exceptions.CurrencyDoesNotExistError):
+            models.Currency.objects.create(
+                name='LOL',
+                min_confirmations=2,
+            )
