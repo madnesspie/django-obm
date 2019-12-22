@@ -15,12 +15,11 @@ class BaseConnector(abc.ABC):
     @staticmethod
     def __validate_timeout(value):
         try:
-            if value > 0:
-                return float(value)
-        except TypeError:
-            raise ValueError('Timeout must be greater than zero')
+            if float(value) > 0:
+                return value
         except ValueError:
             raise ValueError('Timeout must be a number')
+        raise ValueError('Timeout must be greater than zero')
 
     @property
     def timeout(self):
