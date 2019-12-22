@@ -41,16 +41,18 @@ class TestNode:
         txs = models.Transaction.objects.all()
         assert txs.filter(is_confirmed=True).count() == 2
 
-    # def test_node_does_not_exist_error(self):
-    #     with self.assertRaises(exceptions.NodeDoesNotExistError):
-    #         models.Node.objects.create(
-    #             name='bitcoin-lol',
-    #             currency=self.currency,
-    #             rpc_username='bitcoin',
-    #             rpc_password='qwerty54',
-    #             rpc_host='example.com',
-    #             rpc_port=18332,
-    #         )
+    @staticmethod
+    @pytest.mark.django_db
+    def test_node_does_not_exist_error(bitcoin_currency):
+        with pytest.raises(exceptions.NodeDoesNotExistError):
+            models.Node.objects.create(
+                name='bitcoin-lol',
+                currency=bitcoin_currency,
+                rpc_username='bitcoin',
+                rpc_password='qwerty54',
+                rpc_host='example.com',
+                rpc_port=18332,
+            )
 
 
 class TestCurrency:
