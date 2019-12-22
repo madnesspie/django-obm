@@ -2,12 +2,22 @@ import functools
 import warnings
 
 import requests
+from django.conf import settings
 
 from cryptocurrency import blockchains
-from cryptocurrency.blockchains.connectors import _base as base
+
+_DEFAULT_TIMEOUT = 5
+
+
+def get_timeout_setting():
+    return getattr(settings, 'CC_FRAMEWORK', {}).get(
+        'TIMEOUT',
+        _DEFAULT_TIMEOUT,
+    )
 
 
 def validate_responce(func):
+
     @functools.wraps(func)
     def wrapper(args, kwargs):
         result = []
@@ -20,7 +30,8 @@ def validate_responce(func):
             )
         except requests.exceptions.Timeout:
             warnings.warn(
-                f'The request to node longer than timed out: {base.TIMEOUT}',
+                f'The request to node was longer '
+                f'than timeout: {get_timeout_setting()}',
                 blockchains.exceptions.TimeoutNodeResponseWarning,
             )
         except requests.exceptions.RequestException as error:

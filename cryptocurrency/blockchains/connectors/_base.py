@@ -1,13 +1,12 @@
 import abc
 
-from django.conf import settings
+from cryptocurrency.blockchains import utils
 
 TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
                   'timestamp_received', 'txid', 'fee')
 
 
 class BaseConnector(abc.ABC):
-    DEFAULT_TIMEOUT = 5
 
     def __init__(self, timeout):
         self.timeout = timeout
@@ -28,10 +27,7 @@ class BaseConnector(abc.ABC):
     @timeout.setter
     def timeout(self, value):
         if not value:
-            value = getattr(settings, 'CC_FRAMEWORK', {}).get(
-                'TIMEOUT',
-                self.DEFAULT_TIMEOUT,
-            )
+            value = utils.get_timeout_setting()
         self.__timeout = self.__validate_timeout(value)
 
     @property
