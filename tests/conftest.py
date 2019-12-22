@@ -3,7 +3,7 @@ import os
 import pytest
 from django.conf import settings
 
-from cryptocurrency.blockchains.connectors import btc
+from cryptocurrency.blockchains import connectors, models
 
 
 def pytest_configure():
@@ -26,9 +26,16 @@ def pytest_configure():
 
 @pytest.fixture
 def bitcoin_core_connector():
-    return btc.BitcoinCoreConnector(
+    return connectors.btc.BitcoinCoreConnector(
         rpc_username='bitcoin',
         rpc_password='qwerty54',
         rpc_host='http://example.com',
         rpc_port=18332,
     )
+
+
+@pytest.fixture
+def bitcoin_currency():
+    currency = models.Currency.objects.create(name='BTC', min_confirmations=2)
+    yield currency
+    currency.delete()
