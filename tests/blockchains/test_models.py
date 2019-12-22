@@ -56,7 +56,9 @@ class TestNode:
 
 
 class TestCurrency:
-    def test_create_rises_node_does_not_exist_error(self):
+
+    @staticmethod
+    def test_create_rises_node_does_not_exist_error():
         with pytest.raises(exceptions.CurrencyDoesNotExistError):
             models.Currency.objects.create(
                 name='LOL',

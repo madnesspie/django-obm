@@ -21,7 +21,7 @@ def bitcoin_currency():
 
 
 @pytest.fixture
-def bitcoin_core_node(bitcoin_currency):
+def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-name
     node = models.Node.objects.create(
         name='bitcoin-core',
         currency=bitcoin_currency,
