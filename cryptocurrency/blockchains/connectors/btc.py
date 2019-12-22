@@ -16,7 +16,15 @@ class BaseBitcoinConnector(base.BaseConnector, abc.ABC):  # pylint: disable=abst
 class BitcoinCoreConnector(BaseBitcoinConnector):
     node_name = 'bitcoin-core'
 
-    def __init__(self, rpc_host, rpc_port, rpc_username, rpc_password):
+    def __init__(
+            self,
+            rpc_host,
+            rpc_port,
+            rpc_username,
+            rpc_password,
+            timeout=None,
+    ):
+        super().__init__(timeout)
         url = f"{rpc_host}:{rpc_port}"
         self.rpc_url = 'http://' + url if 'http://' not in url else url
         self.auth = (rpc_username, rpc_password)
@@ -32,7 +40,7 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
             data=payload,
             headers=self.headers,
             auth=self.auth,
-            timeout=base.TIMEOUT,
+            timeout=self.timeout,
         ).json()
         return response['result']
 

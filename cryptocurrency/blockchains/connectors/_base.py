@@ -2,13 +2,38 @@ import abc
 
 from django.conf import settings
 
-CC_FRAMEWORK = getattr(settings, 'CC_FRAMEWORK', {})
-TIMEOUT = CC_FRAMEWORK.get('TIMEOUT', 5)
 TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
                   'timestamp_received', 'txid', 'fee')
 
 
 class BaseConnector(abc.ABC):
+    DEFAULT_TIMEOUT = 5
+
+    def __init__(self, timeout):
+        self.timeout = timeout
+
+    @staticmethod
+    def __validate_timeout(value):
+        try:
+            if value > 0:
+                return float(value)
+        except TypeError:
+            raise ValueError('Timeout must be greater than zero')
+        except ValueError:
+            raise ValueError('Timeout must be a number')
+
+    @property
+    def timeout(self):
+        return self.__timeout
+
+    @timeout.setter
+    def timeout(self, value):
+        if not value:
+            value = getattr(settings, 'CC_FRAMEWORK', {}).get(
+                'TIMEOUT',
+                self.DEFAULT_TIMEOUT,
+            )
+        self.__timeout = self.__validate_timeout(value)
 
     @property
     @abc.abstractmethod
