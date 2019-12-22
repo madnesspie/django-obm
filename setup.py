@@ -1,14 +1,13 @@
 import os
 
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
 
 setup(
     name='django-cryptocurrency-framework',
-    version='0.1',
+    version='0.1.1',
     packages=find_packages(exclude=['tests*']),
     install_requires=['Django>=2.2.3', 'requests>=2.0.0'],
     extras_require={
@@ -26,6 +25,7 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Operating System :: OS Independent',
