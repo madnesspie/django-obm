@@ -6,6 +6,6 @@ python:
   - "3.8"
   - "3.8-dev"
 script:
-  - pipenv install --dev
-  - pipenv run pytest -vrs
-  - pipenv run pylint --rcfile=pylintrc tests cryptocurrency
+  - pipenv install --dev --system
+  - pytest -vrs
+  - pylint --rcfile=pylintrc tests cryptocurrency
