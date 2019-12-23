@@ -9,10 +9,15 @@ pylint-django = "*"
 pytest = "*"
 pytest-django = "*"
 rope = "*"
+django-cryptocurrency-framework = {editable = true,path = "."}
 
 [packages]
 django = "*"
 requests = "*"
+
+[scripts]
+linting = "pylint --rcfile=pylintrc tests cryptocurrency"
+testing = "pytest -vrs"
 
 [requires]
 python_version = "3.8"
