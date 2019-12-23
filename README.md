@@ -1,6 +1,7 @@
 # Django cryptocurrency framework
 
-[![Build Status](https://travis-ci.org/HelloCreepy/django-cryptocurrency-framework.svg?branch=master)](https://travis-ci.org/HelloCreepy/django-cryptocurrency-framework)
+[![Build Status](https://travis-ci.org/madnesspie/django-cryptocurrency-framework.svg?branch=master)](https://travis-ci.org/madnesspie/django-cryptocurrency-framework)
+[![PyPI version](https://badge.fury.io/py/django-cryptocurrency-framework.svg)](https://badge.fury.io/py/django-cryptocurrency-framework)
 
 ## Introduction
 The Django application that can halp to implement payments receiving in cryptocurrency.
@@ -77,4 +78,4 @@ Example with `Celery` you can find in this repo [example](https://github.com/Hel
 
 ## Future features
 - connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC and so on
-- `cryptocurrency.blockchain` app that help in implementation multi cryptocurrency wallet
+- `cryptocurrency.wallet` app that help in implementation multi cryptocurrency wallet
