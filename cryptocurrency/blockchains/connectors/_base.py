@@ -1,16 +1,35 @@
 import abc
 
-from django.conf import settings
+from cryptocurrency.blockchains import utils
 
-CC_FRAMEWORK = getattr(settings, 'CC_FRAMEWORK', {})
-TIMEOUT = CC_FRAMEWORK.get('NODE_TIMEOUT', 5)
-TX_KEYS_FORMAT = (
-    'address', 'amount', 'category', 'confirmations', 'timestamp',
-    'timestamp_received', 'txid', 'fee'
-)
+TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
+                  'timestamp_received', 'txid', 'fee')
 
 
 class BaseConnector(abc.ABC):
+
+    def __init__(self, timeout):
+        self.timeout = timeout
+
+    @staticmethod
+    def __validate_timeout(value):
+        try:
+            if float(value) > 0:
+                return value
+        except ValueError:
+            raise ValueError('Timeout must be a number')
+        raise ValueError('Timeout must be greater than zero')
+
+    @property
+    def timeout(self):
+        return self.__timeout
+
+    @timeout.setter
+    def timeout(self, value):
+        if not value:
+            value = utils.get_timeout_setting()
+        self.__timeout = self.__validate_timeout(value)
+
     @property
     @abc.abstractmethod
     def symbol(self):

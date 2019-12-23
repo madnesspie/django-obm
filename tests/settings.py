@@ -2,7 +2,6 @@ import os
 
 SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
-    'tests',
     'cryptocurrency.blockchains',
 ]
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

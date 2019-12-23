@@ -1,9 +1,12 @@
 dist: xenial
 language: python
 python:
-  - "3.7"
-  - "3.7-dev"  # 3.7 development branch
+  - "3.7-dev"
+  - "3.8"
+  - "3.8-dev"
+install:
+  - pipenv install --dev --deploy
 script:
-  - pip install -e .[dev]
-  - python runtests.py 
-  - pylint --rcfile=pylintrc tests cryptocurrency
+  - python --version
+  - pipenv run testing
+  - pipenv run linting

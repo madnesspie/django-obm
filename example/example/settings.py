@@ -130,5 +130,5 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 # Cryptocurrency framework setting
 
 CC_FRAMEWORK = {
-    'NODE_TIMEOUT': 5,
+    'TIMEOUT': 5,
 }
