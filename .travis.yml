@@ -5,7 +5,9 @@ python:
   - "3.7-dev"
   - "3.8"
   - "3.8-dev"
+install:
+  - pipenv sync --dev
 script:
-  - pipenv install --dev --system
+  - python --version
   - pytest -vrs
   - pylint --rcfile=pylintrc tests cryptocurrency
