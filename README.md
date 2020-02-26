@@ -76,6 +76,17 @@ You can use any job scheduler or queue (celery, crontab, etc.) that will check y
 Example with `Celery` you can find in this repo [example](https://github.com/HelloCreepy/django-cryptocurrency-framework/tree/master/example) dir.
 
 
+## Support Developer
+
+### Sponsors
+Special thanks for Swapzilla project that paid me part of the development.
+![swapzilla logo](/docs/swapzilla.jpeg)
+
+### Buy me a beer
+```
+BTC 179B1vJ8LvAQ2r9ABNhp6kDE2yQZfm1Ng3
+```
+
 ## Future features
 - connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC and so on
 - `cryptocurrency.wallet` app that help in implementation multi cryptocurrency wallet
