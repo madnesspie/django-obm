@@ -5,8 +5,8 @@ python:
   - "3.8"
   - "3.8-dev"
 install:
-  - pipenv install --dev --deploy
+  - pip install .[dev]
 script:
   - python --version
-  - pipenv run testing
-  - pipenv run linting
+  - pylint tests cryptocurrency example
+  - pytest -vrs
