@@ -115,6 +115,11 @@ class Node(models.Model):
         related_name='nodes',
         related_query_name='node',
     )
+    # TODO: Add is_default
+    # is_default = models.BooleanField(
+
+    #     help_text='',
+    # )
     rpc_username = models.CharField(
         verbose_name='RPC username',
         max_length=200,
@@ -202,6 +207,7 @@ class Transaction(models.Model):
         help_text='The transaction amount in currency',
     )  # yapf: disable
     fee = models.FloatField(
+        null=True,
         help_text='The amount of the fee in currency. This is negative and '
         'only available for the "send" category of transactions.', )
     is_confirmed = models.BooleanField(
