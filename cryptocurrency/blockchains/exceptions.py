@@ -15,7 +15,7 @@ class NodeDoesNotExistError(CryprocerrencyError):
     """This node doesn't supported yet"""
 
 
-# connectors warnings region
+# connectors warnings
 
 
 class ConnectorWarning(CryprocerrencyWarning):

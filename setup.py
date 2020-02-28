@@ -9,13 +9,14 @@ setup(
     name='django-cryptocurrency-framework',
     version='0.1.2',
     packages=find_packages(exclude=['tests*']),
-    install_requires=['Django>=2.2', 'requests>=2'],
+    install_requires=['Django>=2.2,<4', 'requests>=2,<3', 'djangorestframework>=3,<4'],
     extras_require={
         'dev': [
-            'pylint',
-            'pylint-django',
             'pytest',
             'pytest-django',
+            'pylint',
+            'pylint-django',
+            'mypy',
             'rope',
         ],
         'deploy': [],

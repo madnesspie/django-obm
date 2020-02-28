@@ -88,5 +88,5 @@ BTC 179B1vJ8LvAQ2r9ABNhp6kDE2yQZfm1Ng3
 ```
 
 ## Future features
-- connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC and so on
+- connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC and so on
 - `cryptocurrency.wallet` app that help in implementation multi cryptocurrency wallet
