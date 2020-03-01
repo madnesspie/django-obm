@@ -56,6 +56,8 @@ disable=
     missing-docstring,
     protected-access,
     too-few-public-methods,
+    fixme,
+    too-many-ancestors,
     R0801, # Stupid similar lines in 2 files :)
 
 

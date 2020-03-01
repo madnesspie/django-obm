@@ -231,6 +231,10 @@ class Transaction(models.Model):
     def __str__(self):
         return self.txid
 
+    @property
+    def currency(self):
+        return self.node.currency
+
     def confirm(self):
         """Confirms the transaction.
 
