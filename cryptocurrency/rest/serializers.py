@@ -31,7 +31,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         ).first()
         if not node:
             raise serializers.ValidationError(
-                f'Node for {currency} does not registered')
+                f'Node for {currency.name} does not registered')
 
         address, _ = models.Address.objects.get_or_create(
             address=attrs.pop('address'),
@@ -53,4 +53,20 @@ class AddressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Address
+        read_only_fields = ['address']
         fields = '__all__'
+
+    def create(self, validated_data):
+        currency = validated_data.pop('currency')
+        node = models.Node.objects.filter(
+            currency=currency,
+            is_default=True,
+        ).first()
+        if not node:
+            raise serializers.ValidationError(
+                f'Node for {currency.name} does not registered')
+
+        return models.Address.objects.create(
+            address=node.connector.get_new_address(),
+            currency=currency,
+        )
