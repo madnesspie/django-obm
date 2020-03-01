@@ -115,11 +115,11 @@ class Node(models.Model):
         related_name='nodes',
         related_query_name='node',
     )
-    # TODO: Add is_default
-    # is_default = models.BooleanField(
-
-    #     help_text='',
-    # )
+    is_default = models.BooleanField(
+        default=True,
+        help_text=('If True the node will be used as default'
+                   ' for transaction sending'),
+    )
     rpc_username = models.CharField(
         verbose_name='RPC username',
         max_length=200,
