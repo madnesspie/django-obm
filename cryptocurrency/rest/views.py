@@ -9,3 +9,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.TransactionSerializer
     queryset = models.Transaction.objects.all()
+
+class AddressViewSet(viewsets.ModelViewSet):
+    """The ViewSet for work with addresses.  """
+
+    serializer_class = serializers.AddressSerializer
+    queryset = models.Address.objects.all()
