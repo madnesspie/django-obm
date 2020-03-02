@@ -64,3 +64,26 @@ class TestCurrency:
                 name='LOL',
                 min_confirmations=2,
             )
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures('bitcoin_core_node')
+    def test_default_node(bitcoin_currency):
+        assert bitcoin_currency.default_node.name == 'bitcoin-core'
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures('bitcoin_core_node')
+    def test_create_two_default_node_raises_error(bitcoin_currency):
+        with pytest.raises(exceptions.DefaultNodeAlreadyExists):
+            node = models.Node.objects.create(
+                name='bitcoin-core',
+                currency=bitcoin_currency,
+                is_default=True,
+                rpc_username='bitcoin',
+                rpc_password='qwerty54',
+                rpc_host='example.com',
+                rpc_port=18332,
+            )
+
+    # TODO: Add default errors test

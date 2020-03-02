@@ -31,6 +31,7 @@ def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-na
     node = models.Node.objects.create(
         name='bitcoin-core',
         currency=bitcoin_currency,
+        is_default=True,
         rpc_username='bitcoin',
         rpc_password='qwerty54',
         rpc_host='example.com',

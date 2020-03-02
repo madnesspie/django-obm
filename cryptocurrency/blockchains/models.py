@@ -4,6 +4,7 @@ from cryptocurrency.blockchains import connectors, exceptions
 
 
 class NodeManager(models.Manager):
+
     @staticmethod
     def __get_new_receipts(recently_receipts, enrolled_receipts):
         enrolled_receipt_txids = [tx.txid for tx in enrolled_receipts]
@@ -36,6 +37,7 @@ class NodeManager(models.Manager):
 
 
 class TransactionManager(models.Manager):
+
     def bulk_confirm(self, txids):
         """Confirms transactions group.
 
@@ -44,7 +46,8 @@ class TransactionManager(models.Manager):
                 needed to confirm.
         """
         confirmed_txs = [
-            tx.confirm() for tx in self.filter(is_confirmed=False)
+            tx.confirm()
+            for tx in self.filter(is_confirmed=False)
             if tx in txids
         ]
         self.bulk_update(confirmed_txs, ['is_confirmed'])
@@ -88,7 +91,7 @@ class Currency(models.Model):
     )
     min_confirmations = models.IntegerField(
         help_text='Minimum confirmations number after which a transaction will '
-        'get the status "is confirmed"', )
+        'get the status "is confirmed"',)
 
     def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
         if self.name not in connectors.registry.available_currencies:
@@ -101,6 +104,18 @@ class Currency(models.Model):
 
     def __str__(self):
         return self.get_name_display()
+
+    @property
+    def default_node(self):
+        default_nodes = self.nodes.filter(is_default=True)
+        if default_nodes.count() == 0:
+            raise exceptions.DefaultNodeDoesNotExistError(
+                f'Missing default node for {self.name}')
+        elif default_nodes.count() > 1:
+            raise exceptions.TooManyDefaultNodes(
+                f'Too many default nodes for {self.name}. '
+                f'You can create only 1 default node.')
+        return default_nodes.first()
 
 
 class Node(models.Model):
@@ -116,7 +131,7 @@ class Node(models.Model):
         related_query_name='node',
     )
     is_default = models.BooleanField(
-        default=True,
+        default=False,
         help_text=('If True the node will be used as default'
                    ' for transaction sending'),
     )
@@ -142,7 +157,7 @@ class Node(models.Model):
     objects = NodeManager()
 
     class Meta:
-        unique_together = (('rpc_host', 'rpc_port'), )
+        unique_together = (('rpc_host', 'rpc_port'),)
 
     def __str__(self):
         return self.name
@@ -151,6 +166,12 @@ class Node(models.Model):
         if self.name not in connectors.registry.available_nodes:
             raise exceptions.NodeDoesNotExistError(
                 f'The "{self.name}" node does\'t supported.')
+
+        default_nodes = self.currency.nodes.filter(is_default=True)
+        if default_nodes.count() > 0:
+            raise exceptions.DefaultNodeAlreadyExists(
+                f'Default node for {self.name} already exist')
+
         super().save(*args, **kwargs)
 
     @property
@@ -177,7 +198,7 @@ class Address(models.Model):
     )
 
     class Meta:
-        unique_together = (('address', 'currency'), )
+        unique_together = (('address', 'currency'),)
 
     def __str__(self):
         return self.address
@@ -209,7 +230,8 @@ class Transaction(models.Model):
     fee = models.FloatField(
         null=True,
         help_text='The amount of the fee in currency. This is negative and '
-        'only available for the "send" category of transactions.', )
+        'only available for the "send" category of transactions.',
+    )
     is_confirmed = models.BooleanField(
         verbose_name='confirmed',
         default=False,
@@ -226,7 +248,7 @@ class Transaction(models.Model):
     objects = TransactionManager()
 
     class Meta:
-        unique_together = (('node', 'txid'), )
+        unique_together = (('node', 'txid'),)
 
     def __str__(self):
         return self.txid
