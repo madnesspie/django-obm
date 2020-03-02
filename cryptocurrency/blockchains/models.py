@@ -108,10 +108,10 @@ class Currency(models.Model):
     @property
     def default_node(self):
         default_nodes = self.nodes.filter(is_default=True)
-        if default_nodes.count() == 0:
+        if len(default_nodes) == 0:
             raise exceptions.DefaultNodeDoesNotExistError(
                 f'Missing default node for {self.name}')
-        if default_nodes.count() > 1:
+        if len(default_nodes) > 1:
             raise exceptions.TooManyDefaultNodes(
                 f'Too many default nodes for {self.name}. '
                 f'You can create only 1 default node.')

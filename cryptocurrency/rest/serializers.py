@@ -14,9 +14,9 @@ class TransactionSerializer(serializers.ModelSerializer):
     # TODO: Add custom validators support
     # TODO: Adjust max_length
     address = serializers.CharField(max_length=500)
-    currency = serializers.CharField(
-        max_length=100,
-        validators=[validators.currency_exists],
+    currency = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=models.Currency.objects.all(),
     )
 
     class Meta:
@@ -28,7 +28,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        currency = models.Currency.objects.get(name=attrs.pop('currency'))
+        currency = attrs.pop('currency')
 
         # TODO: Add filter with default
         node = models.Node.objects.filter(
