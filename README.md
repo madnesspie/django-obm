@@ -3,6 +3,13 @@
 [![Build Status](https://travis-ci.org/madnesspie/django-cryptocurrency-framework.svg?branch=master)](https://travis-ci.org/madnesspie/django-cryptocurrency-framework)
 [![PyPI version](https://badge.fury.io/py/django-cryptocurrency-framework.svg)](https://badge.fury.io/py/django-cryptocurrency-framework)
 
+## Table Of Content
+1. [Introduction](#introduction)
+1. [Requirements](#requirements)
+1. [Installation](#installation)
+1. [Example](#example)
+1. [Support Developer](#support-developer)
+
 ## Introduction
 The Django application that can halp to implement payments receiving in cryptocurrency.
 
@@ -46,6 +53,7 @@ Then create a `Currency` and `Node` objects.
 >>> models.Node.objects.create(
 ...     name='bitcoin-core',
 ...     currency=currency,
+...     is_default=True,
 ...     rpc_username='username',
 ...     rpc_password='password',
 ...     rpc_host='127.0.0.1',
@@ -76,6 +84,17 @@ You can use any job scheduler or queue (celery, crontab, etc.) that will check y
 Example with `Celery` you can find in this repo [example](https://github.com/HelloCreepy/django-cryptocurrency-framework/tree/master/example) dir.
 
 
+## Support Developer
+
+### Sponsors
+Special thanks for Swapzilla project that paid me part of the development.
+![swapzilla logo](/docs/swapzilla.jpeg)
+
+### Buy me a beer
+```
+BTC 179B1vJ8LvAQ2r9ABNhp6kDE2yQZfm1Ng3
+```
+
 ## Future features
-- connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC and so on
+- connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC and so on
 - `cryptocurrency.wallet` app that help in implementation multi cryptocurrency wallet

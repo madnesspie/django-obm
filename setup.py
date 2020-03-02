@@ -9,11 +9,18 @@ setup(
     name='django-cryptocurrency-framework',
     version='0.1.2',
     packages=find_packages(exclude=['tests*']),
-    install_requires=['Django>=2.2.3', 'requests>=2.0.0'],
+    install_requires=['Django>=2.2,<4', 'requests>=2,<3', 'djangorestframework>=3,<4'],
     extras_require={
-        "dev": ['pylint==2.3.1', 'pylint-django==2.0.10']
+        'dev': [
+            'pytest',
+            'pytest-django',
+            'pylint',
+            'pylint-django',
+            'mypy',
+            'rope',
+        ],
+        'deploy': [],
     },
-    include_package_data=True,
     license='GNU Lesser General Public License v3 or later (LGPLv3+)',
     description='A Django app for receiving payments in cryptocurrencies.',
     long_description=README,

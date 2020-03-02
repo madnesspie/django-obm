@@ -1,3 +1,4 @@
+# pylint: disable=multiple-statements
 import abc
 
 from cryptocurrency.blockchains import utils
@@ -32,32 +33,28 @@ class BaseConnector(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def symbol(self):
-        pass
+    def symbol(self): ...
 
     @property
     @abc.abstractmethod
-    def currency_name(self):
-        pass
+    def currency_name(self): ...
 
     @property
     @abc.abstractmethod
-    def node_name(self):
-        pass
+    def node_name(self): ...
 
     @property
     @abc.abstractmethod
-    def default_min_confirmations(self):
-        pass
+    def default_min_confirmations(self): ...
 
     @abc.abstractmethod
-    def format(self, txs):
-        pass
+    def format(self, txs): ...
 
     @abc.abstractmethod
-    def get_receipts(self):
-        pass
+    def get_receipts(self): ...
 
     @abc.abstractmethod
-    def get_new_address(self):
-        pass
+    def get_new_address(self): ...
+
+    @abc.abstractmethod
+    def estimate_fee(self): ...

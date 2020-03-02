@@ -1,6 +1,12 @@
 import pytest
+from rest_framework import test as drf_test
 
 from cryptocurrency.blockchains import connectors, models
+
+
+@pytest.fixture
+def client():
+    return drf_test.APIClient()
 
 
 @pytest.fixture
@@ -21,10 +27,11 @@ def bitcoin_currency():
 
 
 @pytest.fixture
-def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-name
+def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-name  # yapf: disable
     node = models.Node.objects.create(
         name='bitcoin-core',
         currency=bitcoin_currency,
+        is_default=True,
         rpc_username='bitcoin',
         rpc_password='qwerty54',
         rpc_host='example.com',
