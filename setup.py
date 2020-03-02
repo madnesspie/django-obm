@@ -7,7 +7,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 
 setup(
     name='django-cryptocurrency-framework',
-    version='0.1.2',
+    version='0.1.3',
     packages=find_packages(exclude=['tests*']),
     install_requires=['Django>=2.2,<4', 'requests>=2,<3', 'djangorestframework>=3,<4'],
     extras_require={
@@ -19,7 +19,6 @@ setup(
             'mypy',
             'rope',
         ],
-        'deploy': [],
     },
     license='GNU Lesser General Public License v3 or later (LGPLv3+)',
     description='A Django app for receiving payments in cryptocurrencies.',
