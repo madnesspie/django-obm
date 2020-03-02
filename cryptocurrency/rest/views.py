@@ -15,3 +15,10 @@ class AddressViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.AddressSerializer
     queryset = models.Address.objects.all()
+
+
+class CurrencyViewSet(viewsets.ModelViewSet):
+    """The ViewSet for work with currencies.  """
+
+    serializer_class = serializers.CurrencySerializer
+    queryset = models.Currency.objects.all()

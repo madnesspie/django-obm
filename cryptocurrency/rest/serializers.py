@@ -4,6 +4,12 @@ from cryptocurrency.blockchains import models
 from cryptocurrency.rest import validators
 
 
+class CurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Currency
+        fields = '__all__'
+
+
 class TransactionSerializer(serializers.ModelSerializer):
     # TODO: Add custom validators support
     # TODO: Adjust max_length

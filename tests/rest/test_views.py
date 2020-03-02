@@ -65,3 +65,14 @@ class TestAddressViewSet:
         assert responce.status_code == 201
         assert models.Address.objects.count() == 1
         assert responce.json()['address'] == 'fake-addr'
+
+
+class TestCurrencyViewSet:
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get(client):
+        responce = client.get(urls.reverse('currency-list'))
+        assert responce.status_code == 200
+        result = responce.json()
+        assert result == []
