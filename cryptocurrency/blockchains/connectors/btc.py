@@ -17,12 +17,12 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
     node_name = 'bitcoin-core'
 
     def __init__(
-            self,
-            rpc_host,
-            rpc_port,
-            rpc_username,
-            rpc_password,
-            timeout=None,
+        self,
+        rpc_host,
+        rpc_port,
+        rpc_username,
+        rpc_password,
+        timeout=None,
     ):
         super().__init__(timeout)
         url = f"{rpc_host}:{rpc_port}"
@@ -69,11 +69,16 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         return self.format(recently_receipts)
 
     def get_new_address(self):
-        payload = json.dumps({'method': 'getrawchangeaddress'})
-        return self._request(payload)
+        return self._request(json.dumps({'method': 'getrawchangeaddress'}))
 
     def get_addresses(self):
-        payload = json.dumps({'method': 'listaddressgroupings'})
+        return self._request(json.dumps({'method': 'listaddressgroupings'}))
+
+    def get_fee(self):
+        payload = json.dumps({
+            'method': 'estimatesmartfee',
+            'params': [1],
+        })
         return self._request(payload)
 
 
