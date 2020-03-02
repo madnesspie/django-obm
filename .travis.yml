@@ -11,7 +11,7 @@ script:
 - pytest -vrs
 deploy:
   provider: pypi
-  user: __token__
+  user: HelloCreepy
   password:
     secure: Gj1CBG/QGzdLLk+thcp4d1/FlOM4cIc+o+F3Vxlvvmcj1Vedk8GfDMZd7br+W91gBiVChNRuJwsOuo5YP0UDGMbGkr+EX8AubQRSkjGpq4IA4Rd6TE92YA7q2ObDcCvNix4tgSFaXeEO7zqzAA3ZqiutrtkRqyOaBbVaNB9OpsuNoe6IG3tsjnV1dwXqYfX2s6g3wuyVuN/RD3C3wmfsHHc2DAWYspgaiCJrkJtcEt2n2IbZ8DsH/0LeCOw9pVyJ8ijUW2jze4TYFcA8OCTqOnc0Nx0uHdbfVk+Cjlh7KnuDbq8U7FKpY/yEcGDaO4njX46twr98YyajRotv4+wZVhv9llAcveI/pH8cDgm3pZNZ4qWWBuOFxjn7Pei0blkiJ7OcWFVO2O76S5S/q/f07PhN8+GCZI1HnR7R6TBv9QdAzq8y8KOpvY8U7ulCsOiwok/ClD/SEGxTHII6clrg70uGR1WY2Dk8iq69M86qze27vExrERJaZI2qv3OrPpzDd+EI0G9x1cUW8knMo374YZkmoMLdIQIL43H8YQfowhTvGFBqFLNlAyWyZKj1aF8pnQnj+adVbyugZBlbUmgF/XtlSCnQ6uRDY4j8bAB3HrvQIwPQ/4hCL2DJZe9rI9QDZs1U9hHbJoo6rff3AXw1LeMLqFljm9nnv/7pGvxF43E=
   on:
