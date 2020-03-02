@@ -7,5 +7,5 @@ python:
 install:
   - pip install -e .[dev]
 script:
-  - pylint tests cryptocurrency
+  - pylint tests cryptocurrency -d C
   - pytest -vrs

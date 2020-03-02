@@ -2,6 +2,7 @@ import pytest
 from django import urls
 
 from cryptocurrency.blockchains import connectors, models
+from cryptocurrency.rest import views
 
 
 class TestTransactionViewSet:
@@ -76,3 +77,15 @@ class TestCurrencyViewSet:
         assert responce.status_code == 200
         result = responce.json()
         assert result == []
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get_estimate_fee(client, bitcoin_currency):
+        responce = client.get(
+            urls.reverse(
+                'currency-estimated-fee',
+                args=(bitcoin_currency.id,),
+            ))
+        assert responce.status_code == 200
+        result = responce.json()
+        assert result['estimated_fee'] == 1488.228

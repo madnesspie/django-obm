@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import decorators, response, viewsets
 
 from cryptocurrency.blockchains import models
 from cryptocurrency.rest import serializers
@@ -9,6 +9,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.TransactionSerializer
     queryset = models.Transaction.objects.all()
+
 
 class AddressViewSet(viewsets.ModelViewSet):
     """The ViewSet for work with addresses.  """
@@ -22,3 +23,11 @@ class CurrencyViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.CurrencySerializer
     queryset = models.Currency.objects.all()
+
+    @decorators.action(detail=True, methods=['get'])
+    def estimated_fee(self, request, pk=None):  # pylint: disable=unused-argument
+        currency = self.get_object()
+        return response.Response({
+            'currency': currency.name,
+            'estimated_fee': 1488.228,
+        })
