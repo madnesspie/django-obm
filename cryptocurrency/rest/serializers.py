@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from cryptocurrency.blockchains import models
-from cryptocurrency.rest import validators
 
 
 class CurrencySerializer(serializers.ModelSerializer):
