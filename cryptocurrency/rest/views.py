@@ -29,5 +29,5 @@ class CurrencyViewSet(viewsets.ModelViewSet):
         currency = self.get_object()
         return response.Response({
             'currency': currency.name,
-            'estimated_fee': 1488.228,
+            'estimated_fee': currency.default_node.connector.estimate_fee(),
         })

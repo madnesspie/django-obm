@@ -74,7 +74,7 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
     def get_addresses(self):
         return self._request(json.dumps({'method': 'listaddressgroupings'}))
 
-    def get_fee(self):
+    def estimate_fee(self):
         payload = json.dumps({
             'method': 'estimatesmartfee',
             'params': [1],

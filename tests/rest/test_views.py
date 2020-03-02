@@ -49,7 +49,7 @@ class TestAddressViewSet:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures('bitcoin_core_node')
-    def test_post(client, monkeypatch):
+    def test_post(monkeypatch, client):
 
         monkeypatch.setattr(
             connectors.btc.BitcoinCoreConnector,
@@ -80,7 +80,14 @@ class TestCurrencyViewSet:
 
     @staticmethod
     @pytest.mark.django_db
-    def test_get_estimate_fee(client, bitcoin_currency):
+    @pytest.mark.usefixtures('bitcoin_core_node')
+    def test_get_estimate_fee(monkeypatch, client, bitcoin_currency):
+        monkeypatch.setattr(
+            connectors.btc.BitcoinCoreConnector,
+            'estimate_fee',
+            lambda *_, **__: 0.0001,
+        )
+
         responce = client.get(
             urls.reverse(
                 'currency-estimated-fee',
@@ -88,4 +95,4 @@ class TestCurrencyViewSet:
             ))
         assert responce.status_code == 200
         result = responce.json()
-        assert result['estimated_fee'] == 1488.228
+        assert result['estimated_fee'] == 0.0001
