@@ -111,7 +111,7 @@ class Currency(models.Model):
         if default_nodes.count() == 0:
             raise exceptions.DefaultNodeDoesNotExistError(
                 f'Missing default node for {self.name}')
-        elif default_nodes.count() > 1:
+        if default_nodes.count() > 1:
             raise exceptions.TooManyDefaultNodes(
                 f'Too many default nodes for {self.name}. '
                 f'You can create only 1 default node.')

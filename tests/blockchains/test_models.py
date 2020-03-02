@@ -76,7 +76,7 @@ class TestCurrency:
     @pytest.mark.usefixtures('bitcoin_core_node')
     def test_create_two_default_node_raises_error(bitcoin_currency):
         with pytest.raises(exceptions.DefaultNodeAlreadyExists):
-            node = models.Node.objects.create(
+            models.Node.objects.create(
                 name='bitcoin-core',
                 currency=bitcoin_currency,
                 is_default=True,
