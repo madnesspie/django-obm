@@ -11,7 +11,7 @@
 1. [Support Developer](#support-developer)
 
 ## Introduction
-The Django application that can halp to implement payments receiving in cryptocurrency.
+The Django application that can help to implement payments receiving in cryptocurrency.
 
 The project is now under active development. But in this moment it can much facilitate in the task of creation bitcoin wallet or other app that use bitcoin payments.
 
