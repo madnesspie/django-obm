@@ -85,3 +85,9 @@ class TestBitcoinCoreConnector:
             recwarn[-1].category,
             blockchain.exceptions.ConnectorWarning,
         )
+
+    @staticmethod
+    @pytest.mark.integration
+    def test_estimate_fee(bitcoin_core_connector):
+        fee = bitcoin_core_connector.estimate_fee()
+        assert isinstance(fee, float)

@@ -34,7 +34,7 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         }
 
     @utils.validate_responce
-    def _request(self, payload):
+    def _request(self, payload, key_from_result=None):
         response = requests.post(
             self.rpc_url,
             data=payload,
@@ -42,6 +42,8 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
             auth=self.auth,
             timeout=self.timeout,
         ).json()
+        if key_from_result:
+            return response['result'][key_from_result]
         return response['result']
 
     def format(self, txs):
@@ -79,7 +81,7 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
             'method': 'estimatesmartfee',
             'params': [1],
         })
-        return self._request(payload)
+        return self._request(payload, key_from_result='feerate')
 
     def send_transaction(self):
         pass

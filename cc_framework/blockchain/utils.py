@@ -19,10 +19,10 @@ def get_timeout_setting():
 def validate_responce(func):
 
     @functools.wraps(func)
-    def wrapper(args, kwargs):
+    def wrapper(*args, **kwargs):
         result = []
         try:
-            result = func(args, kwargs)
+            result = func(*args, **kwargs)
         except KeyError:
             warnings.warn(
                 f'Node\'ve returned invalid result: {result}',
