@@ -103,6 +103,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# IDEs 
+# IDEs
 .vscode/
 .idea/
+
+# Node volumes:
+.bitcoin/

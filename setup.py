@@ -7,9 +7,14 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 
 setup(
     name='django-cryptocurrency-framework',
-    version='0.1.3',
+    version='0.1.4',
     packages=find_packages(exclude=['tests*']),
-    install_requires=['Django>=2.2,<4', 'requests>=2,<3', 'djangorestframework>=3,<4'],
+    install_requires=[
+        'Django>=2.2,<4',
+        'requests>=2,<3',
+        'djangorestframework>=3,<4',
+        'drf-yasg>=1.17,<2',
+    ],
     extras_require={
         'dev': [
             'pytest',

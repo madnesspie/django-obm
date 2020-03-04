@@ -5,20 +5,19 @@
 
 ## Table Of Content
 1. [Introduction](#introduction)
-1. [Requirements](#requirements)
+1. [Dependencies](#dependencies)
 1. [Installation](#installation)
 1. [Example](#example)
 1. [Support Developer](#support-developer)
 
 ## Introduction
-The Django application that can halp to implement payments receiving in cryptocurrency.
+The Django application that can help to implement payments receiving in cryptocurrency.
 
 The project is now under active development. But in this moment it can much facilitate in the task of creation bitcoin wallet or other app that use bitcoin payments.
 
-## Requirements
+## Dependencies
 - [bitcoin-core](https://bitcoincore.org/en/download/)
 - job scheduler or queue to your taste
-
 
 ## Installation
 ```bash
