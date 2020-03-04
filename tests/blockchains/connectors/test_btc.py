@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from cryptocurrency import blockchain
-from cryptocurrency.blockchain import connectors
+from cc_framework import blockchain
+from cc_framework.blockchain import connectors
 
 TXS = [
     {

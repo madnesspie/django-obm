@@ -1,8 +1,8 @@
 import pytest
 from django import urls
 
-from cryptocurrency.blockchain import connectors, models
-from cryptocurrency.rest import views
+from cc_framework.blockchain import connectors, models
+from cc_framework.rest import views
 
 
 class TestTransactionViewSet:

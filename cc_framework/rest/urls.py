@@ -1,9 +1,10 @@
 # pylint: disable=wrong-import-order
-from cryptocurrency.rest import views
 from django import urls
 from drf_yasg import openapi
 from drf_yasg import views as drf_yasg_views
 from rest_framework import permissions, routers
+
+from cc_framework.rest import views
 
 SchemaView = drf_yasg_views.get_schema_view(
     openapi.Info(

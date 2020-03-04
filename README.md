@@ -31,7 +31,7 @@ Next add a reference in your project settings and set up timeout for `bitcoin-co
 ```python
 INSTALLED_APPS = [
     ...
-    'cryptocurrency.blockchain'
+    'cc_framework.blockchain'
 ]
 
 ...
@@ -44,11 +44,11 @@ CC_FRAMEWORK = {
 
 Then create a `Currency` and `Node` objects.
 ```python
->>> from cryptocurrency.blockchain import models
+>>> from cc_framework.blockchain import models
 >>> currency = models.Currency.objects.create(
-... name='BTC',
-... min_confirmations=2,
-)
+...     name='BTC',
+...     min_confirmations=2,
+...)
 >>> models.Node.objects.create(
 ...     name='bitcoin-core',
 ...     currency=currency,
@@ -63,7 +63,7 @@ Then create a `Currency` and `Node` objects.
 
 It's worth clarifying, that you can't create 'Node' or 'Currency' object if framework doesn't support corresponded cryptocurrency or node. To discover supported things you can to execute code below.
 ```python
->>> from cryptocurrency.blockchain import connectors
+>>> from cc_framework.blockchain import connectors
 >>> connectors.registry.available_currencies
 {'BTC'}
 >>> connectors.registry.available_nodes
@@ -96,4 +96,4 @@ BTC 179B1vJ8LvAQ2r9ABNhp6kDE2yQZfm1Ng3
 
 ## Future features
 - connectors for: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC and so on
-- `cryptocurrency.wallet` app that help in implementation multi cryptocurrency wallet
+- `cc_framework.wallet` app that help in implementation multi cryptocurrency wallet

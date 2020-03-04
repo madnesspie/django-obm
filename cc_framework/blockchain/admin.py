@@ -4,7 +4,7 @@ from django.shortcuts import resolve_url
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from cryptocurrency.blockchain import models
+from cc_framework.blockchain import models
 
 
 @admin.register(models.Currency)

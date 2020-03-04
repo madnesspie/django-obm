@@ -1,7 +1,7 @@
 from rest_framework import decorators, response, viewsets
 
-from cryptocurrency.blockchain import models
-from cryptocurrency.rest import serializers
+from cc_framework.blockchain import models
+from cc_framework.rest import serializers
 
 
 class TransactionViewSet(viewsets.ModelViewSet):

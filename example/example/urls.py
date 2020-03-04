@@ -13,10 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# pylint: disable=wrong-import-order
-from cryptocurrency.rest import urls as rest_urls
 from django import urls
 from django.contrib import admin
+
+# pylint: disable=wrong-import-order
+from cc_framework.rest import urls as rest_urls
 
 urlpatterns = [
     urls.path(r'', urls.include(rest_urls.urlpatterns)),

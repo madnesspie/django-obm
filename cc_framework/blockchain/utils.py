@@ -4,7 +4,7 @@ import warnings
 import requests
 from django.conf import settings
 
-from cryptocurrency import blockchain
+from cc_framework import blockchain
 
 _DEFAULT_TIMEOUT = 5
 

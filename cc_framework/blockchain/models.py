@@ -1,6 +1,6 @@
 from django.db import models
 
-from cryptocurrency.blockchain import connectors, exceptions
+from cc_framework.blockchain import connectors, exceptions
 
 
 class NodeManager(models.Manager):

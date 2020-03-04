@@ -1,7 +1,7 @@
 # pylint: disable=multiple-statements
 import abc
 
-from cryptocurrency.blockchain import utils
+from cc_framework.blockchain import utils
 
 TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
                   'timestamp_received', 'txid', 'fee')

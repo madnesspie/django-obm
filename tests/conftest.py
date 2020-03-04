@@ -1,7 +1,7 @@
 import pytest
 from rest_framework import test as drf_test
 
-from cryptocurrency.blockchain import connectors, models
+from cc_framework.blockchain import connectors, models
 
 
 @pytest.fixture
