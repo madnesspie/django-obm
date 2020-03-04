@@ -58,3 +58,6 @@ class BaseConnector(abc.ABC):
 
     @abc.abstractmethod
     def estimate_fee(self): ...
+
+    @abc.abstractmethod
+    def send_transaction(self): ...

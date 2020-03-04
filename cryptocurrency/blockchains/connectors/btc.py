@@ -81,5 +81,8 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         })
         return self._request(payload)
 
+    def send_transaction(self):
+        pass
+
 
 CONNECTOR_CLASSES = [BitcoinCoreConnector]
