@@ -108,4 +108,4 @@ venv.bak/
 .idea/
 
 # Node volumes:
-.bitcoin/
+example/.bitcoin/testnet3
