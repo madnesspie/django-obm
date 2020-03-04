@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from cryptocurrency.blockchains import models
+from cryptocurrency.blockchain import models
 
 
 class CurrencySerializer(serializers.ModelSerializer):

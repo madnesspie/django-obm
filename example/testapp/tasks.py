@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from cryptocurrency.blockchains import models
+from cryptocurrency.blockchain import models
 
 
 @shared_task

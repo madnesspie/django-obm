@@ -5,7 +5,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'drf_yasg',
-    'cryptocurrency.blockchains',
+    'cryptocurrency.blockchain',
     'cryptocurrency.rest',
 ]
 ROOT_URLCONF = 'cryptocurrency.rest.urls'

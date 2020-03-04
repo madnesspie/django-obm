@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from cryptocurrency import blockchains
-from cryptocurrency.blockchains import connectors
+from cryptocurrency import blockchain
+from cryptocurrency.blockchain import connectors
 
 TXS = [
     {
@@ -83,5 +83,5 @@ class TestBitcoinCoreConnector:
         assert len(recwarn) == 1
         assert issubclass(
             recwarn[-1].category,
-            blockchains.exceptions.ConnectorWarning,
+            blockchain.exceptions.ConnectorWarning,
         )

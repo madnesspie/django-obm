@@ -3,8 +3,8 @@ import json
 
 import requests
 
-from cryptocurrency.blockchains import utils
-from cryptocurrency.blockchains.connectors import base
+from cryptocurrency.blockchain import utils
+from cryptocurrency.blockchain.connectors import base
 
 
 class BaseBitcoinConnector(base.BaseConnector, abc.ABC):  # pylint: disable=abstract-method

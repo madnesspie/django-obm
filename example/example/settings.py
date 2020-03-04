@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cryptocurrency.blockchains',
+    'cryptocurrency.blockchain',
     'cryptocurrency.rest',
     'drf_yasg',
     'django_celery_results',

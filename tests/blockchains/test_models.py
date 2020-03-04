@@ -2,7 +2,7 @@ import copy
 
 import pytest
 
-from cryptocurrency.blockchains import connectors, exceptions, models
+from cryptocurrency.blockchain import connectors, exceptions, models
 from tests.blockchains.connectors import test_btc
 
 

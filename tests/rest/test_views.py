@@ -1,7 +1,7 @@
 import pytest
 from django import urls
 
-from cryptocurrency.blockchains import connectors, models
+from cryptocurrency.blockchain import connectors, models
 from cryptocurrency.rest import views
 
 

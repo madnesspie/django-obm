@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 
 class ConnectorRegistry:
-    PACKAGE = 'cryptocurrency.blockchains.connectors'
+    PACKAGE = 'cryptocurrency.blockchain.connectors'
 
     def __init__(self):
         self.connector_map = OrderedDict()

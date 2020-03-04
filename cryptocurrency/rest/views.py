@@ -1,6 +1,6 @@
 from rest_framework import decorators, response, viewsets
 
-from cryptocurrency.blockchains import models
+from cryptocurrency.blockchain import models
 from cryptocurrency.rest import serializers
 
 

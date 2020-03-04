@@ -4,7 +4,7 @@ import warnings
 import requests
 from django.conf import settings
 
-from cryptocurrency import blockchains
+from cryptocurrency import blockchain
 
 _DEFAULT_TIMEOUT = 5
 
@@ -26,18 +26,18 @@ def validate_responce(func):
         except KeyError:
             warnings.warn(
                 f'Node\'ve returned invalid result: {result}',
-                blockchains.exceptions.InvalidNodeResponseWarning,
+                blockchain.exceptions.InvalidNodeResponseWarning,
             )
         except requests.exceptions.Timeout:
             warnings.warn(
                 f'The request to node was longer '
                 f'than timeout: {get_timeout_setting()}',
-                blockchains.exceptions.TimeoutNodeResponseWarning,
+                blockchain.exceptions.TimeoutNodeResponseWarning,
             )
         except requests.exceptions.RequestException as error:
             warnings.warn(
                 f'RequestException: {error}',
-                blockchains.exceptions.BadRequestWarning,
+                blockchain.exceptions.BadRequestWarning,
             )
         return result
 

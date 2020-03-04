@@ -31,7 +31,7 @@ Next add a reference in your project settings and set up timeout for `bitcoin-co
 ```python
 INSTALLED_APPS = [
     ...
-    'cryptocurrency.blockchains'
+    'cryptocurrency.blockchain'
 ]
 
 ...
@@ -44,7 +44,7 @@ CC_FRAMEWORK = {
 
 Then create a `Currency` and `Node` objects.
 ```python
->>> from cryptocurrency.blockchains import models
+>>> from cryptocurrency.blockchain import models
 >>> currency = models.Currency.objects.create(
 ... name='BTC',
 ... min_confirmations=2,
@@ -63,7 +63,7 @@ Then create a `Currency` and `Node` objects.
 
 It's worth clarifying, that you can't create 'Node' or 'Currency' object if framework doesn't support corresponded cryptocurrency or node. To discover supported things you can to execute code below.
 ```python
->>> from cryptocurrency.blockchains import connectors
+>>> from cryptocurrency.blockchain import connectors
 >>> connectors.registry.available_currencies
 {'BTC'}
 >>> connectors.registry.available_nodes
