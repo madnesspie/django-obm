@@ -1,45 +1,25 @@
-class CryprocerrencyError(Exception):
-    """Base cryprocerrency exception. """
+class BaseError(Exception):
+    """Base cryprocerrency exception."""
 
 
-class CryprocerrencyWarning(UserWarning):
-    """Base warning for cryprocerrency. """
+class CurrencyDoesNotExistError(BaseError):
+    """This currency doesn't supported yet."""
 
 
-class CurrencyDoesNotExistError(CryprocerrencyError):
-    """This currency doesn't supported yet. """
-
-
-class NodeDoesNotExistError(CryprocerrencyError):
-    """This node doesn't supported yet. """
+class NodeDoesNotExistError(BaseError):
+    """This node doesn't supported yet."""
 
 
 class DefaultNodeDoesNotExistError(NodeDoesNotExistError):
-    """Missing default node for currency. """
+    """Missing default node for currency."""
 
 
-class TooManyDefaultNodes(CryprocerrencyError):
-    """Default nodes number greater than one. """
+class TooManyDefaultNodes(BaseError):
+    """Default nodes number greater than one."""
 
 
-class DefaultNodeAlreadyExists(CryprocerrencyError):
-    """Default node already exists for currency. """
+class DefaultNodeAlreadyExists(BaseError):
+    """Default node already exists for currency."""
 
-
-# warnings
-
-
-class ConnectorWarning(CryprocerrencyWarning):
-    """Base warning for connectors. """
-
-
-class BadRequestWarning(ConnectorWarning):
-    """An error occurred during the request. """
-
-
-class InvalidNodeResponseWarning(ConnectorWarning):
-    """Node've returned invalid result. """
-
-
-class TimeoutNodeResponseWarning(ConnectorWarning):
-    """The request to node timed out. """
+class CanNotSendReceivedTransaction(BaseError):
+    """Trying to send received transaction wth ORM."""

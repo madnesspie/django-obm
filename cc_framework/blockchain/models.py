@@ -1,6 +1,10 @@
+from typing import TypeVar
+
 from django.db import models
 
 from cc_framework.blockchain import connectors, exceptions
+
+TransactionType = TypeVar('TransactionType', bound='Transaction')
 
 
 class NodeManager(models.Manager):
@@ -224,21 +228,26 @@ class Transaction(models.Model):
     category = models.CharField(
         max_length=30,
     )  # yapf: disable
-    amount = models.FloatField(
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=12,
         help_text='The transaction amount in currency',
     )  # yapf: disable
-    fee = models.FloatField(
+    fee = models.DecimalField(
+        max_digits=12,
+        decimal_places=12,
         null=True,
-        help_text='The amount of the fee in currency. This is negative and '
-        'only available for the "send" category of transactions.',
+        help_text=('The amount of the fee in currency. This is negative and '
+                   'only available for the "send" category of transactions.'),
     )
     is_confirmed = models.BooleanField(
         verbose_name='confirmed',
         default=False,
     )
+    # TODO: To count in ms.
     timestamp = models.PositiveIntegerField(
         verbose_name='time',
-        help_text='transaction creation time in timestamp',
+        help_text='transaction creation timestamp',
     )
     timestamp_received = models.PositiveIntegerField(
         verbose_name='receipt time',
@@ -254,14 +263,35 @@ class Transaction(models.Model):
         return self.txid
 
     @property
-    def currency(self):
+    def amount_with_fee(self):
+        return self.amount - self.fee
+
+    @property
+    def currency(self) -> Currency:
         return self.node.currency
 
-    def confirm(self):
+    def confirm(self) -> TransactionType:
         """Confirms the transaction.
 
         Returns:
             A transaction that was confirmed.
         """
         self.is_confirmed = True
+        return self
+
+    def send(self) -> TransactionType:
+        """Sends a transaction in a blockchain."""
+        if self.category == 'receive':
+            raise exceptions.CanNotSendReceivedTransaction(
+                f'You can\'t send the received transaction.')
+
+        sent_tx = self.node.connector.send_transaction(
+            address=self.address,
+            amount=self.amount,
+        )
+        self.fee = sent_tx['fee']
+        self.txid = sent_tx['txid']
+        self.timestamp = sent_tx['timestamp']
+        self.timestamp_received = sent_tx['timestamp_received']
+
         return self
