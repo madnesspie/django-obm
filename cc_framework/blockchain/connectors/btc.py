@@ -51,29 +51,26 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         except KeyError:
             raise exceptions.NodeInvalidResponceError(response)
 
+    @staticmethod
+    def format_transaction(tx):
+        return {
+            'txid': tx['txid'],
+            'address': tx['address'] if 'address' in tx else tx['de'],
+            'category': tx['category'],
+            'amount': tx['amount'],
+            'fee': tx.get('fee', 0),
+            'confirmations': tx['confirmations'],
+            'timestamp': tx['time'],
+            'timestamp_received': tx['timereceived'],
+        }
+
     def list_transactions(self):
-
-        def _format(txs):
-            formated_txs = []
-            for tx in txs:
-                formated_txs.append({
-                    'txid': tx['txid'],
-                    'address': tx['address'],
-                    'category': tx['category'],
-                    'amount': tx['amount'],
-                    'fee': tx.get('fee', 0),
-                    'confirmations': tx['confirmations'],
-                    'timestamp': tx['time'],
-                    'timestamp_received': tx['timereceived'],
-                })
-            return formated_txs
-
-        return _format(
-            self._request(
-                json.dumps({
-                    'method': 'listtransactions',
-                    'params': ['*', 1000]
-                })))
+        txs = self._request(
+            json.dumps({
+                'method': 'listtransactions',
+                'params': ['*', 1000]
+            }))
+        return [self.format_transaction(tx) for tx in txs]
 
     def get_in_wallet_transaction(self, txid):
         return self._request(
@@ -94,7 +91,6 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         return self._request(json.dumps({'method': 'listaddressgroupings'}))
 
     def estimate_fee(self):
-
         return self._request(
             json.dumps({
                 'method': 'estimatesmartfee',
@@ -109,14 +105,23 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
                          amount,
                          comment="",
                          comment_to="",
-                         subtractfeefromamount=True):
+                         subtract_fee_from_amount=True):
         txid = self._request(
             json.dumps({
                 'method': 'sendtoaddress',
                 'params': [
-                    address, amount, comment, comment_to, subtractfeefromamount
+                    address, amount, comment, comment_to,
+                    subtract_fee_from_amount
                 ],
             }))
-        return self.get_in_wallet_transaction(txid)
+        tx = self.get_in_wallet_transaction(txid)
+        # Add address and category because otherwise it will be
+        # in details list in response
+        return self.format_transaction({
+            'address': address,
+            'category': 'send',
+            **tx,
+        })
+
 
 CONNECTOR_CLASSES = [BitcoinCoreConnector]

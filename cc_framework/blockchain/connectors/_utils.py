@@ -5,7 +5,7 @@ from django.conf import settings
 
 from cc_framework.blockchain.connectors import _exceptions as exceptions
 
-_DEFAULT_TIMEOUT = 5
+_DEFAULT_TIMEOUT = 3
 
 
 def get_timeout_setting():

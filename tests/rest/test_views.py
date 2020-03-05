@@ -10,30 +10,71 @@ class TestTransactionViewSet:
     @staticmethod
     @pytest.mark.django_db
     def test_get(client):
-        responce = client.get(urls.reverse('transaction-list'))
-        assert responce.status_code == 200
-        result = responce.json()
+        response = client.get(urls.reverse('transaction-list'))
+        assert response.status_code == 200
+        result = response.json()
         assert result == []
 
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures('bitcoin_core_node')
-    def test_post(client):
-        # TODO: Add fee
-        responce = client.post(
-            urls.reverse('transaction-list'),
-            data={
-                'currency': 'BTC',
-                'address': 'fake-addr',
-                'category': 'send',
-                'amount': 10,
-                'is_confirmed': False,
+    def test_post(monkeypatch, client):
+        monkeypatch.setattr(
+            connectors.btc.BitcoinCoreConnector,
+            'send_transaction',
+            lambda *_, **__: {
+                'fee': 0.0000001,
+                'txid': 'fake-txid',
                 'timestamp': 1562415913,
                 'timestamp_received': 1562415913,
             },
         )
-        assert responce.status_code == 201
+
+        # TODO: Add fee
+        response = client.post(
+            urls.reverse('transaction-list'),
+            data={
+                'currency': 'BTC',
+                'address': 'fake-addr',
+                'amount': 10,
+            },
+        )
+        assert response.status_code == 201
         assert models.Transaction.objects.count() == 1
+        result = response.json()
+        assert result['txid'] == 'fake-txid'
+        assert float(result['fee']) == 0.0000001
+
+
+@pytest.mark.integration
+class TestTransactionViewSetIntegration:
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures('bitcoin_core_node')
+    def test_post(client):
+        amount_to_send = 0.00001
+        in_wallet_address = '2NAmne8BsSXWbV5iStkVzL4vW7Z4F6a5o68'
+        # TODO: Add fee
+        response = client.post(
+            urls.reverse('transaction-list'),
+            data={
+                'currency': 'BTC',
+                'address': in_wallet_address,
+                'amount': amount_to_send,
+            },
+        )
+        assert response.status_code == 201
+        assert models.Transaction.objects.count() == 1
+        result = response.json()
+        assert isinstance(result, dict)
+        assert isinstance(result['txid'], str)
+        assert result['address'] == in_wallet_address
+        assert result['category'] == 'send'
+        assert result['is_confirmed'] is True
+        # tests that fee subtract from amount
+        # assert float(result['amount']) < amount_to_send
+
 
 
 class TestAddressViewSet:
@@ -41,9 +82,9 @@ class TestAddressViewSet:
     @staticmethod
     @pytest.mark.django_db
     def test_get(client):
-        responce = client.get(urls.reverse('address-list'))
-        assert responce.status_code == 200
-        result = responce.json()
+        response = client.get(urls.reverse('address-list'))
+        assert response.status_code == 200
+        result = response.json()
         assert result == []
 
     @staticmethod
@@ -57,15 +98,15 @@ class TestAddressViewSet:
             lambda *_, **__: 'fake-addr',
         )
 
-        responce = client.post(
+        response = client.post(
             urls.reverse('address-list'),
             data={
                 'currency': 'BTC',
             },
         )
-        assert responce.status_code == 201
+        assert response.status_code == 201
         assert models.Address.objects.count() == 1
-        assert responce.json()['address'] == 'fake-addr'
+        assert response.json()['address'] == 'fake-addr'
 
 
 class TestCurrencyViewSet:
@@ -73,9 +114,9 @@ class TestCurrencyViewSet:
     @staticmethod
     @pytest.mark.django_db
     def test_get(client):
-        responce = client.get(urls.reverse('currency-list'))
-        assert responce.status_code == 200
-        result = responce.json()
+        response = client.get(urls.reverse('currency-list'))
+        assert response.status_code == 200
+        result = response.json()
         assert result == []
 
     @staticmethod
@@ -88,11 +129,11 @@ class TestCurrencyViewSet:
             lambda *_, **__: 0.0001,
         )
 
-        responce = client.get(
+        response = client.get(
             urls.reverse(
                 'currency-estimated-fee',
                 args=(bitcoin_currency.id,),
             ))
-        assert responce.status_code == 200
-        result = responce.json()
+        assert response.status_code == 200
+        result = response.json()
         assert result['estimated_fee'] == 0.0001

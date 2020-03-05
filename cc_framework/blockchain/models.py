@@ -191,6 +191,7 @@ class Node(models.Model):
 
 
 class Address(models.Model):
+    # TODO: Rename to value
     address = models.CharField(
         max_length=500,
     )  # yapf: disable
@@ -222,6 +223,7 @@ class Transaction(models.Model):
         related_query_name='tx',
     )
     txid = models.CharField(
+        null=True,
         verbose_name='transaction id',
         max_length=500,
     )
@@ -229,27 +231,31 @@ class Transaction(models.Model):
         max_length=30,
     )  # yapf: disable
     amount = models.DecimalField(
-        max_digits=12,
-        decimal_places=12,
+        max_digits=19,
+        decimal_places=10,
         help_text='The transaction amount in currency',
-    )  # yapf: disable
+    )
     fee = models.DecimalField(
-        max_digits=12,
-        decimal_places=12,
         null=True,
+        max_digits=19,
+        decimal_places=10,
         help_text=('The amount of the fee in currency. This is negative and '
                    'only available for the "send" category of transactions.'),
     )
+    # TODO: add confirmation number
     is_confirmed = models.BooleanField(
+        null=True,
         verbose_name='confirmed',
         default=False,
     )
     # TODO: To count in ms.
     timestamp = models.PositiveIntegerField(
+        null=True,
         verbose_name='time',
         help_text='transaction creation timestamp',
     )
     timestamp_received = models.PositiveIntegerField(
+        null=True,
         verbose_name='receipt time',
         help_text='transaction receipt time in timestamp',
     )
@@ -286,12 +292,13 @@ class Transaction(models.Model):
                 f'You can\'t send the received transaction.')
 
         sent_tx = self.node.connector.send_transaction(
-            address=self.address,
-            amount=self.amount,
+            address=self.address.address,
+            amount=str(self.amount),
         )
+        self.is_confirmed = True
         self.fee = sent_tx['fee']
         self.txid = sent_tx['txid']
         self.timestamp = sent_tx['timestamp']
         self.timestamp_received = sent_tx['timestamp_received']
-
+        self.save()
         return self

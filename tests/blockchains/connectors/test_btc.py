@@ -97,11 +97,10 @@ class TestBitcoinCoreConnectorIntegration:
             address=in_wallet_address,
             amount=amount_to_send,
         )
-        print(sent_tx)
         assert isinstance(sent_tx, dict)
         assert isinstance(sent_tx['txid'], str)
-        assert sent_tx['details'][0]['address'] == in_wallet_address
-        assert sent_tx['details'][0]['category'] == 'send'
+        assert sent_tx['address'] == in_wallet_address
+        assert sent_tx['category'] == 'send'
         # tests that fee subtract from amount
         assert sent_tx['amount'] < amount_to_send
 

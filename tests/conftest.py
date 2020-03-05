@@ -63,9 +63,9 @@ def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-na
         name='bitcoin-core',
         currency=bitcoin_currency,
         is_default=True,
-        rpc_username='bitcoin',
-        rpc_password='qwerty54',
-        rpc_host='example.com',
+        rpc_username='testnet_user',
+        rpc_password='testnet_pass',
+        rpc_host='127.0.0.1',
         rpc_port=18332,
     )
     yield node

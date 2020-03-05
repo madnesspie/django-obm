@@ -17,7 +17,7 @@ class TestNode:
             '_request',
             lambda *_: data.BTC_TXS,
         )
-        assert models.Node.objects.all()
+        assert models.Node.objects.all().count() == 1
         models.Node.objects.process_receipts()
         txs = models.Transaction.objects.all()
         assert txs.count() == 2
