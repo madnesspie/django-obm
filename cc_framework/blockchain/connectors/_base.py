@@ -1,7 +1,7 @@
 # pylint: disable=multiple-statements
 import abc
 
-from cryptocurrency.blockchains import utils
+from cc_framework.blockchain.connectors import _utils as utils
 
 TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
                   'timestamp_received', 'txid', 'fee')
@@ -10,6 +10,7 @@ TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations', 'timestamp',
 class BaseConnector(abc.ABC):
 
     def __init__(self, timeout):
+        # TODO: Add raise_errors arg
         self.timeout = timeout
 
     @staticmethod
@@ -48,9 +49,6 @@ class BaseConnector(abc.ABC):
     def default_min_confirmations(self): ...
 
     @abc.abstractmethod
-    def format(self, txs): ...
-
-    @abc.abstractmethod
     def get_receipts(self): ...
 
     @abc.abstractmethod
@@ -58,3 +56,6 @@ class BaseConnector(abc.ABC):
 
     @abc.abstractmethod
     def estimate_fee(self): ...
+
+    @abc.abstractmethod
+    def send_transaction(self, address, amount, **kwargs): ...

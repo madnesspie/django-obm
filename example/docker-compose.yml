@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  bitcoin-core:
+    image: kylemanna/bitcoind:latest
+    restart: always
+    ports:
+      - "8332:8332"
+      - "18332:18332"
+    volumes:
+      - "$PWD/example/.bitcoin:/bitcoin/.bitcoin"
+    command: bitcoind

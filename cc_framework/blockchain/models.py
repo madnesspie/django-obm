@@ -1,6 +1,11 @@
+from decimal import Decimal
+from typing import TypeVar
+
 from django.db import models
 
-from cryptocurrency.blockchains import connectors, exceptions
+from cc_framework.blockchain import connectors, exceptions
+
+TransactionType = TypeVar('TransactionType', bound='Transaction')
 
 
 class NodeManager(models.Manager):
@@ -187,6 +192,7 @@ class Node(models.Model):
 
 
 class Address(models.Model):
+    # TODO: Rename to value
     address = models.CharField(
         max_length=500,
     )  # yapf: disable
@@ -218,29 +224,39 @@ class Transaction(models.Model):
         related_query_name='tx',
     )
     txid = models.CharField(
+        null=True,
         verbose_name='transaction id',
         max_length=500,
     )
     category = models.CharField(
         max_length=30,
     )  # yapf: disable
-    amount = models.FloatField(
+    amount = models.DecimalField(
+        max_digits=19,
+        decimal_places=10,
         help_text='The transaction amount in currency',
-    )  # yapf: disable
-    fee = models.FloatField(
-        null=True,
-        help_text='The amount of the fee in currency. This is negative and '
-        'only available for the "send" category of transactions.',
     )
+    fee = models.DecimalField(
+        null=True,
+        max_digits=19,
+        decimal_places=10,
+        help_text=('The amount of the fee in currency. This is negative and '
+                   'only available for the "send" category of transactions.'),
+    )
+    # TODO: add confirmation number
     is_confirmed = models.BooleanField(
+        null=True,
         verbose_name='confirmed',
         default=False,
     )
+    # TODO: To count in ms.
     timestamp = models.PositiveIntegerField(
+        null=True,
         verbose_name='time',
-        help_text='transaction creation time in timestamp',
+        help_text='transaction creation timestamp',
     )
     timestamp_received = models.PositiveIntegerField(
+        null=True,
         verbose_name='receipt time',
         help_text='transaction receipt time in timestamp',
     )
@@ -254,14 +270,37 @@ class Transaction(models.Model):
         return self.txid
 
     @property
-    def currency(self):
+    def amount_with_fee(self):
+        # TODO: amount with fee only for 'send' category
+        return self.amount - abs(self.fee)
+
+    @property
+    def currency(self) -> Currency:
         return self.node.currency
 
-    def confirm(self):
+    def confirm(self) -> TransactionType:
         """Confirms the transaction.
 
         Returns:
             A transaction that was confirmed.
         """
         self.is_confirmed = True
+        return self
+
+    def send(self) -> TransactionType:
+        """Sends a transaction in a blockchain."""
+        if self.category == 'receive':
+            raise exceptions.CanNotSendReceivedTransaction(
+                f'You can\'t send the received transaction.')
+
+        sent_tx = self.node.connector.send_transaction(
+            address=self.address.address,
+            amount=str(self.amount),
+        )
+        self.is_confirmed = True
+        self.fee = Decimal(sent_tx['fee'])
+        self.txid = sent_tx['txid']
+        self.timestamp = sent_tx['timestamp']
+        self.timestamp_received = sent_tx['timestamp_received']
+        self.save()
         return self

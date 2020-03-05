@@ -5,10 +5,10 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'drf_yasg',
-    'cryptocurrency.blockchains',
-    'cryptocurrency.rest',
+    'cc_framework.blockchain',
+    'cc_framework.rest',
 ]
-ROOT_URLCONF = 'cryptocurrency.rest.urls'
+ROOT_URLCONF = 'cc_framework.rest.urls'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATABASES = {
     'default': {

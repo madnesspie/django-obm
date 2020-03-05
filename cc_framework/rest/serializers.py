@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
-from cryptocurrency.blockchains import models
+from cc_framework.blockchain import models
 
 
 class CurrencySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Currency
         fields = '__all__'
@@ -20,10 +21,13 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Transaction
-        read_only_fields = ['txid']
+        read_only_fields = [
+            'txid', 'category', 'fee', 'timestamp', 'timestamp_received',
+            'amount_with_fee'
+        ]
         fields = [
             'id', 'currency', 'address', 'txid', 'category', 'amount', 'fee',
-            'is_confirmed', 'timestamp', 'timestamp_received'
+            'amount_with_fee', 'is_confirmed', 'timestamp', 'timestamp_received'
         ]
 
     def validate(self, attrs):
@@ -48,6 +52,13 @@ class TransactionSerializer(serializers.ModelSerializer):
             'address': address,
             **attrs,
         }
+
+    def create(self, validated_data):
+        tx = models.Transaction.objects.create(
+            category='send',
+            **validated_data,
+        )
+        return tx.send()
 
 
 class AddressSerializer(serializers.ModelSerializer):

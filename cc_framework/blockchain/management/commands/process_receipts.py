@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from cryptocurrency.blockchains import models
+from cc_framework.blockchain import models
 
 
 class Command(BaseCommand):

@@ -7,7 +7,7 @@ python:
 install:
 - pip install -e .[dev]
 script:
-- pylint tests cryptocurrency -d C
+- pylint tests cc_framework -d C
 - pytest -vrs
 deploy:
   provider: pypi

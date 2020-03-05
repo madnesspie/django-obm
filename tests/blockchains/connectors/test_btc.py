@@ -1,38 +1,8 @@
 import pytest
 import requests
 
-from cryptocurrency import blockchains
-from cryptocurrency.blockchains import connectors
-
-TXS = [
-    {
-        'address': '2MsYTTPi276Q7yTZXxEiuCiAmfk9naKE7Gh',
-        'amount': 0.08647872,
-        'category': 'receive',
-        'confirmations': 1,
-        'time': 1562415913,
-        'timereceived': 1562415913,
-        'txid': 'd2f2679a65f012c0ce7bde59a2ae43af75e82f326600afd044',
-    },
-    {
-        'address': '2MsGTPi27QQ7yFZXxEiuCiAmfk9nbKE7Gh',
-        'amount': 1,
-        'category': 'receive',
-        'confirmations': 374,
-        'time': 1562415913,
-        'timereceived': 1562415913,
-        'txid': 'd2f2679a67f0132c0ce7bde59a2ae43af75e82f326600afd0',
-    },
-    {
-        'address': '2N5QTaxHBCmMyxCHveZTB5ecpCbwiGuC2gr',
-        'amount': 0.01,
-        'category': 'send',
-        'confirmations': 367,
-        'time': 1562419693,
-        'timereceived': 1562419693,
-        'txid': '81ff6c37547d3d13593bfe74b23c8a4f8da1379efdcb3be5fad77257d...',
-    },
-]
+from cc_framework.blockchain import connectors
+from tests.blockchains.connectors import data
 
 
 class TestBitcoinCoreConnector:
@@ -42,7 +12,7 @@ class TestBitcoinCoreConnector:
         monkeypatch.setattr(
             connectors.btc.BitcoinCoreConnector,
             '_request',
-            lambda *_: TXS,
+            lambda *_: data.BTC_TXS,
         )
 
         receipts = bitcoin_core_connector.get_receipts()
@@ -55,33 +25,86 @@ class TestBitcoinCoreConnector:
 
     @staticmethod
     @pytest.mark.parametrize(
-        'error',
+        'origin_error, expected_error',
         (
-            KeyError,
-            requests.exceptions.RequestException,
-            requests.exceptions.Timeout,
+            (
+                requests.exceptions.RequestException,
+                connectors.exceptions.NetworkError,
+            ),
+            (
+                requests.exceptions.Timeout,
+                connectors.exceptions.NetworkTimeoutError,
+            ),
         ),
         ids=[
-            'bad response',
-            'bad request',
-            'timeout',
-        ]
+            'network error',
+            'network timeout error',
+        ],
     )
-    def test_get_receipts_rises_warning(
-            monkeypatch,
-            recwarn,
-            error,
-            bitcoin_core_connector,
+    def test_get_receipts_wrap_errors(
+        monkeypatch,
+        origin_error,
+        expected_error,
+        bitcoin_core_connector,
     ):
 
         def mock(*_, **__):
-            raise error()
+            raise origin_error()
 
         monkeypatch.setattr(requests, 'post', mock)
 
-        bitcoin_core_connector.get_receipts()
-        assert len(recwarn) == 1
-        assert issubclass(
-            recwarn[-1].category,
-            blockchains.exceptions.ConnectorWarning,
+        with pytest.raises(expected_error):
+            bitcoin_core_connector.get_receipts()
+
+    @staticmethod
+    def test_estimate_fee(monkeypatch, bitcoin_core_connector):
+
+        class MockedResponce:
+
+            @staticmethod
+            def json():
+                return {
+                    'result': {
+                        'feerate': 0.00001,
+                    },
+                    'error': None,
+                }
+
+        monkeypatch.setattr(
+            requests,
+            'post',
+            lambda *_, **__: MockedResponce(),
         )
+
+        fee = bitcoin_core_connector.estimate_fee()
+        assert isinstance(fee, float)
+
+
+@pytest.mark.integration
+class TestBitcoinCoreConnectorIntegration:
+
+    @staticmethod
+    def test_estimate_fee(bitcoin_core_connector):
+        fee = bitcoin_core_connector.estimate_fee()
+        assert isinstance(fee, float)
+
+    @staticmethod
+    def test_send_tansaction(bitcoin_core_connector):
+        # TODO: Add ladger-fixture for tests that spend testnet money
+        amount_to_send = 0.00001
+        in_wallet_address = '2NAmne8BsSXWbV5iStkVzL4vW7Z4F6a5o68'
+        sent_tx = bitcoin_core_connector.send_transaction(
+            address=in_wallet_address,
+            amount=amount_to_send,
+        )
+        assert isinstance(sent_tx, dict)
+        assert isinstance(sent_tx['txid'], str)
+        assert sent_tx['address'] == in_wallet_address
+        assert sent_tx['category'] == 'send'
+        # tests that fee subtract from amount
+        assert sent_tx['amount'] < amount_to_send
+
+    @staticmethod
+    def test_list_transactions(bitcoin_core_connector):
+        txs = bitcoin_core_connector.list_transactions()
+        assert isinstance(txs, list)
