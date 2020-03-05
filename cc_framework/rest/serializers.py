@@ -22,11 +22,12 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Transaction
         read_only_fields = [
-            'txid', 'category', 'fee', 'timestamp', 'timestamp_received'
+            'txid', 'category', 'fee', 'timestamp', 'timestamp_received',
+            'amount_with_fee'
         ]
         fields = [
             'id', 'currency', 'address', 'txid', 'category', 'amount', 'fee',
-            'is_confirmed', 'timestamp', 'timestamp_received'
+            'amount_with_fee', 'is_confirmed', 'timestamp', 'timestamp_received'
         ]
 
     def validate(self, attrs):

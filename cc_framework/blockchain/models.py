@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import TypeVar
 
 from django.db import models
@@ -270,7 +271,8 @@ class Transaction(models.Model):
 
     @property
     def amount_with_fee(self):
-        return self.amount - self.fee
+        # TODO: amount with fee only for 'send' category
+        return self.amount - abs(self.fee)
 
     @property
     def currency(self) -> Currency:
@@ -296,7 +298,7 @@ class Transaction(models.Model):
             amount=str(self.amount),
         )
         self.is_confirmed = True
-        self.fee = sent_tx['fee']
+        self.fee = Decimal(sent_tx['fee'])
         self.txid = sent_tx['txid']
         self.timestamp = sent_tx['timestamp']
         self.timestamp_received = sent_tx['timestamp_received']

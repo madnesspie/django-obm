@@ -2,7 +2,6 @@ import pytest
 from django import urls
 
 from cc_framework.blockchain import connectors, models
-from cc_framework.rest import views
 
 
 class TestTransactionViewSet:
@@ -61,7 +60,7 @@ class TestTransactionViewSetIntegration:
             data={
                 'currency': 'BTC',
                 'address': in_wallet_address,
-                'amount': amount_to_send,
+                'amount': str(amount_to_send),
             },
         )
         assert response.status_code == 201
@@ -73,7 +72,8 @@ class TestTransactionViewSetIntegration:
         assert result['category'] == 'send'
         assert result['is_confirmed'] is True
         # tests that fee subtract from amount
-        # assert float(result['amount']) < amount_to_send
+        assert float(result['amount']) == amount_to_send
+        assert float(result['amount_with_fee']) < amount_to_send
 
 
 
