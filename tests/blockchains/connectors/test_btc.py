@@ -97,3 +97,8 @@ class TestBitcoinCoreConnectorIntegration:
             amount=amount_to_send,
         )
         assert isinstance(sent_tx, str)
+
+    @staticmethod
+    def test_list_transactions(bitcoin_core_connector):
+        txs = bitcoin_core_connector.list_transactions()
+        assert isinstance(txs, list)

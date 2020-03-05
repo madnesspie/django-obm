@@ -49,9 +49,6 @@ class BaseConnector(abc.ABC):
     def default_min_confirmations(self): ...
 
     @abc.abstractmethod
-    def format(self, txs): ...
-
-    @abc.abstractmethod
     def get_receipts(self): ...
 
     @abc.abstractmethod

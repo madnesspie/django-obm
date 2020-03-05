@@ -51,29 +51,33 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         except KeyError:
             raise exceptions.NodeInvalidResponceError(response)
 
-    def format(self, txs):
-        formated_txs = []
-        for tx in txs:
-            formated_txs.append({
-                'txid': tx['txid'],
-                'address': tx['address'],
-                'category': tx['category'],
-                'amount': tx['amount'],
-                'fee': tx.get('fee', 0),
-                'confirmations': tx['confirmations'],
-                'timestamp': tx['time'],
-                'timestamp_received': tx['timereceived'],
-            })
-        return formated_txs
+    def list_transactions(self):
 
-    def get_receipts(self):
+        def _format(txs):
+            formated_txs = []
+            for tx in txs:
+                formated_txs.append({
+                    'txid': tx['txid'],
+                    'address': tx['address'],
+                    'category': tx['category'],
+                    'amount': tx['amount'],
+                    'fee': tx.get('fee', 0),
+                    'confirmations': tx['confirmations'],
+                    'timestamp': tx['time'],
+                    'timestamp_received': tx['timereceived'],
+                })
+            return formated_txs
+
         payload = json.dumps({
             'method': 'listtransactions',
             'params': ['*', 1000]
         })
-        recently_receipts = filter(lambda tx: tx['category'] == 'receive',
-                                   self._request(payload))
-        return self.format(recently_receipts)
+        return _format(self._request(payload))
+
+    def get_receipts(self):
+        return [
+            tx for tx in self.list_transactions() if tx['category'] == 'receive'
+        ]
 
     def get_new_address(self):
         return self._request(json.dumps({'method': 'getrawchangeaddress'}))
@@ -88,7 +92,8 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         })
         return self._request(payload, return_key='feerate')
 
-    def send_transaction(self,  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def send_transaction(self,
                          address,
                          amount,
                          comment="",
