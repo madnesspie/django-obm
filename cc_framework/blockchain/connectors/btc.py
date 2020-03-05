@@ -68,11 +68,19 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
                 })
             return formated_txs
 
-        payload = json.dumps({
-            'method': 'listtransactions',
-            'params': ['*', 1000]
-        })
-        return _format(self._request(payload))
+        return _format(
+            self._request(
+                json.dumps({
+                    'method': 'listtransactions',
+                    'params': ['*', 1000]
+                })))
+
+    def get_in_wallet_transaction(self, txid):
+        return self._request(
+            json.dumps({
+                'method': 'gettransaction',
+                'params': [txid],
+            }))
 
     def get_receipts(self):
         return [
@@ -86,11 +94,14 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
         return self._request(json.dumps({'method': 'listaddressgroupings'}))
 
     def estimate_fee(self):
-        payload = json.dumps({
-            'method': 'estimatesmartfee',
-            'params': [1],
-        })
-        return self._request(payload, return_key='feerate')
+
+        return self._request(
+            json.dumps({
+                'method': 'estimatesmartfee',
+                'params': [1],
+            }),
+            return_key='feerate',
+        )
 
     # pylint: disable=arguments-differ
     def send_transaction(self,
@@ -99,13 +110,13 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
                          comment="",
                          comment_to="",
                          subtractfeefromamount=True):
-        payload = json.dumps({
-            'method': 'sendtoaddress',
-            'params': [
-                address, amount, comment, comment_to, subtractfeefromamount
-            ],
-        })
-        return self._request(payload)
-
+        txid = self._request(
+            json.dumps({
+                'method': 'sendtoaddress',
+                'params': [
+                    address, amount, comment, comment_to, subtractfeefromamount
+                ],
+            }))
+        return self.get_in_wallet_transaction(txid)
 
 CONNECTOR_CLASSES = [BitcoinCoreConnector]

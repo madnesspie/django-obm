@@ -90,13 +90,20 @@ class TestBitcoinCoreConnectorIntegration:
 
     @staticmethod
     def test_send_tansaction(bitcoin_core_connector):
+        # TODO: Add ladger-fixture for tests that spend testnet money
         amount_to_send = 0.00001
+        in_wallet_address = '2NAmne8BsSXWbV5iStkVzL4vW7Z4F6a5o68'
         sent_tx = bitcoin_core_connector.send_transaction(
-            # Testnet faucet address
-            address='2NGZrVvZG92qGYqzTLjCAewvPZ7JE8S8VxE',
+            address=in_wallet_address,
             amount=amount_to_send,
         )
-        assert isinstance(sent_tx, str)
+        print(sent_tx)
+        assert isinstance(sent_tx, dict)
+        assert isinstance(sent_tx['txid'], str)
+        assert sent_tx['details'][0]['address'] == in_wallet_address
+        assert sent_tx['details'][0]['category'] == 'send'
+        # tests that fee subtract from amount
+        assert sent_tx['amount'] < amount_to_send
 
     @staticmethod
     def test_list_transactions(bitcoin_core_connector):
