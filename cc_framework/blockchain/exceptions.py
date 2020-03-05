@@ -2,13 +2,12 @@ class CryprocerrencyError(Exception):
     """Base cryprocerrency exception. """
 
 
-class CryprocerrencyWarning(Warning):
+class CryprocerrencyWarning(UserWarning):
     """Base warning for cryprocerrency. """
 
 
 class CurrencyDoesNotExistError(CryprocerrencyError):
     """This currency doesn't supported yet. """
-
 
 
 class NodeDoesNotExistError(CryprocerrencyError):
@@ -26,7 +25,8 @@ class TooManyDefaultNodes(CryprocerrencyError):
 class DefaultNodeAlreadyExists(CryprocerrencyError):
     """Default node already exists for currency. """
 
-# connectors warnings
+
+# warnings
 
 
 class ConnectorWarning(CryprocerrencyWarning):

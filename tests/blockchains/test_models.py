@@ -3,7 +3,7 @@ import copy
 import pytest
 
 from cc_framework.blockchain import connectors, exceptions, models
-from tests.blockchains.connectors import test_btc
+from tests.blockchains.connectors import data
 
 
 class TestNode:
@@ -15,7 +15,7 @@ class TestNode:
         monkeypatch.setattr(
             connectors.btc.BitcoinCoreConnector,
             '_request',
-            lambda *_: test_btc.TXS,
+            lambda *_: data.BTC_TXS,
         )
         assert models.Node.objects.all()
         models.Node.objects.process_receipts()
@@ -28,7 +28,7 @@ class TestNode:
     @pytest.mark.usefixtures('bitcoin_core_node')
     def test_confirm_charged_receipts(monkeypatch):
         # Increases confirmations number for the first tx in test_btc.TXS
-        mock_txs = copy.deepcopy(test_btc.TXS)
+        mock_txs = copy.deepcopy(data.BTC_TXS)
         mock_txs[0]['confirmations'] = 666
 
         monkeypatch.setattr(

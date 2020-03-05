@@ -3,7 +3,7 @@ from rest_framework import test as drf_test
 
 from cc_framework.blockchain import connectors, models
 
-# TODO: Node ping before integration tests
+# TODO: Check node balance before integration tests
 
 # console options
 

@@ -3,8 +3,9 @@ import json
 
 import requests
 
-from cc_framework.blockchain import utils
-from cc_framework.blockchain.connectors import base
+from cc_framework.blockchain.connectors import _base as base
+from cc_framework.blockchain.connectors import _exceptions as exceptions
+from cc_framework.blockchain.connectors import _utils as utils
 
 
 class BaseBitcoinConnector(base.BaseConnector, abc.ABC):  # pylint: disable=abstract-method
@@ -16,14 +17,12 @@ class BaseBitcoinConnector(base.BaseConnector, abc.ABC):  # pylint: disable=abst
 class BitcoinCoreConnector(BaseBitcoinConnector):
     node_name = 'bitcoin-core'
 
-    def __init__(
-        self,
-        rpc_host,
-        rpc_port,
-        rpc_username,
-        rpc_password,
-        timeout=None,
-    ):
+    def __init__(self,
+                 rpc_host,
+                 rpc_port,
+                 rpc_username,
+                 rpc_password,
+                 timeout=None):
         super().__init__(timeout)
         url = f"{rpc_host}:{rpc_port}"
         self.rpc_url = 'http://' + url if 'http://' not in url else url
@@ -33,8 +32,8 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
             'cache-control': 'no-cache'
         }
 
-    @utils.validate_responce
-    def _request(self, payload, key_from_result=None):
+    @utils.catch_errors
+    def _request(self, payload, return_key=None):
         response = requests.post(
             self.rpc_url,
             data=payload,
@@ -42,9 +41,15 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
             auth=self.auth,
             timeout=self.timeout,
         ).json()
-        if key_from_result:
-            return response['result'][key_from_result]
-        return response['result']
+
+        try:
+            error = response['error']
+            if error:
+                raise exceptions.NodeError(error)
+            result = response['result']
+            return result[return_key] if return_key else result
+        except KeyError:
+            raise exceptions.NodeInvalidResponceError(response)
 
     def format(self, txs):
         formated_txs = []
@@ -81,10 +86,21 @@ class BitcoinCoreConnector(BaseBitcoinConnector):
             'method': 'estimatesmartfee',
             'params': [1],
         })
-        return self._request(payload, key_from_result='feerate')
+        return self._request(payload, return_key='feerate')
 
-    def send_transaction(self):
-        pass
+    def send_transaction(self,  # pylint: disable=arguments-differ
+                         address,
+                         amount,
+                         comment="",
+                         comment_to="",
+                         subtractfeefromamount=True):
+        payload = json.dumps({
+            'method': 'sendtoaddress',
+            'params': [
+                address, amount, comment, comment_to, subtractfeefromamount
+            ],
+        })
+        return self._request(payload)
 
 
 CONNECTOR_CLASSES = [BitcoinCoreConnector]
