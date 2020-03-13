@@ -29,19 +29,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    # Third party
     'django_celery_results',
     'django_celery_beat',
-    'drf_yasg',
     'cc_framework.blockchain',
     'cc_framework.rest',
-
+    # Project
     'testapp',
 ]
 

@@ -13,10 +13,10 @@ setup(
         'Django>=2.2,<4',
         'requests>=2,<3',
         'djangorestframework>=3,<4',
-        'drf-yasg>=1.17,<2',
     ],
     extras_require={
         'dev': [
+            'sphinx'
             'pytest',
             'pytest-django',
             'pylint',

@@ -87,7 +87,7 @@ Example with `Celery` you can find in this repo [example](https://github.com/Hel
 
 ### Sponsors
 Special thanks for Swapzilla project that paid me part of the development.
-![swapzilla logo](/docs/swapzilla.jpeg)
+![swapzilla logo](/docs/images/swapzilla.jpeg)
 
 ### Buy me a beer
 ```
