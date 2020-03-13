@@ -108,4 +108,5 @@ venv.bak/
 .idea/
 
 # Node volumes:
-example/.bitcoin/testnet3
+example/.bitcoin/*
+!example/.bitcoin/bitcoin.conf
