@@ -6,7 +6,10 @@ Installation
 .. role:: bash(code)
    :language: bash
 
-Python package::
+Python package
+--------------
+
+.. code-block:: bash
 
     pip install django-cryptocurrency-framework
 
@@ -36,12 +39,15 @@ If you specified :python:`cc_framework.rest` application update your :bash:`urls
 Post-Installation
 -----------------
 
+Migrate database
+````````````````
+
 In your Django root execute the command below to create your database tables::
 
     python manage.py migrate
 
 Install nodes
--------------
+`````````````
 
 :bash:`django-cryptocurrency-framework` interact with blockchains through
 cryptocurrency nodes so you should install and configure it. Now only
