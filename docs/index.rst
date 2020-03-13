@@ -3,15 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to django-cryptocurrency-framework's documentation!
-===========================================================
+.. include:: readme.rst
 
 Table of Contents
 =================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    usage/installation
    usage/quickstart
