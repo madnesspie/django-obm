@@ -17,7 +17,6 @@ The project is now under active development. But in this moment it can much faci
 
 ## Dependencies
 - [bitcoin-core](https://bitcoincore.org/en/download/)
-- job scheduler or queue to your taste
 
 ## Installation
 ```bash
