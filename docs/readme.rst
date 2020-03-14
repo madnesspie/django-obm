@@ -65,7 +65,7 @@ You can find the example project in this repo
 
 Contributing
 ============
-See CONTRIBUTING.md for instructions.
+See `CONTRIBUTING.md <https://github.com/madnesspie/django-cryptocurrency-framework/blob/master/CONTRIBUTING.md>`_ for instructions.
 
 Support the developer
 =====================
