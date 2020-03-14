@@ -75,7 +75,9 @@ Sponsors
 Special thanks for `Swapzilla <https://www.swapzilla.co/>`_ project that
 paid me part of the development.
 
-.. image:: /images/swapzilla.jpeg
+.. figure:: https://raw.githubusercontent.com/madnesspie/django-cryptocurrency-framework/d285241038bb8d325599e8c4dddb567468daae81/docs/swapzilla.jpeg
+  :width: 100%
+  :figwidth: image
   :alt: Swapzilla logo
 
 You can also become the sponsor and get priority development of the features
