@@ -17,6 +17,7 @@ setup(
     extras_require={
         'dev': [
             'sphinx>=2.4,<3',
+            'sphinx-rtd-theme',
             'pytest',
             'pytest-django',
             'pylint',
