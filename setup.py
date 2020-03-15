@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
     README = readme.read()
 
 setup(
@@ -28,7 +28,7 @@ setup(
     license='GNU Lesser General Public License v3 or later (LGPLv3+)',
     description='A Django app for receiving payments in cryptocurrencies.',
     long_description=README,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     url='https://github.com/HelloCreepy/django-cryptocurrency-framework',
     author='Alexander Polishchuk',
     author_email='apolishchuk52@gmail.com',
