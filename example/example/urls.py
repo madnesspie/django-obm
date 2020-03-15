@@ -16,7 +16,6 @@ Including another URLconf
 from django import urls
 from django.contrib import admin
 
-# pylint: disable=wrong-import-order
 from cc_framework.rest import urls as rest_urls
 
 urlpatterns = [
