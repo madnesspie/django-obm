@@ -86,6 +86,3 @@ it's 2.
 You can use any job scheduler (celery, crontab, etc.) that will check your
 nodes as often as you want. Example with :bash:`Celery` you can find in
 `example project <https://github.com/HelloCreepy/django-cryptocurrency-framework/tree/master/example>`_.
-
-Using REST API
---------------

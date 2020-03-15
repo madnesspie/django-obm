@@ -26,7 +26,7 @@ facilitate the implementation of such a microservice
 
 Installation
 ============
-See :ref:`installation` page for complete instructions.
+See :ref:`installation_page` page for complete instructions.
 
 .. code-block:: bash
 

@@ -11,8 +11,8 @@ Table of Contents
 .. toctree::
    :maxdepth: 2
 
-   usage/installation
-   usage/quickstart
+   installation
+   quickstart
 
 
 Indices and tables
