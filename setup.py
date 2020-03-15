@@ -1,14 +1,17 @@
-import os
+import setuptools
 
-from setuptools import find_packages, setup
+import cc_framework
 
-with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
-    README = readme.read()
 
-setup(
+def read(file_name):
+    with open(file_name) as f:
+        content = f.read()
+    return content
+
+setuptools.setup(
     name='django-cryptocurrency-framework',
-    version='0.1.6',
-    packages=find_packages(exclude=['tests*']),
+    version=cc_framework.__version__,
+    packages=setuptools.find_packages(exclude=['tests*']),
     install_requires=[
         'Django>=2.2,<4',
         'requests>=2,<3',
@@ -17,6 +20,7 @@ setup(
     extras_require={
         'dev': [
             'sphinx>=2.4,<3',
+            'sphinx-rtd-theme',
             'pytest',
             'pytest-django',
             'pylint',
@@ -27,7 +31,7 @@ setup(
     },
     license='GNU Lesser General Public License v3 or later (LGPLv3+)',
     description='A Django app for receiving payments in cryptocurrencies.',
-    long_description=README,
+    long_description=read('README.rst'),
     long_description_content_type='text/x-rst',
     url='https://github.com/HelloCreepy/django-cryptocurrency-framework',
     author='Alexander Polishchuk',

@@ -5,7 +5,7 @@
 Welcome to django-cryptocurrency-framework!
 ===========================================
 
-|travis| |pypi-version|
+|travis| |pypi-version| |readthedocs|
 
 .. |travis| image:: https://travis-ci.org/madnesspie/django-cryptocurrency-framework.svg?branch=master
     :target: https://travis-ci.org/madnesspie/django-cryptocurrency-framework
@@ -15,6 +15,11 @@ Welcome to django-cryptocurrency-framework!
     :target: https://badge.fury.io/py/django-cryptocurrency-framework
     :alt: PyPI
 
+.. |readthedocs| image:: https://readthedocs.org/projects/django-cryptocurrency-framework/badge/?version=latest
+    :target: https://django-cryptocurrency-framework.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+
 Rationale
 =========
 There are a lot of project that need a cryptocurrency payment system under
@@ -23,6 +28,11 @@ estimating and other blockchain interactions. Each of them have to implement
 their own service for that propouse due to lack of opensource product, that
 could satisfy their need. This project aims to provide such functionality and
 facilitate the implementation of such a microservice
+
+Resources
+=========
+
+- Documentation: https://django-cryptocurrency-framework.readthedocs.io
 
 Installation
 ============
