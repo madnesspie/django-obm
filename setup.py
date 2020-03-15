@@ -7,7 +7,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 
 setup(
     name='django-cryptocurrency-framework',
-    version='0.1.5',
+    version='0.1.6',
     packages=find_packages(exclude=['tests*']),
     install_requires=[
         'Django>=2.2,<4',
