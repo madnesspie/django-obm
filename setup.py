@@ -16,7 +16,7 @@ setup(
     ],
     extras_require={
         'dev': [
-            'sphinx',
+            'sphinx>=2.4,<3',
             'pytest',
             'pytest-django',
             'pylint',

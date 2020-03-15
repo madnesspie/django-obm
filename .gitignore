@@ -110,3 +110,6 @@ venv.bak/
 # Node volumes:
 example/.bitcoin/*
 !example/.bitcoin/bitcoin.conf
+
+# Scripts
+predeploy.sh
