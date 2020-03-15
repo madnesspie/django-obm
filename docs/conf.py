@@ -6,6 +6,8 @@
 
 import sphinx_rtd_theme
 
+import cc_framework
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -23,7 +25,7 @@ copyright = '2020, Alexander Polishchuk'
 author = 'Alexander Polishchuk'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.6'
+release = cc_framework.__version__
 
 # -- General configuration ---------------------------------------------------
 
