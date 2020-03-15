@@ -26,7 +26,8 @@ facilitate the implementation of such a microservice
 
 Installation
 ============
-See installation page in documentation for complete instructions.
+
+See `Installation <https://django-cryptocurrency-framework.readthedocs.io/en/latest/installation.html>`_ for complete instructions.
 
 .. code-block:: bash
 
