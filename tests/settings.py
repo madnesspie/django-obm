@@ -15,3 +15,20 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# Django cryptocurrency framework
+BLOCKCHAIN_NODE_TIMEOUT = 1
+BLOCKCHAIN_NODES_INITIAL_CONFIG = [
+    {
+        'currency': {
+            'name': 'BTC',
+            'min_confirmations': 2,
+        },
+        'name': 'bitcoin-core',
+        'is_default': True,
+        'rpc_username': 'testnet_user',
+        'rpc_password': 'testnet_pass',
+        'rpc_host': 'localhost',
+        'rpc_port': 18332,
+    },
+]

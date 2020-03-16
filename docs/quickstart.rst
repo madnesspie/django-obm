@@ -15,21 +15,59 @@ This guide will walk you through the basics of creating simple bitcoin payment
 system that can receive and send transactions, create addresses, and estimate
 fees.
 
-Configuring
------------
-First of all you may want to specify a few settings of your payment system.
-Open the :bash:`settings.py` and set the necessary setting.
-
-.. code-block:: python
-
-    CC_FRAMEWORK = {
-        'TIMEOUT': 1,  # Defaults to 3
-    }
-
 Creating currency and node objects
 ----------------------------------
 :bash:`django-cryptocurrency-framework` store configuration for specific node
-in database so create them.
+in database. There are two ways to create them.
+
+1. Managemant command
+`````````````````````
+Open :bash:`settings.py` and define :python:`BLOCKCHAIN_NODES_INITIAL_CONFIG`
+setting. It maps on fields of :python:`cc_framework.blockchain.models.Node`
+and related to it :python:`cc_framework.blockchain.models.Currency` models.
+
+.. code-block:: python
+
+    BLOCKCHAIN_NODES_INITIAL_CONFIG = [
+        {
+            'currency': {
+                'name': 'BTC',
+                'min_confirmations': 2,
+            },
+            'name': 'bitcoin-core',
+            'is_default': True,
+            'rpc_username': 'rpcuser',
+            'rpc_password': '************',
+            'rpc_host': 'localhost',
+            'rpc_port': 18332,
+        },
+    ]
+
+To apply the config on database execute command bellow in your Django root:
+
+.. code-block:: bash
+
+    $ python example/manage.py init_nodes
+    <Currency: BTC> created successfully.
+    <Node: bitcoin-core> created successfully.
+
+
+
+It's worth clarifying, that you can't create :bash:`Node` or :bash:`Currency`
+object if framework doesn't support corresponded cryptocurrency or node. To
+discover supported things you can use special connectors registry property.
+
+.. code-block:: python
+
+    >>> from cc_framework.blockchain import connectors
+    >>> connectors.registry.available_currencies
+    {'BTC'}
+    >>> connectors.registry.available_nodes
+    {'bitcoin-core'}
+
+2. Manual creation
+``````````````````
+Also it can be created in any place of your project then when you need it.
 
 .. code-block:: python
 
@@ -49,17 +87,6 @@ in database so create them.
     ... )
     <Node: bitcoin-core>
 
-It's worth clarifying, that you can't create :bash:`Node` or :bash:`Currency`
-object if framework doesn't support corresponded cryptocurrency or node. To
-discover supported things you can use special connectors registry property.
-
-.. code-block:: python
-
-    >>> from cc_framework.blockchain import connectors
-    >>> connectors.registry.available_currencies
-    {'BTC'}
-    >>> connectors.registry.available_nodes
-    {'bitcoin-core'}
 
 Receive payments
 ----------------

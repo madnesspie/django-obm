@@ -54,6 +54,18 @@ class TestNode:
                 rpc_port=18332,
             )
 
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures('timeout_setting_is_none')
+    def test_connector_timeout_default(bitcoin_core_node):
+        assert bitcoin_core_node.connector.timeout == 3
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_connector_timeout_from_settings(bitcoin_core_node):
+        assert bitcoin_core_node.connector.timeout == 1
+
+
 
 class TestCurrency:
 

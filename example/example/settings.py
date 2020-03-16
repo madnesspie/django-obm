@@ -132,7 +132,18 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Cryptocurrency framework setting
-
-CC_FRAMEWORK = {
-    'TIMEOUT': 5,
-}
+BLOCKCHAIN_NODE_TIMEOUT = 1
+BLOCKCHAIN_NODES_INITIAL_CONFIG = [
+    {
+        'currency': {
+            'name': 'BTC',
+            'min_confirmations': 2,
+        },
+        'name': 'bitcoin-core',
+        'is_default': True,
+        'rpc_username': 'testnet_user',
+        'rpc_password': 'testnet_pass',
+        'rpc_host': 'localhost',
+        'rpc_port': 18332,
+    },
+]

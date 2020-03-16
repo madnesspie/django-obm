@@ -1,6 +1,7 @@
 from decimal import Decimal
 from typing import TypeVar
 
+from django.conf import settings
 from django.db import models
 
 from cc_framework.blockchain import connectors, exceptions
@@ -108,7 +109,7 @@ class Currency(models.Model):
         verbose_name_plural = 'currencies'
 
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
     @property
     def default_node(self):
@@ -187,8 +188,13 @@ class Node(models.Model):
             A connector to node that can to interact with blockchain.
         """
         NodeConnector = connectors.registry.get_by_node_name(self.name)  # pylint: disable=invalid-name
-        return NodeConnector(self.rpc_host, self.rpc_port, self.rpc_username,
-                             self.rpc_password)
+        return NodeConnector(
+            rpc_host=self.rpc_host,
+            rpc_port=self.rpc_port,
+            rpc_username=self.rpc_username,
+            rpc_password=self.rpc_password,
+            timeout=getattr(settings, 'BLOCKCHAIN_NODE_TIMEOUT', None),
+        )
 
 
 class Address(models.Model):

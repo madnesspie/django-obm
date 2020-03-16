@@ -70,3 +70,11 @@ def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-na
     )
     yield node
     node.delete()
+
+
+@pytest.fixture
+def timeout_setting_is_none(settings):
+    origin = settings.BLOCKCHAIN_NODE_TIMEOUT
+    settings.BLOCKCHAIN_NODE_TIMEOUT = None
+    yield None
+    settings.BLOCKCHAIN_NODE_TIMEOUT = origin
