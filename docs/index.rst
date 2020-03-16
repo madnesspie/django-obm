@@ -13,6 +13,7 @@ Table of Contents
 
    installation
    quickstart
+   configuration
 
 
 Indices and tables
