@@ -108,7 +108,7 @@ class Currency(models.Model):
         verbose_name_plural = 'currencies'
 
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
     @property
     def default_node(self):
