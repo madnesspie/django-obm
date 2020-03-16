@@ -1,8 +1,6 @@
 # pylint: disable=multiple-statements
 import abc
 
-from cc_framework.blockchain.connectors import _utils as utils
-
 
 class BaseConnector(abc.ABC):
 
