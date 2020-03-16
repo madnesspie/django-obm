@@ -1,18 +1,8 @@
 import functools
 
 import requests
-from django.conf import settings
 
 from cc_framework.blockchain.connectors import _exceptions as exceptions
-
-_DEFAULT_TIMEOUT = 3
-
-
-def get_timeout_setting():
-    return getattr(settings, 'CC_FRAMEWORK', {}).get(
-        'TIMEOUT',
-        _DEFAULT_TIMEOUT,
-    )
 
 
 def catch_errors(func):
@@ -22,9 +12,10 @@ def catch_errors(func):
         try:
             return func(*args, **kwargs)
         except requests.exceptions.Timeout:
+            self = args[0]
             raise exceptions.NetworkTimeoutError(
                 f'The request to node was longer '
-                f'than timeout: {get_timeout_setting()}')
+                f'than timeout: {self.timeout}')
         except requests.exceptions.RequestException as exc:
             raise exceptions.NetworkError(exc)
 

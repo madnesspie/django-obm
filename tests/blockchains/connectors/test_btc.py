@@ -21,7 +21,10 @@ class TestBitcoinCoreConnector:
         assert all([r['category'] == 'receive' for r in receipts])
         # Check that keys mutch the format
         for tx in receipts:
-            assert all([key in connectors.base.TX_KEYS_FORMAT for key in tx])
+            assert all([
+                key in connectors.base.BaseConnector.TX_KEYS_FORMAT
+                for key in tx
+            ])
 
     @staticmethod
     @pytest.mark.parametrize(

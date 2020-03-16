@@ -132,12 +132,8 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Cryptocurrency framework setting
-
-CC_FRAMEWORK = {
-    'TIMEOUT': 5,
-}
-
-INITIAL_NODES_CONFIG = [
+BLOCKCHAIN_NODE_TIMEOUT = 1
+BLOCKCHAIN_NODES_INITIAL_CONFIG = [
     {
         'currency': {
             'name': 'BTC',

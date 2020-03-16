@@ -17,7 +17,8 @@ DATABASES = {
 }
 
 # Django cryptocurrency framework
-INITIAL_NODES_CONFIG = [
+BLOCKCHAIN_NODE_TIMEOUT = 1
+BLOCKCHAIN_NODES_INITIAL_CONFIG = [
     {
         'currency': {
             'name': 'BTC',

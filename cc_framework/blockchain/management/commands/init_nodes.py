@@ -18,7 +18,8 @@ class Command(BaseCommand):
         return obj
 
     def handle(self, *args, **options):
-        for node_config in getattr(settings, 'INITIAL_NODES_CONFIG', []):
+        nodes_config = getattr(settings, 'BLOCKCHAIN_NODES_INITIAL_CONFIG', [])
+        for node_config in nodes_config:
             currency_config = node_config.pop('currency')
             node_config['currency'] = self.get_or_create_with_stdout(
                 model=models.Currency,
