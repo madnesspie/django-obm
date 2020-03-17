@@ -22,12 +22,12 @@ Welcome to django-cryptocurrency-framework!
 
 Rationale
 =========
-There are a lot of project that need a cryptocurrency payment system under
+There are a lot of projects that need a cryptocurrency payment system under
 the hood for transactions sending/receiving, unique addresses creation, fee
 estimating and other blockchain interactions. Each of them have to implement
-their own service for that propouse due to lack of opensource product, that
-could satisfy their need. This project aims to provide such functionality and
-facilitate the implementation of such a microservice
+their own service for that propose due to lack of opensource product, that
+could satisfy their needs. This project aims to provide such functionality and
+facilitate the implementation of such a microservice.
 
 Resources
 =========
@@ -52,7 +52,7 @@ Features
 ========
 
 - BTC (bitcoin-core) support
-- transactions sending/receiving and confirmation
+- sending/receiving transactions and confirmation
 - unique addresses creation
 - fee estimating
 - REST API for actions above
@@ -60,8 +60,8 @@ Features
 Future features
 ---------------
 
-- support for: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC, XEM, XRP and so on
-- :bash:`cc_framework.wallet` app that help in implementation multi
+- support of: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC, XEM, XRP, etc.
+- :bash:`cc_framework.wallet` app witch help in implementation of multi
   cryptocurrency wallet
 
 
@@ -92,7 +92,7 @@ paid me part of the development.
   :alt: Swapzilla logo
 
 You can also become the sponsor and get priority development of the features
-you need. Just `contact me <https://github.com/madnesspie>`_.
+you require. Just `contact me <https://github.com/madnesspie>`_.
 
 Buy me a beer
 -------------

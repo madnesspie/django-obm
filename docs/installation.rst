@@ -61,8 +61,8 @@ Install cryptocurrency nodes
 ````````````````````````````
 
 :bash:`django-cryptocurrency-framework` interact with blockchains through
-cryptocurrency nodes so you should install them and allow RPC access. You
-can see configuration example for each supported node in
+cryptocurrency nodes. You should install them and allow RPC access.
+Configuration example for each supported node is in
 `example project <https://github.com/madnesspie/django-cryptocurrency-framework/tree/master/example>`_.
 
 Now only following nodes are being supported by the framework:
