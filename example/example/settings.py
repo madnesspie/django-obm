@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'cc_framework.blockchain',
     'cc_framework.rest',
+
+    'app',
 ]
 
 MIDDLEWARE = [
