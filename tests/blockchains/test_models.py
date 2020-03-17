@@ -17,9 +17,10 @@ class TestNode:
             '_request',
             lambda *_: data.BTC_TXS,
         )
-        assert models.Node.objects.all().count() == 1
-        models.Node.objects.process_receipts()
+        result = models.Node.objects.process_receipts()
         txs = models.Transaction.objects.all()
+        assert len(result['added']) == 2
+        assert len(result['confirmed']) == 0
         assert txs.count() == 2
         assert txs.filter(is_confirmed=True).count() == 1
 
@@ -37,8 +38,11 @@ class TestNode:
             lambda *_: mock_txs,
         )
 
-        models.Node.objects.process_receipts()
+        result = models.Node.objects.process_receipts()
         txs = models.Transaction.objects.all()
+        assert len(result['added']) == 2
+        assert len(result['confirmed']) == 0
+        assert txs.count() == 2
         assert txs.filter(is_confirmed=True).count() == 2
 
     @staticmethod

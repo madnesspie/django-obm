@@ -38,17 +38,20 @@ class NodeManager(models.Manager):
 
     def process_receipts(self):
         """Fetches txs from nodes then enrolls new and confirms if needed."""
+        new_txs, confirmed_txs = [], []
+
         for node in self.all():
             recently_receipts = node.connector.get_receipts()
             if not recently_receipts:
                 continue
 
-            new_txs = self.create_new_receipts(node, recently_receipts)
-            confirmed_txs = self.confirm_receipts(node, recently_receipts)
-            return {
-                'new': new_txs,
-                'confirmed': confirmed_txs,
-            }
+            new_txs += self.create_new_receipts(node, recently_receipts)
+            confirmed_txs += self.confirm_receipts(node, recently_receipts)
+
+        return {
+            'added': new_txs,
+            'confirmed': confirmed_txs,
+        }
 
 
 class TransactionManager(models.Manager):
@@ -65,7 +68,8 @@ class TransactionManager(models.Manager):
             for tx in self.filter(is_confirmed=False)
             if tx in txids
         ]
-        return self.bulk_update(confirmed_txs, ['is_confirmed'])
+        self.bulk_update(confirmed_txs, ['is_confirmed'])
+        return confirmed_txs
 
     def bulk_create_from_dicts(self, tx_dicts, node):
         """Creates transactions from dicts.
@@ -282,7 +286,7 @@ class Transaction(models.Model):
         unique_together = (('node', 'txid'),)
 
     def __str__(self):
-        return self.txid
+        return f"{self.node.currency}, {self.txid}, {self.amount}"
 
     @property
     def amount_with_fee(self):
