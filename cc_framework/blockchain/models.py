@@ -12,15 +12,29 @@ TransactionType = TypeVar('TransactionType', bound='Transaction')
 class NodeManager(models.Manager):
 
     @staticmethod
-    def __get_new_receipts(recently_receipts, enrolled_receipts):
-        enrolled_receipt_txids = [tx.txid for tx in enrolled_receipts]
-        return filter(lambda tx: tx['txid'] not in enrolled_receipt_txids,
-                      recently_receipts)
+    def create_new_receipts(node, recently_receipts):
+        """Creates new receipts that mssing in database. """
+        enrolled_txids = node.txs.filter(category='receive').values_list(
+            'txid', flat=True)
+        new_receipts = filter(
+            lambda tx: tx['txid'] not in enrolled_txids,
+            recently_receipts,
+        )
+        return Transaction.objects.bulk_create_from_dicts(new_receipts, node)
 
     @staticmethod
-    def __get_recently_confirmed_txids(recently_receipts, min_confirmations):
-        return filter(lambda tx: tx['confirmations'] >= min_confirmations,
-                      recently_receipts)
+    def confirm_receipts(node, recently_receipts):
+        """Creates new receipts that mssing in database. """
+
+        def filter_confirmed(recently_receipts, min_confirmations):
+            return filter(lambda tx: tx['confirmations'] >= min_confirmations,
+                          recently_receipts)
+
+        confirmed_receipts = filter_confirmed(
+            recently_receipts,
+            min_confirmations=node.currency.min_confirmations,
+        )
+        return Transaction.objects.bulk_confirm(confirmed_receipts)
 
     def process_receipts(self):
         """Fetches txs from nodes then enrolls new and confirms if needed."""
@@ -28,18 +42,13 @@ class NodeManager(models.Manager):
             recently_receipts = node.connector.get_receipts()
             if not recently_receipts:
                 continue
-            enrolled_receipts = node.txs.filter(category='receive')
 
-            # Create new transaction
-            new_receipts = self.__get_new_receipts(recently_receipts,
-                                                   enrolled_receipts)
-            Transaction.objects.bulk_create_from_dicts(new_receipts, node)
-
-            # Confirm already charged transaction
-            confirmed_receipt_txids = self.__get_recently_confirmed_txids(
-                recently_receipts,
-                min_confirmations=node.currency.min_confirmations)
-            Transaction.objects.bulk_confirm(confirmed_receipt_txids)
+            new_txs = self.create_new_receipts(node, recently_receipts)
+            confirmed_txs = self.confirm_receipts(node, recently_receipts)
+            return {
+                'new': new_txs,
+                'confirmed': confirmed_txs,
+            }
 
 
 class TransactionManager(models.Manager):
@@ -56,7 +65,7 @@ class TransactionManager(models.Manager):
             for tx in self.filter(is_confirmed=False)
             if tx in txids
         ]
-        self.bulk_update(confirmed_txs, ['is_confirmed'])
+        return self.bulk_update(confirmed_txs, ['is_confirmed'])
 
     def bulk_create_from_dicts(self, tx_dicts, node):
         """Creates transactions from dicts.
@@ -86,7 +95,7 @@ class TransactionManager(models.Manager):
                 timestamp_received=tx_dict['timestamp_received'],
             )
             txs.append(tx)
-        self.bulk_create(txs)
+        return self.bulk_create(txs)
 
 
 class Currency(models.Model):
