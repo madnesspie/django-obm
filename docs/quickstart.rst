@@ -91,25 +91,43 @@ Also it can be created in any place of your project then when you need it.
 Receive payments
 ----------------
 
+There are method and daemon to fetch received transactions from nodes
+and write them into database. Each transaction will get status
+:python:`tx.is_confirmed == True` if the conformations number greater
+than :python:`tx.node.currency.min_conformations`, in our case it's 2.
+
+Method
+``````
+
 Now you are ready to receive payments. For fetch new received transaction
-call :python:`models.Node` manager `process_receipts` method:
+call :python:`models.Node` manager :python:`process_receipts` method:
 
 .. code-block:: python
 
     >>> models.Node.objects.process_receipts()
 
-Or execute identic management command:
+Daemon
+``````
+
+Also you can use built-in daemon, that will do it by timer. Just execute
+:bash:`run_receipts_processing` django command.
 
 .. code-block:: bash
 
-    python manage.py process_receipts
+    python manage.py run_receipts_processing --frequency=120
 
-This method or command fetch receive transactions from each node object and
-write them into database. Each transaction will get status
-:python:`tx.is_confirmed == True` if conformations number of transaction
-greater than :python:`tx.node.currency.min_conformations`, in our case
-it's 2.
+It runs :python:`process_receipts` :python:`models.Node` manager method with
+specified frequency (defaults to 60 sec.). For defineing your own default
+frequency set :python:`RECEIPTS_PROCESSING_DEFAULT_FREQUENCY` to needed value
+in :bash:`settings.py`.
 
-You can use any job scheduler (celery, crontab, etc.) that will check your
-nodes as often as you want. Example with :bash:`Celery` you can find in
+The daemon has the :bash:`--once` option that allow to execute
+:python:`process_receipts` only once, like regular command. It might be helpful
+if you wish to use some system-level (like systemd, crontab etc.) tool to
+accept payments.
+
+Example
+-------
+
+You can find the example in
 `example project <https://github.com/HelloCreepy/django-cryptocurrency-framework/tree/master/example>`_.

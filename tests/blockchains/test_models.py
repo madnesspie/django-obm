@@ -17,17 +17,18 @@ class TestNode:
             '_request',
             lambda *_: data.BTC_TXS,
         )
-        assert models.Node.objects.all().count() == 1
-        models.Node.objects.process_receipts()
+        result = models.Node.objects.process_receipts()
         txs = models.Transaction.objects.all()
+        assert len(result['added']) == 2
+        assert len(result['confirmed']) == 0
         assert txs.count() == 2
         assert txs.filter(is_confirmed=True).count() == 1
 
     @staticmethod
     @pytest.mark.django_db
-    @pytest.mark.usefixtures('bitcoin_core_node')
+    @pytest.mark.usefixtures('bitcoin_core_node', 'btc_transaction')
     def test_confirm_charged_receipts(monkeypatch):
-        # Increases confirmations number for the first tx in test_btc.TXS
+        # Increases confirmations number for the fixture tx in test_btc.TXS
         mock_txs = copy.deepcopy(data.BTC_TXS)
         mock_txs[0]['confirmations'] = 666
 
@@ -37,9 +38,15 @@ class TestNode:
             lambda *_: mock_txs,
         )
 
-        models.Node.objects.process_receipts()
         txs = models.Transaction.objects.all()
+        assert txs.count() == 1
+        assert txs.filter(is_confirmed=True).count() == 0
+        result = models.Node.objects.process_receipts()
+        txs.all()
+        assert txs.count() == 2
         assert txs.filter(is_confirmed=True).count() == 2
+        assert len(result['added']) == 1
+        assert len(result['confirmed']) == 1
 
     @staticmethod
     @pytest.mark.django_db

@@ -4,6 +4,7 @@ SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
+
     'cc_framework.blockchain',
     'cc_framework.rest',
 ]
@@ -17,6 +18,7 @@ DATABASES = {
 }
 
 # Django cryptocurrency framework
+RECEIPTS_PROCESSING_DEFAULT_FREQUENCY = 10
 BLOCKCHAIN_NODE_TIMEOUT = 1
 BLOCKCHAIN_NODES_INITIAL_CONFIG = [
     {
