@@ -22,7 +22,11 @@ class TestCommand:
         )
 
         out = io.StringIO()
-        management.call_command('process_receipts', once=True, stdout=out)
+        management.call_command(
+            'run_receipts_processing',
+            once=True,
+            stdout=out,
+        )
         assert 'Start' in out.getvalue()
         assert 'Run' in out.getvalue()
         assert 'Added' in out.getvalue()
@@ -42,7 +46,11 @@ class TestCommand:
         )
 
         out = io.StringIO()
-        management.call_command('process_receipts', once=True, stdout=out)
+        management.call_command(
+            'run_receipts_processing',
+            once=True,
+            stdout=out,
+        )
         assert 'Start' in out.getvalue()
         assert 'Run' in out.getvalue()
         assert 'Added' in out.getvalue()
