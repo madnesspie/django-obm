@@ -54,3 +54,31 @@ class TestCommand:
         assert 'Start' in out.getvalue()
         assert 'Run' in out.getvalue()
         assert 'Added' in out.getvalue()
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures('bitcoin_core_node')
+    @pytest.mark.parametrize(
+        'options, output',
+        (
+            (
+                {},
+                '10 sec. frequency',
+            ),
+            (
+                {
+                    'frequency': 15
+                },
+                '15 sec. frequency',
+            ),
+        ),
+    )
+    def test_frequency(options, output):
+        out = io.StringIO()
+        management.call_command(
+            'run_receipts_processing',
+            **options,
+            once=True,
+            stdout=out,
+        )
+        assert output in out.getvalue()
