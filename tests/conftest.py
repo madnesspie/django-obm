@@ -1,7 +1,10 @@
+# pylint: disable = redefined-outer-name
+
 import pytest
 from rest_framework import test as drf_test
 
 from cc_framework.blockchain import connectors, models
+from tests.blockchains.connectors import data
 
 # TODO: Check node balance before integration tests
 
@@ -58,7 +61,7 @@ def bitcoin_currency():
 
 
 @pytest.fixture
-def bitcoin_core_node(bitcoin_currency):  # pylint: disable = redefined-outer-name  # yapf: disable
+def bitcoin_core_node(bitcoin_currency):
     node = models.Node.objects.create(
         name='bitcoin-core',
         currency=bitcoin_currency,
@@ -78,3 +81,21 @@ def timeout_setting_is_none(settings):
     settings.BLOCKCHAIN_NODE_TIMEOUT = None
     yield None
     settings.BLOCKCHAIN_NODE_TIMEOUT = origin
+
+
+@pytest.fixture
+def btc_transaction(bitcoin_core_node):
+    tx = models.Transaction.objects.create(
+        node=bitcoin_core_node,
+        address=models.Address.objects.create(
+            address=data.BTC_TXS[0]['address'],
+            currency=bitcoin_core_node.currency,
+        ),
+        txid=data.BTC_TXS[0]['txid'],
+        category=data.BTC_TXS[0]['category'],
+        amount=data.BTC_TXS[0]['amount'],
+        is_confirmed=False,
+        timestamp=data.BTC_TXS[0]['time'],
+    )
+    yield tx
+    tx.delete()

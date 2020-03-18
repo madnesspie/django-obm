@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import TypeVar
+from typing import List, TypeVar
 
 from django.conf import settings
 from django.db import models
@@ -7,12 +7,13 @@ from django.db import models
 from cc_framework.blockchain import connectors, exceptions
 
 TransactionType = TypeVar('TransactionType', bound='Transaction')
+NodeType = TypeVar('NodeType', bound='Node')
 
 
 class NodeManager(models.Manager):
 
     @staticmethod
-    def create_new_receipts(node, recently_receipts):
+    def create_new_receipts(node: NodeType, recently_receipts: List[dict]):
         """Creates new receipts that mssing in database. """
         enrolled_txids = node.txs.filter(category='receive').values_list(
             'txid', flat=True)
@@ -23,18 +24,19 @@ class NodeManager(models.Manager):
         return Transaction.objects.bulk_create_from_dicts(new_receipts, node)
 
     @staticmethod
-    def confirm_receipts(node, recently_receipts):
+    def confirm_receipts(node: NodeType, recently_receipts: List[dict]):
         """Creates new receipts that mssing in database. """
 
         def filter_confirmed(recently_receipts, min_confirmations):
             return filter(lambda tx: tx['confirmations'] >= min_confirmations,
                           recently_receipts)
 
-        confirmed_receipts = filter_confirmed(
+        recently_confirmed_receipts = filter_confirmed(
             recently_receipts,
             min_confirmations=node.currency.min_confirmations,
         )
-        return Transaction.objects.bulk_confirm(confirmed_receipts)
+        return Transaction.objects.bulk_confirm(
+            [tx['txid'] for tx in recently_confirmed_receipts])
 
     def process_receipts(self):
         """Fetches txs from nodes then enrolls new and confirms if needed."""
@@ -56,7 +58,7 @@ class NodeManager(models.Manager):
 
 class TransactionManager(models.Manager):
 
-    def bulk_confirm(self, txids):
+    def bulk_confirm(self, txids: List[str]):
         """Confirms transactions group.
 
         Args:
@@ -66,7 +68,7 @@ class TransactionManager(models.Manager):
         confirmed_txs = [
             tx.confirm()
             for tx in self.filter(is_confirmed=False)
-            if tx in txids
+            if tx.txid in txids
         ]
         self.bulk_update(confirmed_txs, ['is_confirmed'])
         return confirmed_txs
@@ -264,7 +266,6 @@ class Transaction(models.Model):
     )
     # TODO: add confirmation number
     is_confirmed = models.BooleanField(
-        null=True,
         verbose_name='confirmed',
         default=False,
     )
