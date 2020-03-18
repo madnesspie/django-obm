@@ -25,7 +25,8 @@ class Command(BaseCommand):
         )
 
     def log(self, msg, style=None):
-        self.stdout.write(f'{datetime.now()}:   {style(msg) if style else msg}')
+        msg = f'{datetime.now()}:   {msg}'
+        self.stdout.write(style(msg) if style else msg)
 
     def handle(self, *args, **options):
         self.log('Start receipts processing')
@@ -33,16 +34,15 @@ class Command(BaseCommand):
             self.log('Run receipts processing')
             try:
                 result = models.Node.objects.process_receipts()
-                print(result)
             except Exception as exc:  # pylint: disable=broad-except
                 if options['raise_errors']:
                     raise exc
                 self.log(traceback.format_exc(), style=self.style.ERROR)
             else:
                 for new_tx in result['added']:
-                    self.log(repr(new_tx), style=self.style.SUCCESS)
+                    self.log(f'Added {repr(new_tx)}', style=self.style.SUCCESS)
                 for confirmed_tx in result['confirmed']:
-                    self.log(repr(confirmed_tx), style=self.style.SUCCESS)
+                    self.log(f'Confirmed {repr(confirmed_tx)}', style=self.style.SUCCESS)
 
             if options['once']:
                 break

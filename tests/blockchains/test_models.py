@@ -28,7 +28,7 @@ class TestNode:
     @pytest.mark.django_db
     @pytest.mark.usefixtures('bitcoin_core_node', 'btc_transaction')
     def test_confirm_charged_receipts(monkeypatch):
-        # Increases confirmations number for the first tx in test_btc.TXS
+        # Increases confirmations number for the fixture tx in test_btc.TXS
         mock_txs = copy.deepcopy(data.BTC_TXS)
         mock_txs[0]['confirmations'] = 666
 
