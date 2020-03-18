@@ -10,7 +10,7 @@ from cc_framework.blockchain import models
 
 class Command(BaseCommand):
     DEFAULT_FREQUENCY = 60
-    help = 'Fetches txs from nodes then enrolls new and confirms if needed.'
+    help = 'Processes receipts with specified frequency.'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -30,7 +30,7 @@ class Command(BaseCommand):
             action='store',
             default=getattr(
                 settings,
-                'RECEIPTS_PROCESSING_FREQUENCY',
+                'RECEIPTS_PROCESSING_DEFAULT_FREQUENCY',
                 self.DEFAULT_FREQUENCY,
             ),
             type=int,

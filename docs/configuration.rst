@@ -35,3 +35,7 @@ BLOCKCHAIN_NODES_INITIAL_CONFIG (=[])
 
   You can apply it on your database with :bash:`init_nodes` managemant
   command.
+
+RECEIPTS_PROCESSING_DEFAULT_FREQUENCY (=60)
+  Defines default receipts processing frequency for
+  :bash:`run_receipts_processing` managemant command.
