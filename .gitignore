@@ -109,6 +109,7 @@ venv.bak/
 
 # Node volumes:
 example/.bitcoin/*
+example/.ethereum/*
 !example/.bitcoin/bitcoin.conf
 
 # Scripts
