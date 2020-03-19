@@ -16,4 +16,4 @@ services:
       - "8545:8545"
     volumes:
       - "$PWD/example/.ethereum:/root/.ethereum"
-    command: --rinkeby --rpc --rpcaddr 0.0.0.0
+    command: --rinkeby --rpc --rpcapi "personal" --rpcaddr 0.0.0.0
