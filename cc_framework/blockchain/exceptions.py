@@ -21,5 +21,6 @@ class TooManyDefaultNodes(BaseError):
 class DefaultNodeAlreadyExists(BaseError):
     """Default node already exists for currency."""
 
+
 class CanNotSendReceivedTransaction(BaseError):
     """Trying to send received transaction wth ORM."""

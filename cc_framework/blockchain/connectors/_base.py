@@ -5,8 +5,16 @@ import abc
 class BaseConnector(abc.ABC):
 
     DEFAULT_TIMEOUT = 3
-    TX_KEYS_FORMAT = ('address', 'amount', 'category', 'confirmations',
-                      'timestamp', 'timestamp_received', 'txid', 'fee')
+    TX_KEYS_FORMAT = (
+        "address",
+        "amount",
+        "category",
+        "confirmations",
+        "timestamp",
+        "timestamp_received",
+        "txid",
+        "fee",
+    )
 
     def __init__(self, timeout=None):
         self.timeout = self.__validate_timeout(timeout)
@@ -19,8 +27,8 @@ class BaseConnector(abc.ABC):
             if float(value) > 0:
                 return value
         except ValueError:
-            raise ValueError('Timeout must be a number')
-        raise ValueError('Timeout must be greater than zero')
+            raise ValueError("Timeout must be a number")
+        raise ValueError("Timeout must be greater than zero")
 
     @property
     @abc.abstractmethod

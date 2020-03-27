@@ -8,7 +8,7 @@ from cc_framework.blockchain import models
 
 
 class Command(BaseCommand):
-    help = 'Cleans database.'
+    help = "Cleans database."
 
     def handle(self, *args, **options):
         models.Node.objects.all().delete()
