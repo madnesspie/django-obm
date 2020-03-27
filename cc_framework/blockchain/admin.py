@@ -24,7 +24,7 @@ class CurrencyAdmin(admin.ModelAdmin):
 @admin.register(models.Node)
 class NodeAdmin(admin.ModelAdmin):
     readonly_fields = ("currency",)
-    list_display = ("__str__", "currency", "rpc_host", "rpc_port")
+    list_display = ("__str__", "currency", "rpc_host", "rpc_port", "is_default")
     fieldsets = (
         (None, {"fields": ("name", "currency")}),
         (
