@@ -76,14 +76,6 @@ def bitcoin_core_node(bitcoin_currency):
 
 
 @pytest.fixture
-def timeout_setting_is_none(settings):
-    origin = settings.BLOCKCHAIN_NODE_TIMEOUT
-    settings.BLOCKCHAIN_NODE_TIMEOUT = None
-    yield None
-    settings.BLOCKCHAIN_NODE_TIMEOUT = origin
-
-
-@pytest.fixture
 def btc_transaction(bitcoin_core_node):
     tx = models.Transaction.objects.create(
         node=bitcoin_core_node,
@@ -99,3 +91,11 @@ def btc_transaction(bitcoin_core_node):
     )
     yield tx
     tx.delete()
+
+
+@pytest.fixture
+def timeout_setting_is_none(settings):
+    origin = settings.BLOCKCHAIN_NODE_TIMEOUT
+    settings.BLOCKCHAIN_NODE_TIMEOUT = None
+    yield None
+    settings.BLOCKCHAIN_NODE_TIMEOUT = origin
