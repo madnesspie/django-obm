@@ -102,3 +102,10 @@ class TestCurrency:
             )
 
     # TODO: Add default errors test
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_change_default_node(bitcoin_core_node):
+        bitcoin_core_node.rpc_port = 8332
+        bitcoin_core_node.save()
+        assert bitcoin_core_node.rpc_port == 8332

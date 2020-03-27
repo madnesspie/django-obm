@@ -196,7 +196,9 @@ class Node(models.Model):
                 f'The "{self.name}" node does\'t supported.'
             )
 
-        default_nodes = self.currency.nodes.filter(is_default=True)
+        default_nodes = self.currency.nodes.filter(is_default=True).exclude(
+            id=self.id
+        )
         if default_nodes.count() > 0:
             raise exceptions.DefaultNodeAlreadyExists(
                 f"Default node for {self.name} already exist"
@@ -211,9 +213,9 @@ class Node(models.Model):
         Returns:
             A connector to node that can to interact with blockchain.
         """
-        NodeConnector = connectors.registry.get_by_node_name(
+        NodeConnector = connectors.registry.get_by_node_name(  # pylint: disable=invalid-name
             self.name
-        )  # pylint: disable=invalid-name
+        )
         return NodeConnector(
             rpc_host=self.rpc_host,
             rpc_port=self.rpc_port,
