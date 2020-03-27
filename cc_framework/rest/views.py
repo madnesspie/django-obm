@@ -1,7 +1,16 @@
+from django.conf import settings
 from rest_framework import decorators, response, viewsets
 
 from cc_framework.blockchain import models
-from cc_framework.rest import serializers
+from cc_framework.rest import pagination, serializers
+
+
+# fmt: off
+def get_pagination_class():
+    # TODO: Add pagination class setting
+    has_pagination = getattr(settings, "CC_FRAMEWORK_PAGINATION_LIMIT", None) \
+        or getattr(settings, "CC_FRAMEWORK_PAGINATION_MAX_LIMIT", None)
+    return pagination.CustomLimitOffsetPagination if has_pagination else None
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
@@ -9,6 +18,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.TransactionSerializer
     queryset = models.Transaction.objects.all()
+    pagination_class = get_pagination_class()
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -16,6 +26,7 @@ class AddressViewSet(viewsets.ModelViewSet):
 
     serializer_class = serializers.AddressSerializer
     queryset = models.Address.objects.all()
+    pagination_class = get_pagination_class()
 
 
 class CurrencyViewSet(viewsets.ModelViewSet):
