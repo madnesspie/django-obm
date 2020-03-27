@@ -157,7 +157,7 @@ class Node(models.Model):
         related_query_name="node",
     )
     is_default = models.BooleanField(
-        default=False,
+        default=True,
         help_text=(
             "If True the node will be used as default"
             " for transaction sending"
