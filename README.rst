@@ -7,7 +7,7 @@ Welcome to django-obm!
 
 |travis| |pypi-version| |readthedocs|
 
-.. |travis| image:: https://travis-ci.org/madnesspie/django-cryptocurrency-framework.svg?branch=master
+.. |travis| image:: https://travis-ci.org/madnesspie/django-obm.svg?branch=master
     :target: https://travis-ci.org/madnesspie/django-cryptocurrency-framework
     :alt: Travis CI
 
@@ -15,10 +15,9 @@ Welcome to django-obm!
     :target: https://badge.fury.io/py/django-cryptocurrency-framework
     :alt: PyPI
 
-.. |readthedocs| image:: https://readthedocs.org/projects/django-cryptocurrency-framework/badge/?version=latest
-    :target: https://django-cryptocurrency-framework.readthedocs.io/en/latest/?badge=latest
+.. |readthedocs| image:: https://readthedocs.org/projects/django-obm/badge/?version=latest
+    :target: https://django-obm.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-
 
 Rationale
 =========
