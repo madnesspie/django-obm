@@ -1,0 +1,138 @@
+Metadata-Version: 2.1
+Name: django-obm
+Version: 0.2.0
+Summary: A Django app for receiving payments in cryptocurrencies.
+Home-page: https://github.com/HelloCreepy/django-obm
+Author: Alexander Polishchuk
+Author-email: apolishchuk52@gmail.com
+License: GNU Lesser General Public License v3 or later (LGPLv3+)
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 2.2
+Classifier: Framework :: Django :: 3.0
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Description-Content-Type: text/x-rst
+Requires-Dist: Django (<4,>=2.2)
+Requires-Dist: requests (<3,>=2)
+Requires-Dist: djangorestframework (<4,>=3)
+Provides-Extra: dev
+Requires-Dist: sphinx (<3,>=2.4) ; extra == 'dev'
+Requires-Dist: sphinx-rtd-theme ; extra == 'dev'
+Requires-Dist: pytest ; extra == 'dev'
+Requires-Dist: pytest-django ; extra == 'dev'
+Requires-Dist: pylint ; extra == 'dev'
+Requires-Dist: pylint-django ; extra == 'dev'
+Requires-Dist: mypy ; extra == 'dev'
+Requires-Dist: rope ; extra == 'dev'
+
+.. role:: bash(code)
+   :language: bash
+
+===========================================
+Welcome to django-obm!
+===========================================
+
+|travis| |pypi-version| |readthedocs|
+
+.. |travis| image:: https://travis-ci.org/madnesspie/django-obm.svg?branch=master
+    :target: https://travis-ci.org/madnesspie/django-obm
+    :alt: Travis CI
+
+.. |pypi-version| image:: https://badge.fury.io/py/django-obm.svg
+    :target: https://badge.fury.io/py/django-obm
+    :alt: PyPI
+
+.. |readthedocs| image:: https://readthedocs.org/projects/django-obm/badge/?version=latest
+    :target: https://django-obm.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+Rationale
+=========
+There are a lot of projects that need a cryptocurrency payment system under
+the hood for transactions sending/receiving, unique addresses creation, fee
+estimating and other blockchain interactions. Each of them have to implement
+their own service for that propose due to lack of opensource product, that
+could satisfy their needs. This project aims to provide such functionality and
+facilitate the implementation of such a microservice.
+
+Resources
+=========
+
+- Documentation: https://django-obm.readthedocs.io
+
+Installation
+============
+
+See `Installation <https://django-obm.readthedocs.io/en/latest/installation.html>`_ for complete instructions.
+
+.. code-block:: bash
+
+    pip install django-obm
+
+Requirements
+============
+- Python 3.6 or higher.
+- `bitcoin-core <https://bitcoincore.org/en/download/>`_ node
+
+Features
+========
+
+- BTC (bitcoin-core) support
+- sending/receiving transactions and confirmation
+- unique addresses creation
+- fee estimating
+- REST API for actions above
+
+Future features
+---------------
+
+- support of: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC, XEM, XRP, etc.
+- :bash:`django_obm.wallet` app witch help in implementation of multi
+  cryptocurrency wallet
+
+
+Is django-obm production ready?
+====================================================
+The project is now under active development. Use at your own risk.
+
+Example
+=======
+You can find the example project in this repo
+`example folder <https://github.com/madnesspie/django-obm/tree/master/example>`_.
+
+Contributing
+============
+See `CONTRIBUTING.md <https://github.com/madnesspie/django-obm/blob/master/CONTRIBUTING.md>`_ for instructions.
+
+Support the developer
+=====================
+
+Sponsors
+--------
+Special thanks for `Swapzilla <https://www.swapzilla.co/>`_ project that
+paid me part of the development.
+
+.. figure:: https://raw.githubusercontent.com/madnesspie/django-obm/d285241038bb8d325599e8c4dddb567468daae81/docs/swapzilla.jpeg
+  :width: 100%
+  :figwidth: image
+  :alt: Swapzilla logo
+
+You can also become the sponsor and get priority development of the features
+you require. Just `contact me <https://github.com/madnesspie>`_.
+
+Buy me a beer
+-------------
+.. code-block:: bash
+
+    BTC 179B1vJ8LvAQ2r9ABNhp6kDE2yQZfm1Ng3
+
+

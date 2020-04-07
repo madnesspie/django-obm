@@ -1,6 +1,6 @@
 from rest_framework import routers
 
-from django_obm.rest import views
+from django_obm import views
 
 
 def register_views(router):

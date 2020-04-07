@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from django_obm.blockchain import connectors
-from tests.blockchains.connectors import data
+from django_obm import connectors
+from tests.connectors import data
 
 
 class TestBitcoinCoreConnector:

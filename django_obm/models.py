@@ -4,7 +4,7 @@ from typing import List, TypeVar
 from django.conf import settings
 from django.db import models
 
-from django_obm.blockchain import connectors, exceptions
+from django_obm import connectors, exceptions
 
 TransactionType = TypeVar("TransactionType", bound="Transaction")
 NodeType = TypeVar("NodeType", bound="Node")

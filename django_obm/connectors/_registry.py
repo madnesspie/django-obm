@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 
 class ConnectorRegistry:
-    PACKAGE = "django_obm.blockchain.connectors"
+    PACKAGE = "django_obm.connectors"
 
     def __init__(self):
         self.connector_map = OrderedDict()

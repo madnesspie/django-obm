@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from django_obm.blockchain import models
+from django_obm import models
 
 
 class Command(BaseCommand):

@@ -4,10 +4,9 @@ SECRET_KEY = "fake-key"
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django_obm.blockchain",
-    "django_obm.rest",
+    "django_obm",
 ]
-ROOT_URLCONF = "django_obm.rest.urls"
+ROOT_URLCONF = "django_obm.urls"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATABASES = {
     "default": {

@@ -2,8 +2,8 @@ import copy
 
 import pytest
 
-from django_obm.blockchain import connectors, exceptions, models
-from tests.blockchains.connectors import data
+from django_obm import connectors, exceptions, models
+from tests.connectors import data
 
 
 class TestNode:

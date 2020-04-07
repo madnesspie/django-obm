@@ -1,8 +1,7 @@
 from django.conf import settings
 from rest_framework import decorators, response, viewsets
 
-from django_obm.blockchain import models
-from django_obm.rest import pagination, serializers
+from django_obm import pagination, serializers, models
 
 
 def get_pagination_class():
