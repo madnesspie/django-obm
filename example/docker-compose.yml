@@ -8,7 +8,7 @@ services:
       - "18332:18332"
     volumes:
       - "$HOME/.bitcoin:/bitcoin/.bitcoin"
-      - "$PWD/configs/bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf"
+      - "$PWD/example/configs/bitcoin.conf:/bitcoin/.bitcoin/bitcoin.conf"
     command: bitcoind
   geth:
     image: ethereum/client-go
