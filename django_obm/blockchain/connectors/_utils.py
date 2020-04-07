@@ -2,7 +2,7 @@ import functools
 
 import requests
 
-from cc_framework.blockchain.connectors import _exceptions as exceptions
+from django_obm.blockchain.connectors import _exceptions as exceptions
 
 
 def catch_errors(func):

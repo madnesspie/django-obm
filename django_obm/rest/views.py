@@ -1,8 +1,8 @@
 from django.conf import settings
 from rest_framework import decorators, response, viewsets
 
-from cc_framework.blockchain import models
-from cc_framework.rest import pagination, serializers
+from django_obm.blockchain import models
+from django_obm.rest import pagination, serializers
 
 
 # fmt: off

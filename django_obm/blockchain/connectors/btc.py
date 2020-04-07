@@ -3,9 +3,9 @@ import json
 
 import requests
 
-from cc_framework.blockchain.connectors import _base as base
-from cc_framework.blockchain.connectors import _exceptions as exceptions
-from cc_framework.blockchain.connectors import _utils as utils
+from django_obm.blockchain.connectors import _base as base
+from django_obm.blockchain.connectors import _exceptions as exceptions
+from django_obm.blockchain.connectors import _utils as utils
 
 
 class BaseBitcoinConnector(

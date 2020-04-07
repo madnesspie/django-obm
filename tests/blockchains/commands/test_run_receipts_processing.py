@@ -4,7 +4,7 @@ import io
 import pytest
 from django.core import management
 
-from cc_framework.blockchain import connectors
+from django_obm.blockchain import connectors
 from tests.blockchains.connectors import data
 
 

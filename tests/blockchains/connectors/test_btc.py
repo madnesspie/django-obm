@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from cc_framework.blockchain import connectors
+from django_obm.blockchain import connectors
 from tests.blockchains.connectors import data
 
 

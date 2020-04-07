@@ -6,7 +6,7 @@
 
 import sphinx_rtd_theme
 
-import cc_framework
+import django_obm
 
 # -- Path setup --------------------------------------------------------------
 
@@ -25,7 +25,7 @@ copyright = '2020, Alexander Polishchuk'
 author = 'Alexander Polishchuk'
 
 # The full version, including alpha/beta/rc tags
-release = cc_framework.__version__
+release = django_obm.__version__
 
 # -- General configuration ---------------------------------------------------
 

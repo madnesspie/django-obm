@@ -1,6 +1,6 @@
 import setuptools
 
-import cc_framework
+import django_obm
 
 
 def read(file_name):
@@ -9,9 +9,9 @@ def read(file_name):
     return content
 
 setuptools.setup(
-    name='django-cryptocurrency-framework',
-    version=cc_framework.__version__,
-    packages=setuptools.find_packages(exclude=['tests*']),
+    name='django-obm',
+    version=django_obm.__version__,
+    packages=setuptools.find_packages(exclude=['tests*', 'example*']),
     install_requires=[
         'Django>=2.2,<4',
         'requests>=2,<3',

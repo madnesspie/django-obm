@@ -2,7 +2,7 @@ import copy
 
 import pytest
 
-from cc_framework.blockchain import connectors, exceptions, models
+from django_obm.blockchain import connectors, exceptions, models
 from tests.blockchains.connectors import data
 
 
