@@ -11,8 +11,8 @@ Welcome to django-obm!
     :target: https://travis-ci.org/madnesspie/django-obm
     :alt: Travis CI
 
-.. |pypi-version| image:: https://badge.fury.io/py/django-cryptocurrency-framework.svg
-    :target: https://badge.fury.io/py/django-cryptocurrency-framework
+.. |pypi-version| image:: https://badge.fury.io/py/django-obm.svg
+    :target: https://badge.fury.io/py/django-obm
     :alt: PyPI
 
 .. |readthedocs| image:: https://readthedocs.org/projects/django-obm/badge/?version=latest
