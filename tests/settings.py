@@ -4,10 +4,10 @@ SECRET_KEY = "fake-key"
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "cc_framework.blockchain",
-    "cc_framework.rest",
+    "django_obm.blockchain",
+    "django_obm.rest",
 ]
-ROOT_URLCONF = "cc_framework.rest.urls"
+ROOT_URLCONF = "django_obm.rest.urls"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATABASES = {
     "default": {
@@ -16,7 +16,7 @@ DATABASES = {
     }
 }
 
-# Django cryptocurrency framework
+# Django OBM
 RECEIPTS_PROCESSING_DEFAULT_FREQUENCY = 10
 BLOCKCHAIN_NODE_TIMEOUT = 1
 BLOCKCHAIN_NODES_INITIAL_CONFIG = [
@@ -30,5 +30,5 @@ BLOCKCHAIN_NODES_INITIAL_CONFIG = [
         "rpc_port": 18332,
     },
 ]
-# CC_FRAMEWORK_PAGINATION_LIMIT = 1
-# CC_FRAMEWORK_PAGINATION_MAX_LIMIT = 2
+# OBM_PAGINATION_LIMIT = 1
+# OBM_PAGINATION_MAX_LIMIT = 2

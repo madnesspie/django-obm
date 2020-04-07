@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "cc_framework.blockchain",
-    "cc_framework.rest",
+    "django_obm.blockchain",
+    "django_obm.rest",
     "app",
 ]
 
@@ -120,7 +120,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-# Django cryptocurrency framework
+# Django OBM
 BLOCKCHAIN_NODE_TIMEOUT = 1
 BLOCKCHAIN_NODES_INITIAL_CONFIG = [
     {

@@ -33,7 +33,7 @@ setuptools.setup(
     description='A Django app for receiving payments in cryptocurrencies.',
     long_description=read('README.rst'),
     long_description_content_type='text/x-rst',
-    url='https://github.com/HelloCreepy/django-cryptocurrency-framework',
+    url='https://github.com/HelloCreepy/django-obm',
     author='Alexander Polishchuk',
     author_email='apolishchuk52@gmail.com',
     classifiers=[

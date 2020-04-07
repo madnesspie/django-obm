@@ -20,7 +20,7 @@ import django_obm
 
 # -- Project information -----------------------------------------------------
 
-project = 'django-cryptocurrency-framework'
+project = 'django-obm'
 copyright = '2020, Alexander Polishchuk'
 author = 'Alexander Polishchuk'
 
