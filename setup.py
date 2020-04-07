@@ -13,6 +13,7 @@ setuptools.setup(
     version=django_obm.__version__,
     packages=setuptools.find_packages(exclude=['tests*', 'example*']),
     install_requires=[
+        'obm<1.0.0',
         'Django>=2.2,<4',
         'requests>=2,<3',
         'djangorestframework>=3,<4',

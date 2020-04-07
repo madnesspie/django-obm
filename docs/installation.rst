@@ -38,7 +38,7 @@ If you need the REST API for :bash:`django_obm` models, update your
 
     urlpatterns = [
         ...
-        url(r'^django_obm/', include('django_obm.urls')),
+        url(r'^obm/', include('django_obm.urls')),
         ...
     ]
 
