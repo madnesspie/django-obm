@@ -13,7 +13,7 @@ Python package
 
 .. code-block:: bash
 
-    pip install django-cryptocurrency-framework
+    pip install django-obm
 
 Django
 ------
@@ -28,18 +28,18 @@ Add packages in :python:`INSTALLED_APPS` in your :bash:`settings.py`.
         'django.contrib.admin',
         'django.contrib.contenttypes',
 
-        'cc_framework.blockchain',
-        'cc_framework.rest',  # if you need the REST API
+        'django_obm.blockchain',
+        'django_obm.rest',  # if you need the REST API
     ]
 
-If you specified :python:`cc_framework.rest` application update your
+If you specified :python:`django_obm.rest` application update your
 :bash:`urls.py`.
 
 .. code-block:: python
 
     urlpatterns = [
         ...
-        url(r'^cc_framework/', include('cc_framework.rest.urls')),
+        url(r'^django_obm/', include('django_obm.rest.urls')),
         ...
     ]
 
@@ -60,10 +60,10 @@ In your Django root execute the command below to create your database tables:
 Install cryptocurrency nodes
 ````````````````````````````
 
-:bash:`django-cryptocurrency-framework` interact with blockchains through
+:bash:`django-obm` interact with blockchains through
 cryptocurrency nodes. You should install them and allow RPC access.
 Configuration example for each supported node is in
-`example project <https://github.com/madnesspie/django-cryptocurrency-framework/tree/master/example>`_.
+`example project <https://github.com/madnesspie/django-obm/tree/master/example>`_.
 
 Now only following nodes are being supported by the framework:
 

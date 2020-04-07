@@ -1,7 +1,7 @@
 import pytest
 from django import urls
 
-from cc_framework.blockchain import connectors, models
+from django_obm.blockchain import connectors, models
 
 
 class TestTransactionViewSet:

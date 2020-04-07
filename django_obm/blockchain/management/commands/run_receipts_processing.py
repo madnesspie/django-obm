@@ -5,7 +5,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from cc_framework.blockchain import models
+from django_obm.blockchain import models
 
 
 class Command(BaseCommand):

@@ -1,15 +1,16 @@
 from django.conf import settings
 from rest_framework import decorators, response, viewsets
 
-from cc_framework.blockchain import models
-from cc_framework.rest import pagination, serializers
+from django_obm.blockchain import models
+from django_obm.rest import pagination, serializers
 
 
-# fmt: off
 def get_pagination_class():
     # TODO: Add pagination class setting
-    has_pagination = getattr(settings, "CC_FRAMEWORK_PAGINATION_LIMIT", None) \
-        or getattr(settings, "CC_FRAMEWORK_PAGINATION_MAX_LIMIT", None)
+    # fmt: off
+    has_pagination = getattr(settings, "OBM_PAGINATION_LIMIT", None) \
+        or getattr(settings, "OBM_PAGINATION_MAX_LIMIT", None)
+    # fmt: on
     return pagination.CustomLimitOffsetPagination if has_pagination else None
 
 

@@ -3,7 +3,7 @@
 import pytest
 from rest_framework import test as drf_test
 
-from cc_framework.blockchain import connectors, models
+from django_obm.blockchain import connectors, models
 from tests.blockchains.connectors import data
 
 # TODO: Check node balance before integration tests

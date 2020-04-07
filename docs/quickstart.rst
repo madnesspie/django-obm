@@ -17,14 +17,14 @@ fees.
 
 Creating currency and node objects
 ----------------------------------
-:bash:`django-cryptocurrency-framework` store configuration for specific node
+:bash:`django-obm` store configuration for specific node
 in database. There are two ways to create them.
 
 1. Managemant command
 `````````````````````
 Open :bash:`settings.py` and define :python:`BLOCKCHAIN_NODES_INITIAL_CONFIG`
-setting. It maps on fields of :python:`cc_framework.blockchain.models.Node`
-and related to it :python:`cc_framework.blockchain.models.Currency` models.
+setting. It maps on fields of :python:`django_obm.blockchain.models.Node`
+and related to it :python:`django_obm.blockchain.models.Currency` models.
 
 .. code-block:: python
 
@@ -59,7 +59,7 @@ discover supported things you can use special connectors registry property.
 
 .. code-block:: python
 
-    >>> from cc_framework.blockchain import connectors
+    >>> from django_obm.blockchain import connectors
     >>> connectors.registry.available_currencies
     {'BTC'}
     >>> connectors.registry.available_nodes
@@ -71,7 +71,7 @@ Also it can be created in any place of your project then when you need it.
 
 .. code-block:: python
 
-    >>> from cc_framework.blockchain import models
+    >>> from django_obm.blockchain import models
     >>> currency = models.Currency.objects.create(
     ...     name='BTC',
     ...     min_confirmations=2,
@@ -130,4 +130,4 @@ Example
 -------
 
 You can find the example in
-`example project <https://github.com/HelloCreepy/django-cryptocurrency-framework/tree/master/example>`_.
+`example project <https://github.com/HelloCreepy/django-obm/tree/master/example>`_.

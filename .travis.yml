@@ -7,7 +7,7 @@ python:
 install:
 - pip install -e .[dev]
 script:
-- pylint tests cc_framework -d C
+- pylint tests django_obm -d C
 - pytest -vrs
 deploy:
   provider: pypi

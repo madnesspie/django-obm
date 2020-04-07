@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from cc_framework.blockchain import models
+from django_obm.blockchain import models
 
 
 class CurrencySerializer(serializers.ModelSerializer):

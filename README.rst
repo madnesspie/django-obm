@@ -2,7 +2,7 @@
    :language: bash
 
 ===========================================
-Welcome to django-cryptocurrency-framework!
+Welcome to django-obm!
 ===========================================
 
 |travis| |pypi-version| |readthedocs|
@@ -32,16 +32,16 @@ facilitate the implementation of such a microservice.
 Resources
 =========
 
-- Documentation: https://django-cryptocurrency-framework.readthedocs.io
+- Documentation: https://django-obm.readthedocs.io
 
 Installation
 ============
 
-See `Installation <https://django-cryptocurrency-framework.readthedocs.io/en/latest/installation.html>`_ for complete instructions.
+See `Installation <https://django-obm.readthedocs.io/en/latest/installation.html>`_ for complete instructions.
 
 .. code-block:: bash
 
-    pip install django-cryptocurrency-framework
+    pip install django-obm
 
 Requirements
 ============
@@ -61,22 +61,22 @@ Future features
 ---------------
 
 - support of: ETH, ETC, DASH, BCHABC, BCHSV, LTC, ZEC, XEM, XRP, etc.
-- :bash:`cc_framework.wallet` app witch help in implementation of multi
+- :bash:`django_obm.wallet` app witch help in implementation of multi
   cryptocurrency wallet
 
 
-Is django-cryptocurrency-framework production ready?
+Is django-obm production ready?
 ====================================================
 The project is now under active development. Use at your own risk.
 
 Example
 =======
 You can find the example project in this repo
-`example folder <https://github.com/madnesspie/django-cryptocurrency-framework/tree/master/example>`_.
+`example folder <https://github.com/madnesspie/django-obm/tree/master/example>`_.
 
 Contributing
 ============
-See `CONTRIBUTING.md <https://github.com/madnesspie/django-cryptocurrency-framework/blob/master/CONTRIBUTING.md>`_ for instructions.
+See `CONTRIBUTING.md <https://github.com/madnesspie/django-obm/blob/master/CONTRIBUTING.md>`_ for instructions.
 
 Support the developer
 =====================
@@ -86,7 +86,7 @@ Sponsors
 Special thanks for `Swapzilla <https://www.swapzilla.co/>`_ project that
 paid me part of the development.
 
-.. figure:: https://raw.githubusercontent.com/madnesspie/django-cryptocurrency-framework/d285241038bb8d325599e8c4dddb567468daae81/docs/swapzilla.jpeg
+.. figure:: https://raw.githubusercontent.com/madnesspie/django-obm/d285241038bb8d325599e8c4dddb567468daae81/docs/swapzilla.jpeg
   :width: 100%
   :figwidth: image
   :alt: Swapzilla logo
