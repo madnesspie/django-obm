@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from django.conf import settings
 from django.db import models
 from obm import connectors
 from obm.sync import mixins
@@ -12,12 +13,6 @@ TNode = TypeVar("TNode", bound="Node")
 
 class Currency(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    min_confirmations = models.IntegerField(
-        help_text=(
-            "Minimum confirmations number after which a transaction will "
-            "get the status 'is confirmed'"
-        ),
-    )
 
     class Meta:
         verbose_name_plural = "currencies"
@@ -65,9 +60,7 @@ class Transaction(models.Model):
         related_query_name="transaction",
     )
     from_address = models.ForeignKey(
-        to=Address,
-        on_delete=models.CASCADE,
-        null=True,
+        to=Address, on_delete=models.CASCADE, null=True,
     )
     to_address = models.ForeignKey(
         to=Address,
@@ -82,11 +75,10 @@ class Transaction(models.Model):
     amount = models.DecimalField(
         max_digits=19,
         decimal_places=10,
-        help_text="The transaction amount in currency",
+        help_text="The transaction amount in currency.",
     )
     block_number = models.PositiveIntegerField(
-        null=True,
-        help_text="Number of block that contain the transaction.",
+        null=True, help_text="Number of block that contain the transaction.",
     )
     fee = models.DecimalField(
         null=True,
@@ -98,8 +90,7 @@ class Transaction(models.Model):
         ),
     )
     timestamp = models.PositiveIntegerField(
-        null=True,
-        help_text="Transaction creation or detection timestamp.",
+        null=True, help_text="Transaction creation or detection timestamp.",
     )
 
     class Meta:
@@ -131,27 +122,31 @@ class Node(models.Model, mixins.ConnectorMixin):
         default=True,
         help_text=(
             "If True the node will be used as default "
-            "for transaction sending"
+            "for transaction sending."
         ),
     )
     rpc_username = models.CharField(
         verbose_name="RPC username",
         max_length=200,
-        help_text="Username for JSON-RPC connections",
+        help_text="Username for JSON-RPC connections.",
     )
     rpc_password = models.CharField(
         verbose_name="RPC password",
         max_length=200,
-        help_text="Password for JSON-RPC connections",
+        help_text="Password for JSON-RPC connections.",
     )
     rpc_host = models.URLField(
         verbose_name="RPC host",
         default="127.0.0.1",
-        help_text="Listen for JSON-RPC connections on this IP address",
+        help_text="Listen for JSON-RPC connections on this IP address.",
     )
     rpc_port = models.PositiveIntegerField(
         verbose_name="RPC port",
-        help_text="Listen for JSON-RPC connections on this port",
+        help_text="Listen for JSON-RPC connections on this port.",
+    )
+    timeout = models.FloatField(
+        default=getattr(settings, "OBM_NODE_TIMEOUT", 3),
+        help_text="Timeout for call of node JSON RPC.",
     )
 
     objects = managers.NodeManager(Transaction)
