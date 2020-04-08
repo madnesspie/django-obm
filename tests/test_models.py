@@ -24,8 +24,8 @@ class TestNode:
     @staticmethod
     @pytest.mark.django_db
     def test_node_does_not_exist_error(bitcoin_currency):
-        with pytest.raises(KeyError):
-            # TODO: More verbose error
+        with pytest.raises(exceptions.NodeDoesNotExistError):
+            # TODO: More verbose error on obm layer
             models.Node.objects.create(
                 name="bitcoin-lol",
                 currency=bitcoin_currency,
@@ -62,15 +62,15 @@ class TestCurrency:
     @pytest.mark.usefixtures("bitcoin_core_node")
     def test_create_two_default_node_raises_error(bitcoin_currency):
         with pytest.raises(exceptions.DefaultNodeAlreadyExists):
-                models.Node.objects.create(
-                    name="bitcoin-core",
-                    currency=bitcoin_currency,
-                    is_default=True,
-                    rpc_username="bitcoin",
-                    rpc_password="qwerty54",
-                    rpc_host="example.com",
-                    rpc_port=18332,
-                )
+            models.Node.objects.create(
+                name="bitcoin-core",
+                currency=bitcoin_currency,
+                is_default=True,
+                rpc_username="bitcoin",
+                rpc_password="qwerty54",
+                rpc_host="example.com",
+                rpc_port=18332,
+            )
 
     @staticmethod
     @pytest.mark.django_db

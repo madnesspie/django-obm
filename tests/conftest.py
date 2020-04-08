@@ -34,7 +34,7 @@ def bitcoin_core_node(bitcoin_currency):
         rpc_port=18332,
     )
     yield node
-    assert node.close() is None
+    node.close()
     node.delete()
 
 
@@ -56,9 +56,9 @@ def bitcoin_core_node(bitcoin_currency):
 #     tx.delete()
 
 
-@pytest.fixture
-def set_timeout_setting_is_none(settings):
-    origin = settings.BLOCKCHAIN_NODE_TIMEOUT
-    settings.BLOCKCHAIN_NODE_TIMEOUT = None
-    yield None
-    settings.BLOCKCHAIN_NODE_TIMEOUT = origin
+# @pytest.fixture
+# def set_timeout_setting_is_none(settings):
+#     origin = settings.BLOCKCHAIN_NODE_TIMEOUT
+#     settings.BLOCKCHAIN_NODE_TIMEOUT = None
+#     yield None
+#     settings.BLOCKCHAIN_NODE_TIMEOUT = origin

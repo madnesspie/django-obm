@@ -1,10 +1,10 @@
 from typing import TypeVar
 
 from django.db import models
-from obm.sync import mixins
 from obm import connectors
-from django_obm import exceptions, managers
+from obm.sync import mixins
 
+from django_obm import exceptions, managers
 
 TTransaction = TypeVar("TTransaction", bound="Transaction")
 TNode = TypeVar("TNode", bound="Node")
@@ -154,8 +154,7 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Listen for JSON-RPC connections on this port",
     )
 
-    objects = managers.NodeManager()
-    objects.set_transaction_model(Transaction)
+    objects = managers.NodeManager(Transaction)
 
     class Meta:
         unique_together = (("rpc_host", "rpc_port"),)
@@ -181,3 +180,7 @@ class Node(models.Model, mixins.ConnectorMixin):
                 f"Default node for {self.name} already exist"
             )
         super().save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        self.close()
+        super().save(using, keep_parents)

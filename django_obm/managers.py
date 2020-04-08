@@ -1,23 +1,21 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 
 class NodeManager(models.Manager):
 
-    transaction_model: type = None
+    transaction_model = None
 
-    @classmethod
-    def set_transaction_model(cls, transaction_model: type):
-        cls.transaction_model = transaction_model
+    def __init__(self, transaction_model=None):
+        super().__init__()
+        self.transaction_model = transaction_model
 
     def collect_transactions(self):
         """Fetches txs from nodes then write them into database."""
         txs = []
         lt_count = getattr("OBM_LIST_TRANSACTIONS_COUNT", settings, 50)
         for node in self.all():
-            txs = node.connector.list_transactions(count=lt_count)
-            if not txs:
-                continue
+            txs += node.list_transactions(count=lt_count)
         return self.transaction_model.objects.bulk_create(
             [self.transaction_model(**tx) for tx in txs]
         )
