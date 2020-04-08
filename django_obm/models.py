@@ -68,8 +68,6 @@ class Transaction(models.Model):
         to=Address,
         on_delete=models.CASCADE,
         null=True,
-        related_name="transactions",
-        related_query_name="transaction",
     )
     to_address = models.ForeignKey(
         to=Address,
@@ -156,7 +154,8 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Listen for JSON-RPC connections on this port",
     )
 
-    objects = managers.NodeManager(transaction_model=Transaction)
+    objects = managers.NodeManager()
+    objects.set_transaction_model(Transaction)
 
     class Meta:
         unique_together = (("rpc_host", "rpc_port"),)

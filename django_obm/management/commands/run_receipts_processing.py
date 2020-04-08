@@ -48,7 +48,7 @@ class Command(BaseCommand):
         while True:
             self.log("Run receipts processing")
             try:
-                result = models.Node.objects.process_receipts()
+                result = models.Node.objects.collect_transactions()
             except Exception as exc:  # pylint: disable=broad-except
                 if options["raise_errors"]:
                     raise exc
