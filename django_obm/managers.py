@@ -53,7 +53,8 @@ class NodeManager(models.Manager):
                         **omit_info(tx),
                     )
                     for tx in recent_txs
-                ]
+                ],
+                ignore_conflicts=True,
             )
             node.close()
         return collected_txs

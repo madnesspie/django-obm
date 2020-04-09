@@ -16,13 +16,18 @@ import pytest
 from django_obm import models
 
 
-class TestNodeManager:
+@pytest.mark.integration
+class TestIntegrationNodeManager:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
     def test_collect_transactions():
+        # Calls twice to check that method ignores conflicts
+        models.Node.objects.collect_transactions()
         txs = models.Node.objects.collect_transactions()
         for tx in txs:
-            tx_from_db = models.Transaction.objects.filter(txid=tx.txid).first()
+            queryset = models.Transaction.objects.filter(txid=tx.txid)
+            assert queryset.count() == 1
+            tx_from_db = queryset.first()
             assert tx_from_db
-            assert tx_from_db.pk is not None
+            assert isinstance(tx_from_db.pk, int)
