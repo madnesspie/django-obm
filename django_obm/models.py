@@ -57,6 +57,7 @@ class Address(models.Model):
         related_name="addresses",
         related_query_name="address",
     )
+    password = models.CharField(max_length=500, null=True,)
 
     class Meta:
         unique_together = (("value", "currency"),)
@@ -112,14 +113,24 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.currency}:{self.txid}"
 
-    @property
-    def amount_with_fee(self):
-        # TODO: amount with fee only for 'send' category
-        return self.amount - abs(self.fee)
+    # @property
+    # def amount_with_fee(self):
+    #     # TODO: amount with fee only for 'send' category
+    #     return self.amount - abs(self.fee)
 
     @property
     def currency(self) -> Currency:
         return self.node.currency
+
+    def send(self):
+        self.node.send_transaction(
+            amount=self.amount,
+            to_address=self.to_address.value,
+            from_address=self.from_address.value,
+            fee=self.fee,
+            password=self.from_address.password,
+        )
+        return self
 
 
 class Node(models.Model, mixins.ConnectorMixin):
