@@ -21,6 +21,47 @@ from django_obm import models
 
 # TODO: Check node balance before integration tests
 
+# console options
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--integration",
+        action="store_true",
+        default="",
+        help="Run integration tests with main test suite.",
+    )
+
+
+# pytest hooks
+
+
+def pytest_runtest_setup(item):
+    """Pytest hook that called before each test.
+
+    Docs:
+        https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_runtest_setup
+
+    Args:
+        item: Pytest item object (conceptually is test).
+    """
+    markers = [marker.name for marker in item.iter_markers()]
+    is_integration_test_session = item.config.getoption("--integration")
+    if not is_integration_test_session and "integration" in markers:
+        pytest.skip("skipped integration test")
+
+
+# def pytest_configure(config):  # pylint: disable=unused-argument
+#     """Pytest hook that called before test session.
+
+#     Docs:
+#         https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_configure
+
+#     Args:
+#         config: Pytest config object.
+#     """
+#     dotenv.load_dotenv(dotenv_path="./.env")
+
 
 @pytest.fixture
 def client():
