@@ -90,7 +90,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Address
-        read_only_fields = ["address"]
+        read_only_fields = ["value"]
         fields = "__all__"
 
     def create(self, validated_data):
@@ -104,5 +104,5 @@ class AddressSerializer(serializers.ModelSerializer):
             )
 
         return models.Address.objects.create(
-            address=node.connector.get_new_address(), currency=currency,
+            value=node.create_address(), currency=currency,
         )

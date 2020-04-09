@@ -82,32 +82,32 @@ from django_obm import models
 #         assert float(result["amount_with_fee"]) < amount_to_send
 
 
-# class TestAddressViewSet:
-#     @staticmethod
-#     @pytest.mark.django_db
-#     def test_get(client):
-#         response = client.get(urls.reverse("address-list"))
-#         assert response.status_code == 200
-#         result = response.json()
-#         assert result == []
+class TestAddressViewSet:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get(client):
+        response = client.get(urls.reverse("address-list"))
+        assert response.status_code == 200
+        result = response.json()
+        assert result == []
 
-#     @staticmethod
-#     @pytest.mark.django_db
-#     @pytest.mark.usefixtures("bitcoin_core_node")
-#     def test_post(monkeypatch, client):
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_core_node")
+    def test_post(monkeypatch, client):
 
-#         monkeypatch.setattr(
-#             connectors.btc.BitcoinCoreConnector,
-#             "get_new_address",
-#             lambda *_, **__: "fake-addr",
-#         )
+        monkeypatch.setattr(
+            models.Node,
+            "create_address",
+            lambda *_, **__: "fake-addr",
+        )
 
-#         response = client.post(
-#             urls.reverse("address-list"), data={"currency": "BTC",},
-#         )
-#         assert response.status_code == 201
-#         assert models.Address.objects.count() == 1
-#         assert response.json()["address"] == "fake-addr"
+        response = client.post(
+            urls.reverse("address-list"), data={"currency": "bitcoin",},
+        )
+        assert response.status_code == 201
+        assert models.Address.objects.count() == 1
+        assert response.json()["value"] == "fake-addr"
 
 
 class TestCurrencyViewSet:

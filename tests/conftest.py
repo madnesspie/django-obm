@@ -128,11 +128,3 @@ def geth_node(ethereum_currency):
 #     )
 #     yield tx
 #     tx.delete()
-
-
-# @pytest.fixture
-# def set_timeout_setting_is_none(settings):
-#     origin = settings.BLOCKCHAIN_NODE_TIMEOUT
-#     settings.BLOCKCHAIN_NODE_TIMEOUT = None
-#     yield None
-#     settings.BLOCKCHAIN_NODE_TIMEOUT = origin
