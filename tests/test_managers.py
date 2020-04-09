@@ -11,3 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
+
+from django_obm import models
+
+
+class TestNodeManager:
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
+    def test_collect_transactions():
+        txs = models.Node.objects.collect_transactions()
+        for tx in txs:
+            assert models.Node.objects.get(pk=tx.pk)
