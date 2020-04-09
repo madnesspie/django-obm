@@ -112,6 +112,16 @@ def geth_node(ethereum_currency):
     node.delete()
 
 
+@pytest.fixture(params=["bitcoin-core", "geth"])
+def node(
+    request, geth_node, bitcoin_core_node
+):  # pylint: disable=unused-argument
+    if request.param == "bitcoin-core":
+        return bitcoin_core_node
+    if request.param == "geth":
+        return geth_node
+
+
 # @pytest.fixture
 # def btc_transaction(bitcoin_core_node):
 #     tx = models.Transaction.objects.create(
