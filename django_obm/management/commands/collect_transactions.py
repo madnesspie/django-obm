@@ -43,7 +43,7 @@ class Command(BaseCommand):
             action="store",
             default=getattr(
                 settings,
-                "RECEIPTS_PROCESSING_DEFAULT_FREQUENCY",
+                "OBM_COLLECT_TRANSACTION_FREQUENCY",
                 self.DEFAULT_FREQUENCY,
             ),
             type=int,
@@ -67,13 +67,9 @@ class Command(BaseCommand):
                     raise exc
                 self.log(traceback.format_exc(), style=self.style.ERROR)
             else:
-                for new_tx in result["added"]:
-                    self.log(f"Added {repr(new_tx)}", style=self.style.SUCCESS)
-                for confirmed_tx in result["confirmed"]:
-                    self.log(
-                        f"Confirmed {repr(confirmed_tx)}",
-                        style=self.style.SUCCESS,
-                    )
+                self.log(
+                    "Collected recently transactions", style=self.style.SUCCESS
+                )
 
             if options["once"]:
                 break
