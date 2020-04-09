@@ -191,4 +191,4 @@ class Node(models.Model, mixins.ConnectorMixin):
 
     def delete(self, using=None, keep_parents=False):
         self.close()
-        super().save(using, keep_parents)
+        super().delete(using, keep_parents)
