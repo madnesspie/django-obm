@@ -123,13 +123,20 @@ class Transaction(models.Model):
         return self.node.currency
 
     def send(self):
-        self.node.send_transaction(
+        password = None
+        from_address_value = None
+        if self.from_address:
+            password = self.from_address.password
+            from_address_value = self.from_address.value
+        sent_tx = self.node.send_transaction(
             amount=self.amount,
             to_address=self.to_address.value,
-            from_address=self.from_address.value,
+            from_address=from_address_value,
             fee=self.fee,
-            password=self.from_address.password,
+            password=password,
         )
+        self.txid = sent_tx['txid']
+        self.timestamp = sent_tx['timestamp']
         return self
 
 
