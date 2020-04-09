@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import copy
 import io
 
 import pytest
@@ -23,7 +22,7 @@ class TestCommand:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures("bitcoin_core_node")
-    def test_command(monkeypatch):
+    def test_command():
         out = io.StringIO()
         management.call_command(
             "collect_transactions", once=True, stdout=out,
