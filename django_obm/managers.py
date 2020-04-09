@@ -13,7 +13,7 @@ class NodeManager(models.Manager):
     def collect_transactions(self):
         """Fetches txs from nodes then write them into database."""
         txs = []
-        lt_count = getattr("OBM_LIST_TRANSACTIONS_COUNT", settings, 50)
+        lt_count = getattr(settings, "OBM_LIST_TRANSACTIONS_COUNT", 50)
         for node in self.all():
             txs += node.list_transactions(count=lt_count)
         return self.transaction_model.objects.bulk_create(

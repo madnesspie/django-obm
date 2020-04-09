@@ -16,11 +16,14 @@ DATABASES = {
 }
 
 # Django OBM
+OBM_NODE_TIMEOUT = 2
+OBM_LIST_TRANSACTIONS_COUNT = 10
+
+# TODO: Refactor it
 RECEIPTS_PROCESSING_DEFAULT_FREQUENCY = 10
-BLOCKCHAIN_NODE_TIMEOUT = 1
 BLOCKCHAIN_NODES_INITIAL_CONFIG = [
     {
-        "currency": {"name": "BTC", "min_confirmations": 2,},
+        "currency": {"name": "BTC"},
         "name": "bitcoin-core",
         "is_default": True,
         "rpc_username": "testnet_user",

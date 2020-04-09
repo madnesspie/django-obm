@@ -15,9 +15,14 @@ def client():
 
 @pytest.fixture
 def bitcoin_currency():
-    currency = models.Currency.objects.create(
-        name="Bitcoin", min_confirmations=2
-    )
+    currency = models.Currency.objects.create(name="bitcoin")
+    yield currency
+    currency.delete()
+
+
+@pytest.fixture
+def ethereum_currency():
+    currency = models.Currency.objects.create(name="ethereum")
     yield currency
     currency.delete()
 
@@ -32,6 +37,20 @@ def bitcoin_core_node(bitcoin_currency):
         rpc_password="testnet_pass",
         rpc_host="127.0.0.1",
         rpc_port=18332,
+    )
+    yield node
+    node.close()
+    node.delete()
+
+
+@pytest.fixture
+def geth_node(ethereum_currency):
+    node = models.Node.objects.create(
+        name="geth",
+        currency=ethereum_currency,
+        is_default=True,
+        rpc_host="127.0.0.1",
+        rpc_port=8545,
     )
     yield node
     node.close()
