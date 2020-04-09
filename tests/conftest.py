@@ -14,6 +14,7 @@
 
 # pylint: disable = redefined-outer-name
 
+import dotenv
 import pytest
 from rest_framework import test as drf_test
 
@@ -51,16 +52,16 @@ def pytest_runtest_setup(item):
         pytest.skip("skipped integration test")
 
 
-# def pytest_configure(config):  # pylint: disable=unused-argument
-#     """Pytest hook that called before test session.
+def pytest_configure(config):  # pylint: disable=unused-argument
+    """Pytest hook that called before test session.
 
-#     Docs:
-#         https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_configure
+    Docs:
+        https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_configure
 
-#     Args:
-#         config: Pytest config object.
-#     """
-#     dotenv.load_dotenv(dotenv_path="./.env")
+    Args:
+        config: Pytest config object.
+    """
+    dotenv.load_dotenv(dotenv_path="./.env")
 
 
 @pytest.fixture
