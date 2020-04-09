@@ -19,16 +19,41 @@ class NodeManager(models.Manager):
 
     transaction_model = None
 
-    def __init__(self, transaction_model=None):
+    def __init__(self, transaction_model=None, address_model=None):
         super().__init__()
         self.transaction_model = transaction_model
+        self.address_model = address_model
 
     def collect_transactions(self):
         """Fetches txs from nodes then write them into database."""
-        txs = []
+
+        def omit_info(tx):
+            return {key: value for key, value in tx.items() if key != "info"}
+
+        def to_address(value, currency):
+            address, _ = self.address_model.objects.get_or_create(
+                value=value, currency=currency
+            )
+            return address
+
+        collected_txs = []
         lt_count = getattr(settings, "OBM_LIST_TRANSACTIONS_COUNT", 50)
         for node in self.all():
-            txs += node.list_transactions(count=lt_count)
-        return self.transaction_model.objects.bulk_create(
-            [self.transaction_model(**tx) for tx in txs]
-        )
+            recent_txs = node.list_transactions(count=lt_count)
+            collected_txs += self.transaction_model.objects.bulk_create(
+                [
+                    self.transaction_model(
+                        node=node,
+                        from_address=to_address(
+                            tx.pop("from_address"), node.currency
+                        ),
+                        to_address=to_address(
+                            tx.pop("to_address"), node.currency,
+                        ),
+                        **omit_info(tx),
+                    )
+                    for tx in recent_txs
+                ]
+            )
+            node.close()
+        return collected_txs

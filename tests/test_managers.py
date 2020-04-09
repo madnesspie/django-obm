@@ -23,4 +23,6 @@ class TestNodeManager:
     def test_collect_transactions():
         txs = models.Node.objects.collect_transactions()
         for tx in txs:
-            assert models.Node.objects.get(pk=tx.pk)
+            tx_from_db = models.Transaction.objects.filter(txid=tx.txid).first()
+            assert tx_from_db
+            assert tx_from_db.pk is not None

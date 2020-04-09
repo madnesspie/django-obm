@@ -50,7 +50,7 @@ class Currency(models.Model):
 
 class Address(models.Model):
     # TODO: Rename to value
-    address = models.CharField(max_length=500,)
+    value = models.CharField(max_length=500,)
     currency = models.ForeignKey(
         to=Currency,
         on_delete=models.CASCADE,
@@ -59,10 +59,10 @@ class Address(models.Model):
     )
 
     class Meta:
-        unique_together = (("address", "currency"),)
+        unique_together = (("value", "currency"),)
 
     def __str__(self):
-        return f"{self.currency}:{self.address}"
+        return f"{self.currency}:{self.value}"
 
 
 class Transaction(models.Model):
@@ -110,7 +110,7 @@ class Transaction(models.Model):
         unique_together = (("node", "txid"),)
 
     def __str__(self):
-        return f"{self.node.currency}, {self.txid}, {self.amount}"
+        return f"{self.currency}:{self.txid}"
 
     @property
     def amount_with_fee(self):
@@ -162,7 +162,7 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Timeout for call of node JSON RPC.",
     )
 
-    objects = managers.NodeManager(Transaction)
+    objects = managers.NodeManager(Transaction, Address)
 
     class Meta:
         unique_together = (("rpc_host", "rpc_port"),)
