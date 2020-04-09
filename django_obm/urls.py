@@ -13,13 +13,13 @@
 # limitations under the License.
 from rest_framework import routers
 
-# from django_obm import views
+from django_obm import views
 
 
 def register_views(router):
-    # router.register(r"transactions", views.TransactionViewSet)
-    # router.register(r"currencies", views.CurrencyViewSet)
-    # router.register(r"addresses", views.AddressViewSet)
+    router.register(r"transactions", views.TransactionViewSet)
+    router.register(r"currencies", views.CurrencyViewSet)
+    router.register(r"addresses", views.AddressViewSet)
     return router
 
 

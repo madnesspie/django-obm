@@ -11,12 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
+from django import urls
 
-# import pytest
-# from django import urls
-
-# from django_obm import connectors, models
-
+from django_obm import models
 
 # class TestTransactionViewSet:
 #     @staticmethod
@@ -112,28 +110,28 @@
 #         assert response.json()["address"] == "fake-addr"
 
 
-# class TestCurrencyViewSet:
-#     @staticmethod
-#     @pytest.mark.django_db
-#     def test_get(client):
-#         response = client.get(urls.reverse("currency-list"))
-#         assert response.status_code == 200
-#         result = response.json()
-#         assert result == []
+class TestCurrencyViewSet:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get(client):
+        response = client.get(urls.reverse("currency-list"))
+        assert response.status_code == 200
+        result = response.json()
+        assert result == []
 
-#     @staticmethod
-#     @pytest.mark.django_db
-#     @pytest.mark.usefixtures("bitcoin_core_node")
-#     def test_get_estimate_fee(monkeypatch, client, bitcoin_currency):
-#         monkeypatch.setattr(
-#             connectors.btc.BitcoinCoreConnector,
-#             "estimate_fee",
-#             lambda *_, **__: 0.0001,
-#         )
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_core_node")
+    def test_get_estimated_fee(monkeypatch, client, bitcoin_currency):
+        monkeypatch.setattr(
+            models.Node,
+            "estimate_fee",
+            lambda *_, **__: 0.0001,
+        )
 
-#         response = client.get(
-#             urls.reverse("currency-estimated-fee", args=(bitcoin_currency.id,),)
-#         )
-#         assert response.status_code == 200
-#         result = response.json()
-#         assert result["estimated_fee"] == 0.0001
+        response = client.get(
+            urls.reverse("currency-estimated-fee", args=(bitcoin_currency.id,),)
+        )
+        assert response.status_code == 200
+        result = response.json()
+        assert result["estimated_fee"] == 0.0001
