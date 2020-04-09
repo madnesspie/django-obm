@@ -23,9 +23,8 @@ class CurrencySerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    # TODO: Add custom validators support
-    # TODO: Adjust max_length
-    address = serializers.CharField(max_length=500)
+    from_address = serializers.CharField(required=False)
+    to_address = serializers.CharField()
     currency = serializers.SlugRelatedField(
         slug_field="name", queryset=models.Currency.objects.all(),
     )
@@ -37,21 +36,17 @@ class TransactionSerializer(serializers.ModelSerializer):
             "category",
             "fee",
             "timestamp",
-            "timestamp_received",
-            "amount_with_fee",
         ]
         fields = [
-            "id",
             "currency",
-            "address",
+            "from_address",
+            "to_address",
             "txid",
             "category",
             "amount",
+            "block_number",
             "fee",
-            "amount_with_fee",
-            "is_confirmed",
             "timestamp",
-            "timestamp_received",
         ]
 
     def validate(self, attrs):
@@ -63,16 +58,24 @@ class TransactionSerializer(serializers.ModelSerializer):
         ).first()
         if not node:
             raise serializers.ValidationError(
-                f"Node for {currency.name} does not registered"
+                f"Node for {currency.name} does not registered."
             )
 
-        address, _ = models.Address.objects.get_or_create(
-            address=attrs.pop("address"), currency=currency,
+        from_address_value = attrs.pop("from_address", None)
+        if from_address_value:
+            from_address, _ = models.Address.objects.get_or_create(
+                value=from_address_value, currency=currency,
+            )
+        else:
+            from_address = None
+        to_address, _ = models.Address.objects.get_or_create(
+            value=attrs.pop("to_address"), currency=currency,
         )
 
         return {
             "node": node,
-            "address": address,
+            "from_address": from_address,
+            "to_address": to_address,
             **attrs,
         }
 

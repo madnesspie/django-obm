@@ -16,40 +16,40 @@ from django import urls
 
 from django_obm import models
 
-# class TestTransactionViewSet:
-#     @staticmethod
-#     @pytest.mark.django_db
-#     def test_get(client):
-#         response = client.get(urls.reverse("transaction-list"))
-#         assert response.status_code == 200
-#         result = response.json()
-#         assert result == []
 
-#     @staticmethod
-#     @pytest.mark.django_db
-#     @pytest.mark.usefixtures("bitcoin_core_node")
-#     def test_post(monkeypatch, client):
-#         monkeypatch.setattr(
-#             connectors.btc.BitcoinCoreConnector,
-#             "send_transaction",
-#             lambda *_, **__: {
-#                 "fee": 0.0000001,
-#                 "txid": "fake-txid",
-#                 "timestamp": 1562415913,
-#                 "timestamp_received": 1562415913,
-#             },
-#         )
+class TestTransactionViewSet:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get(client):
+        response = client.get(urls.reverse("transaction-list"))
+        assert response.status_code == 200
+        result = response.json()
+        assert result == []
 
-#         # TODO: Add fee
-#         response = client.post(
-#             urls.reverse("transaction-list"),
-#             data={"currency": "BTC", "address": "fake-addr", "amount": 10,},
-#         )
-#         assert response.status_code == 201
-#         assert models.Transaction.objects.count() == 1
-#         result = response.json()
-#         assert result["txid"] == "fake-txid"
-#         assert float(result["fee"]) == 0.0000001
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_core_node")
+    def test_post(monkeypatch, client):
+        monkeypatch.setattr(
+            models.Node,
+            "send_transaction",
+            lambda *_, **__: {
+                # "fee": 0.00001,
+                "txid": "fake-txid",
+                "timestamp": 1562415913,
+            },
+        )
+
+        # TODO: Add fee handeling
+        response = client.post(
+            urls.reverse("transaction-list"),
+            data={"currency": "bitcoin", "to_address": "fake-addr", "amount": 10,},
+        )
+        assert response.status_code == 201
+        assert models.Transaction.objects.count() == 1
+        result = response.json()
+        assert result["txid"] == "fake-txid"
+        # assert float(result["fee"]) == 0.00001
 
 
 # @pytest.mark.integration
