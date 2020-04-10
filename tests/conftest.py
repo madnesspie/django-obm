@@ -95,7 +95,6 @@ def bitcoin_core_node(bitcoin_currency):
         rpc_port=18332,
     )
     yield node
-    node.close()
     node.delete()
 
 
@@ -109,7 +108,6 @@ def geth_node(ethereum_currency):
         rpc_port=8545,
     )
     yield node
-    node.close()
     node.delete()
 
 

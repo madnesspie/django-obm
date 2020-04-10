@@ -48,15 +48,24 @@ class CurrencyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CurrencySerializer
     queryset = models.Currency.objects.all()
 
-    # TODO: Make POST for transaction passing
     @decorators.action(detail=True, methods=["get"])
     def estimated_fee(
         self, request, pk=None
     ):  # pylint: disable=unused-argument
         currency = self.get_object()
+        node = currency.default_node
+        estimated_fee = node.estimate_fee(
+            from_address=request.query_params.get("from_address"),
+            to_address=request.query_params.get("to_address"),
+            amount=request.query_params.get("amount"),
+            fee={
+                "gas": request.query_params.get("gas"),
+                "gas_price": request.query_params.get("gas_price"),
+            },
+            data=request.query_params.get("data"),
+            conf_target=request.query_params.get("conf_target", 1),
+        )
+        node.close()
         return response.Response(
-            {
-                "currency": currency.name,
-                "estimated_fee": currency.default_node.estimate_fee(),
-            }
+            {"currency": currency.name, "estimated_fee": estimated_fee,}
         )

@@ -33,7 +33,6 @@ class TestNode:
     #     assert txs.count() == 2
     #     assert txs.filter(is_confirmed=True).count() == 1
 
-
     @staticmethod
     @pytest.mark.django_db
     def test_node_does_not_exist_error(bitcoin_currency):
