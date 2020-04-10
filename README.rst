@@ -44,7 +44,7 @@ See `Installation <https://django-obm.readthedocs.io/en/latest/installation.html
 
 Requirements
 ============
-- Python 3.6 or higher.
+- Python 3.8 or higher.
 - `bitcoin-core <https://bitcoincore.org/en/download/>`_ node
 
 Features
