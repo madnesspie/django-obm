@@ -28,18 +28,17 @@ Add packages in :python:`INSTALLED_APPS` in your :bash:`settings.py`.
         'django.contrib.admin',
         'django.contrib.contenttypes',
 
-        'django_obm.blockchain',
-        'django_obm.rest',  # if you need the REST API
+        'django_obm',
     ]
 
-If you specified :python:`django_obm.rest` application update your
+If you need the REST API for :bash:`django_obm` models, update your
 :bash:`urls.py`.
 
 .. code-block:: python
 
     urlpatterns = [
         ...
-        url(r'^django_obm/', include('django_obm.rest.urls')),
+        url(r'^obm/', include('django_obm.urls')),
         ...
     ]
 

@@ -11,3 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import io
+
+import pytest
+from django.core import management
+
+
+@pytest.mark.django_db
+def test_command():
+    out = io.StringIO()
+    management.call_command("init_nodes", stdout=out)
+    assert "successfully" in out.getvalue()

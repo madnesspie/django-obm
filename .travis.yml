@@ -1,7 +1,6 @@
 dist: xenial
 language: python
 python:
-- 3.7-dev
 - '3.8'
 - 3.8-dev
 install:
@@ -12,8 +11,8 @@ script:
 deploy:
   provider: pypi
   skip_existing: true
-  user: "__token__"
+  user: __token__
   password:
-    secure: C3QEpT/hX9cZ/wP1CdmzfU1PNqHCzItV/MYA/k+mhHdl9wF+p8N8cXa6Qjyk8E/udkJ9D07xXxWgONy0Wk0XAC6++tGDIG/erVrVCbQ+hMQFnjWNKo+2nklLcBObbGddugnx04GRo4oiZbUAJTunD+fZjSzCLSAd1wPFX7akwbjhRpSH3j0/150ZdphZnpZslZFIls+9YCSDYHVvbpsP91KBPWrPxhG55Ff3x7re8/osQWpPhlBqhDUeuwRYKux+0cPXh787TL4a/rXZ+2YzE6E+ue5BVOXHsQX411eV2aj8E96RY7XrPdeYYjMK9AYzwE5FLo6nM3dD3NYiEmgs72npM1NZlT2xxiDzdG1Qj3FcGpElLryecEzVYbOLUnkDbbLpNRCQPHPxW2/guRxjp/ntnmoRuWCu855GmYNcimdfcT6IlghmxqVmjs2745+Z0vjp4yWrYshGZ2rkCNFXCT09dWhsp3uXXTNvKM1ozNm8QjppyRz+gSKDADarS+JfknOXiCqiGddvzyci1jGE9UBhLZSB3LTPSKB5qA2X3vNhVuNnWgL4npwtC8uZ46z+7b4beh8oi6bBdIcZ10N+GBSIp7arMCQNVEB1hx17dw6T1C5AauIm4Pzn0G2CLt1VuXK8L5jBlqX+4tlFkptrNk5fdFVbW3J/bskXJhp7VRI=
+    secure: G8Wz95rRQezYThymxqUgsJgdQ43NkoR5rQARQMUAFv8uoqP1Zh/+OdOzImKXEhM6TsyvOroUrkLs0NS9ADKyZs0eFUFN3XnU/i8LmAKm6AXts4BHyQkwpiC1sVeqdbtM5heuDAANQYmnN+1Koms8xw7uFqSRWZw2+oTFr8/5tccgD189Nz39BzNb19CFfHKkJrEHgipZRXpRvb0eSldmjyu1NuGEbBZTnrl/mGHle1y/vYUHo/ADIs6j8qcb9Ly6YgFIbcFlWxffKUZpPwhimvM5crunWpYKA3YYZlFQBTb/Q4WbT55/YNhm0XSfuK6wc4MNyDojTSYGv9LH5iwVAD6tARC1G+SYr20x+16cQHtmMBDuvBmvjbTbQVlMyXD0Czx0vs6g19HSfLuVL/wO5jqjd5Tv1hKKy27jgJXxtSOMrqD2pE4GTKv/zZNOAnsRMQnWzwxupJ786/MyoQjq35jEbSTANigjSApK+7O4YabuQuL7XwDWgncenstH+/Qjtc5V37dLPGEpwFrondbJmbr+1V2tyoyutK75q2LkOTtWEVsn0aXcr5F6OhWSRbUOe/wtk7zU+zY6TTchZQ9kXVDkmU8aYYZj5F5PCv+5zU4t1O2rIsableYwipH4Z4Vo/3svzQA6XYE5vFdUHATLvKlmc8e7fuVVx+IA7nQIlhI=
   on:
     branch: master

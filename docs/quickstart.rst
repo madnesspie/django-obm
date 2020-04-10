@@ -23,8 +23,8 @@ in database. There are two ways to create them.
 1. Managemant command
 `````````````````````
 Open :bash:`settings.py` and define :python:`BLOCKCHAIN_NODES_INITIAL_CONFIG`
-setting. It maps on fields of :python:`django_obm.blockchain.models.Node`
-and related to it :python:`django_obm.blockchain.models.Currency` models.
+setting. It maps on fields of :python:`django_obm.models.Node`
+and related to it :python:`django_obm.models.Currency` models.
 
 .. code-block:: python
 
@@ -47,7 +47,7 @@ To apply the config on database execute command bellow in your Django root:
 
 .. code-block:: bash
 
-    $ python example/manage.py init_nodes
+    $ python manage.py init_nodes
     <Currency: BTC> created successfully.
     <Node: bitcoin-core> created successfully.
 
@@ -59,7 +59,7 @@ discover supported things you can use special connectors registry property.
 
 .. code-block:: python
 
-    >>> from django_obm.blockchain import connectors
+    >>> from django_obm import connectors
     >>> connectors.registry.available_currencies
     {'BTC'}
     >>> connectors.registry.available_nodes
@@ -71,7 +71,7 @@ Also it can be created in any place of your project then when you need it.
 
 .. code-block:: python
 
-    >>> from django_obm.blockchain import models
+    >>> from django_obm import models
     >>> currency = models.Currency.objects.create(
     ...     name='BTC',
     ...     min_confirmations=2,

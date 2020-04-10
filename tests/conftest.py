@@ -1,10 +1,26 @@
+# Copyright 2019-2020 Alexander Polishchuk
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # pylint: disable = redefined-outer-name
 
+import os
+
+import dotenv
 import pytest
 from rest_framework import test as drf_test
 
-from django_obm.blockchain import connectors, models
-from tests.blockchains.connectors import data
+from django_obm import models
 
 # TODO: Check node balance before integration tests
 
@@ -32,10 +48,22 @@ def pytest_runtest_setup(item):
     Args:
         item: Pytest item object (conceptually is test).
     """
-    is_integration_session = item.config.getoption("--integration")
-    is_integration_test = bool(list(item.iter_markers(name="integration")))
-    if not is_integration_session and is_integration_test:
+    markers = [marker.name for marker in item.iter_markers()]
+    is_integration_test_session = item.config.getoption("--integration")
+    if not is_integration_test_session and "integration" in markers:
         pytest.skip("skipped integration test")
+
+
+def pytest_configure(config):  # pylint: disable=unused-argument
+    """Pytest hook that called before test session.
+
+    Docs:
+        https://docs.pytest.org/en/latest/reference.html#_pytest.hookspec.pytest_configure
+
+    Args:
+        config: Pytest config object.
+    """
+    dotenv.load_dotenv(dotenv_path="./.env")
 
 
 @pytest.fixture
@@ -44,20 +72,28 @@ def client():
 
 
 @pytest.fixture
-def bitcoin_core_connector():
-    return connectors.btc.BitcoinCoreConnector(
-        rpc_username="testnet_user",
-        rpc_password="testnet_pass",
-        rpc_host="127.0.0.1",
-        rpc_port=18332,
-    )
+def bitcoin_currency():
+    currency = models.Currency.objects.create(name="bitcoin")
+    yield currency
+    currency.delete()
 
 
 @pytest.fixture
-def bitcoin_currency():
-    currency = models.Currency.objects.create(name="BTC", min_confirmations=2)
+def ethereum_currency():
+    currency = models.Currency.objects.create(name="ethereum")
     yield currency
     currency.delete()
+
+
+@pytest.fixture
+def ethereum_address(ethereum_currency):
+    address = models.Address.objects.create(
+        value=os.environ.get("GETH_SEND_FROM_ADDRESS"),
+        currency=ethereum_currency,
+        password="abc"
+    )
+    yield address
+    address.delete()
 
 
 @pytest.fixture
@@ -76,26 +112,41 @@ def bitcoin_core_node(bitcoin_currency):
 
 
 @pytest.fixture
-def btc_transaction(bitcoin_core_node):
-    tx = models.Transaction.objects.create(
-        node=bitcoin_core_node,
-        address=models.Address.objects.create(
-            address=data.BTC_TXS[0]["address"],
-            currency=bitcoin_core_node.currency,
-        ),
-        txid=data.BTC_TXS[0]["txid"],
-        category=data.BTC_TXS[0]["category"],
-        amount=data.BTC_TXS[0]["amount"],
-        is_confirmed=False,
-        timestamp=data.BTC_TXS[0]["time"],
+def geth_node(ethereum_currency):
+    node = models.Node.objects.create(
+        name="geth",
+        currency=ethereum_currency,
+        is_default=True,
+        rpc_host="127.0.0.1",
+        rpc_port=8545,
     )
-    yield tx
-    tx.delete()
+    yield node
+    node.delete()
 
 
-@pytest.fixture
-def timeout_setting_is_none(settings):
-    origin = settings.BLOCKCHAIN_NODE_TIMEOUT
-    settings.BLOCKCHAIN_NODE_TIMEOUT = None
-    yield None
-    settings.BLOCKCHAIN_NODE_TIMEOUT = origin
+@pytest.fixture(params=["bitcoin-core", "geth"])
+def node(
+    request, geth_node, bitcoin_core_node
+):  # pylint: disable=unused-argument
+    node_mapping = {
+        'bitcoin-core': bitcoin_core_node,
+        'geth': geth_node,
+    }
+    return node_mapping[request.param]
+
+# @pytest.fixture
+# def btc_transaction(bitcoin_core_node):
+#     tx = models.Transaction.objects.create(
+#         node=bitcoin_core_node,
+#         address=models.Address.objects.create(
+#             address=data.BTC_TXS[0]["address"],
+#             currency=bitcoin_core_node.currency,
+#         ),
+#         txid=data.BTC_TXS[0]["txid"],
+#         category=data.BTC_TXS[0]["category"],
+#         amount=data.BTC_TXS[0]["amount"],
+#         is_confirmed=False,
+#         timestamp=data.BTC_TXS[0]["time"],
+#     )
+#     yield tx
+#     tx.delete()
