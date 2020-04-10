@@ -57,7 +57,7 @@ class Address(models.Model):
         related_name="addresses",
         related_query_name="address",
     )
-    password = models.CharField(max_length=500, null=True,)
+    password = models.CharField(max_length=500, default="")
 
     class Meta:
         unique_together = (("value", "currency"),)
@@ -123,20 +123,23 @@ class Transaction(models.Model):
         return self.node.currency
 
     def send(self):
-        password = None
-        from_address_value = None
-        if self.from_address:
-            password = self.from_address.password
-            from_address_value = self.from_address.value
-        sent_tx = self.node.send_transaction(
-            amount=self.amount,
-            to_address=self.to_address.value,
-            from_address=from_address_value,
-            fee=self.fee,
-            password=password,
-        )
+        tx = {
+            "amount": float(self.amount),
+            "to_address": self.to_address.value,
+        }
+        if self.currency.name == "ethereum":
+            if self.from_address:
+                tx["from_address"] = self.from_address.value
+                tx["password"] = self.from_address.password
+        elif self.currency.name == "bitcoin" and self.fee:
+            tx["fee"] = self.fee
+
+        sent_tx = self.node.send_transaction(**tx)
+        self.node.close()
         self.txid = sent_tx['txid']
+        self.fee = sent_tx['fee']
         self.timestamp = sent_tx['timestamp']
+        self.save()
         return self
 
 

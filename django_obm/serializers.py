@@ -24,7 +24,8 @@ class CurrencySerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     from_address = serializers.CharField(required=False)
-    to_address = serializers.CharField()
+    to_address = serializers.CharField(required=True)
+    password = serializers.CharField(required=False)
     currency = serializers.SlugRelatedField(
         slug_field="name", queryset=models.Currency.objects.all(),
     )
@@ -38,6 +39,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "timestamp",
         ]
         fields = [
+            "password",
             "currency",
             "from_address",
             "to_address",
@@ -61,10 +63,14 @@ class TransactionSerializer(serializers.ModelSerializer):
                 f"Node for {currency.name} does not registered."
             )
 
+        # TODO: Validate for ethereum
         from_address_value = attrs.pop("from_address", None)
+        password = attrs.pop("password", "")
         if from_address_value:
             from_address, _ = models.Address.objects.get_or_create(
-                value=from_address_value, currency=currency,
+                value=from_address_value,
+                currency=currency,
+                defaults={"password": password},
             )
         else:
             from_address = None
@@ -76,13 +82,12 @@ class TransactionSerializer(serializers.ModelSerializer):
             "node": node,
             "from_address": from_address,
             "to_address": to_address,
+            "category": "send",
             **attrs,
         }
 
     def create(self, validated_data):
-        tx = models.Transaction.objects.create(
-            category="send", **validated_data,
-        )
+        tx = models.Transaction.objects.create(**validated_data)
         return tx.send()
 
 

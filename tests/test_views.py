@@ -30,13 +30,12 @@ class TestTransactionViewSet:
 
     @staticmethod
     @pytest.mark.django_db
-    @pytest.mark.usefixtures("bitcoin_core_node")
-    def test_post(monkeypatch, client):
+    def test_post(monkeypatch, client, node):
         monkeypatch.setattr(
             models.Node,
             "send_transaction",
             lambda *_, **__: {
-                # "fee": 0.00001,
+                "fee": 0.00001,
                 "txid": "fake-txid",
                 "timestamp": 1562415913,
             },
@@ -45,7 +44,7 @@ class TestTransactionViewSet:
         response = client.post(
             urls.reverse("transaction-list"),
             data={
-                "currency": "bitcoin",
+                "currency": node.connector.currency,
                 "to_address": "fake-addr",
                 "amount": 10,
             },
@@ -54,7 +53,65 @@ class TestTransactionViewSet:
         assert models.Transaction.objects.count() == 1
         result = response.json()
         assert result["txid"] == "fake-txid"
-        # assert float(result["fee"]) == 0.00001
+        assert float(result["fee"]) == 0.00001
+
+
+@pytest.mark.integration
+class TestTransactionViewSetIntegration:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_post(client, node):
+        data_mapping = {
+            "bitcoin": {
+                "currency": "bitcoin",
+                "to_address": os.environ.get("BITCOIN_CORE_IN_WALLET_ADDRESS"),
+                "amount": 0.00001,
+            },
+            "ethereum": {
+                "currency": "ethereum",
+                "from_address": os.environ.get("GETH_SEND_FROM_ADDRESS"),
+                "to_address": os.environ.get("GETH_IN_WALLET_ADDRESS"),
+                "amount": 0.0000001,
+                # TODO: Password to .env
+                "password": "abc",
+            },
+        }
+        response = client.post(
+            urls.reverse("transaction-list"),
+            data=data_mapping[node.connector.currency],
+        )
+        amount = data_mapping[node.connector.currency]["amount"]
+        assert response.status_code == 201
+        assert models.Transaction.objects.count() == 1
+        result = response.json()
+        assert float(result["amount"]) == amount
+        assert float(result["fee"])
+        assert isinstance(result["txid"], str)
+        assert len(result["txid"]) > 20
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("geth_node")
+    def test_post_without_password_to_ethereum_address(
+        client, ethereum_address
+    ):
+        amount = 0.0000001
+        response = client.post(
+            urls.reverse("transaction-list"),
+            data={
+                "currency": "ethereum",
+                "from_address": ethereum_address.value,
+                "to_address": os.environ.get("GETH_IN_WALLET_ADDRESS"),
+                "amount": 0.0000001,
+            },
+        )
+        assert response.status_code == 201
+        assert models.Transaction.objects.count() == 1
+        result = response.json()
+        assert float(result["amount"]) == amount
+        assert float(result["fee"])
+        assert isinstance(result["txid"], str)
+        assert len(result["txid"]) > 20
 
 
 class TestAddressViewSet:
@@ -81,7 +138,6 @@ class TestAddressViewSet:
         assert response.status_code == 201
         assert models.Address.objects.count() == 1
         assert response.json()["value"] == "fake-addr"
-
 
 
 @pytest.mark.integration

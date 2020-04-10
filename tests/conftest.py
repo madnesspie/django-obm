@@ -14,6 +14,8 @@
 
 # pylint: disable = redefined-outer-name
 
+import os
+
 import dotenv
 import pytest
 from rest_framework import test as drf_test
@@ -84,6 +86,17 @@ def ethereum_currency():
 
 
 @pytest.fixture
+def ethereum_address(ethereum_currency):
+    address = models.Address.objects.create(
+        value=os.environ.get("GETH_SEND_FROM_ADDRESS"),
+        currency=ethereum_currency,
+        password="abc"
+    )
+    yield address
+    address.delete()
+
+
+@pytest.fixture
 def bitcoin_core_node(bitcoin_currency):
     node = models.Node.objects.create(
         name="bitcoin-core",
@@ -115,11 +128,11 @@ def geth_node(ethereum_currency):
 def node(
     request, geth_node, bitcoin_core_node
 ):  # pylint: disable=unused-argument
-    if request.param == "bitcoin-core":
-        return bitcoin_core_node
-    if request.param == "geth":
-        return geth_node
-
+    node_mapping = {
+        'bitcoin-core': bitcoin_core_node,
+        'geth': geth_node,
+    }
+    return node_mapping[request.param]
 
 # @pytest.fixture
 # def btc_transaction(bitcoin_core_node):
