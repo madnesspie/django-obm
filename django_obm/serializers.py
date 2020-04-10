@@ -106,6 +106,8 @@ class AddressSerializer(serializers.ModelSerializer):
                 f"Node for {currency.name} does not registered"
             )
 
+        address_value = node.create_address()
+        node.close()
         return models.Address.objects.create(
-            value=node.create_address(), currency=currency,
+            value=address_value, currency=currency,
         )

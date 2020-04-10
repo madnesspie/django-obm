@@ -68,19 +68,36 @@ class TestAddressViewSet:
 
     @staticmethod
     @pytest.mark.django_db
-    @pytest.mark.usefixtures("bitcoin_core_node")
-    def test_post(monkeypatch, client):
+    def test_post(monkeypatch, client, node):
 
         monkeypatch.setattr(
             models.Node, "create_address", lambda *_, **__: "fake-addr",
         )
 
         response = client.post(
-            urls.reverse("address-list"), data={"currency": "bitcoin",},
+            urls.reverse("address-list"),
+            data={"currency": node.connector.currency},
         )
         assert response.status_code == 201
         assert models.Address.objects.count() == 1
         assert response.json()["value"] == "fake-addr"
+
+
+
+@pytest.mark.integration
+class TestAddressViewSetIntegration:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_post(client, node):
+        response = client.post(
+            urls.reverse("address-list"),
+            data={"currency": node.connector.currency},
+        )
+        assert response.status_code == 201
+        assert models.Address.objects.count() == 1
+        address_value = response.json()["value"]
+        assert isinstance(address_value, str)
+        assert len(address_value) > 20
 
 
 class TestCurrencyViewSet:
@@ -108,7 +125,7 @@ class TestCurrencyViewSet:
 
 
 @pytest.mark.integration
-class TestIntegrationCurrencyViewSet:
+class TestCurrencyViewSetIntegration:
     @staticmethod
     @pytest.mark.django_db
     def test_get_estimated_fee(client, node):
