@@ -2,6 +2,16 @@ import setuptools
 
 import django_obm
 
+EXTRAS_REQUIRE = {
+    "tests": ["pytest", "pytest-django", "python-dotenv", "pytest-xdist"],
+    "lint": ["pylint", "pylint-django", "mypy"],
+    "docs": ["sphinx>=2.4,<3", "sphinx-rtd-theme"],
+    "dev": ["tox", "rope"],
+}
+EXTRAS_REQUIRE["dev"] += (
+    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + EXTRAS_REQUIRE["docs"]
+)
+
 
 def read(file_name):
     with open(file_name) as f:
@@ -14,24 +24,11 @@ setuptools.setup(
     version=django_obm.__version__,
     packages=setuptools.find_packages(exclude=["tests*", "example*"]),
     install_requires=[
-        "obm<1.0.0",
+        "obm<0.1.0",
         "Django>=2.2,<4",
-        "requests>=2,<3",
         "djangorestframework>=3,<4",
     ],
-    extras_require={
-        "dev": [
-            "sphinx>=2.4,<3",
-            "sphinx-rtd-theme",
-            "python-dotenv",
-            "pytest",
-            "pytest-django",
-            "pylint",
-            "pylint-django",
-            "mypy",
-            "rope",
-        ],
-    },
+    extras_require=EXTRAS_REQUIRE,
     license="GNU Lesser General Public License v3 or later (LGPLv3+)",
     description="A Django app for receiving payments in cryptocurrencies.",
     long_description=read("README.rst"),
