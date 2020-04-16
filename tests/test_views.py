@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+from decimal import Decimal
 
 import pytest
 from django import urls
@@ -22,7 +23,17 @@ from django_obm import models
 class TestTransactionViewSet:
     @staticmethod
     @pytest.mark.django_db
+    @pytest.mark.usefixtures("btc_transaction")
     def test_get(client):
+        response = client.get(urls.reverse("transaction-list"))
+        assert response.status_code == 200
+        result = response.json()
+        assert len(result) == 1
+
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get_empty(client):
         response = client.get(urls.reverse("transaction-list"))
         assert response.status_code == 200
         result = response.json()
@@ -53,7 +64,7 @@ class TestTransactionViewSet:
         assert models.Transaction.objects.count() == 1
         result = response.json()
         assert result["txid"] == "fake-txid"
-        assert float(result["fee"]) == 0.00001
+        assert Decimal(result["fee"]) == Decimal('0.00001')
 
 
 @pytest.mark.integration
@@ -72,7 +83,8 @@ class TestTransactionViewSetIntegration:
                 "from_address": os.environ.get("GETH_SEND_FROM_ADDRESS"),
                 "to_address": os.environ.get("GETH_IN_WALLET_ADDRESS"),
                 "amount": 0.0000001,
-                # TODO: Password to .env
+                # TODO: Create new addr with default
+                # password
                 "password": "abc",
             },
         }

@@ -134,19 +134,19 @@ def node(
     }
     return node_mapping[request.param]
 
-# @pytest.fixture
-# def btc_transaction(bitcoin_core_node):
-#     tx = models.Transaction.objects.create(
-#         node=bitcoin_core_node,
-#         address=models.Address.objects.create(
-#             address=data.BTC_TXS[0]["address"],
-#             currency=bitcoin_core_node.currency,
-#         ),
-#         txid=data.BTC_TXS[0]["txid"],
-#         category=data.BTC_TXS[0]["category"],
-#         amount=data.BTC_TXS[0]["amount"],
-#         is_confirmed=False,
-#         timestamp=data.BTC_TXS[0]["time"],
-#     )
-#     yield tx
-#     tx.delete()
+
+@pytest.fixture
+def btc_transaction(bitcoin_core_node):
+    tx = models.Transaction.objects.create(
+        node=bitcoin_core_node,
+        to_address=models.Address.objects.create(
+            value="fake-addr",
+            currency=bitcoin_core_node.currency,
+        ),
+        txid="fake-txid",
+        category="receive",
+        amount=0.5,
+        block_number=6200,
+    )
+    yield tx
+    tx.delete()
