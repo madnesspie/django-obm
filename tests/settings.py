@@ -34,13 +34,20 @@ OBM_LIST_TRANSACTIONS_COUNT = 10
 OBM_COLLECT_TRANSACTION_FREQUENCY = 10
 OBM_NODES_INITIAL_CONFIG = [
     {
-        "currency": {"name": "BTC"},
+        "currency": {"name": "bitcoin"},
         "name": "bitcoin-core",
         "is_default": True,
         "rpc_username": "testnet_user",
         "rpc_password": "testnet_pass",
         "rpc_host": "localhost",
         "rpc_port": 18332,
+    },
+    {
+        "currency": {"name": "ethereum"},
+        "name": "geth",
+        "is_default": True,
+        "rpc_host": 'localhost',
+        "rpc_port": 8545,
     },
 ]
 
