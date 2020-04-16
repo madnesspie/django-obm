@@ -30,7 +30,11 @@ setuptools.setup(
     ],
     extras_require=EXTRAS_REQUIRE,
     license="GNU Lesser General Public License v3 or later (LGPLv3+)",
-    description="A Django app for receiving payments in cryptocurrencies.",
+    description=(
+        "Django app that provide REST API and ORM-integrated interface for "
+        "interaction with blockchains.Django app that provide REST API and "
+        "ORM-integrated interface for interaction with blockchains."
+    ),
     long_description=read("README.rst"),
     long_description_content_type="text/x-rst",
     url="https://github.com/HelloCreepy/django-obm",
