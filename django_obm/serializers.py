@@ -30,6 +30,14 @@ class TransactionSerializer(serializers.ModelSerializer):
     currency = serializers.SlugRelatedField(
         slug_field="name", queryset=models.Currency.objects.all(),
     )
+    subtract_fee_from_amount = serializers.BooleanField(
+        required=False,
+        default=getattr(
+            settings,
+            "OBM_REST_SUBTRACT_TRANSACTION_FEE_FROM_AMOUNT_DEFAULT",
+            False,
+        ),
+    )
 
     class Meta:
         model = models.Transaction
@@ -50,6 +58,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "block_number",
             "fee",
             "timestamp",
+            "subtract_fee_from_amount",
         ]
 
     def validate(self, attrs):
@@ -88,14 +97,11 @@ class TransactionSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        tx = models.Transaction(**validated_data)
-        return tx.send(
-            subtract_fee_from_amount=getattr(
-                settings,
-                "OBM_REST_SUBTRACT_TRANSACTION_FEE_FROM_AMOUNT_DEFAULT",
-                False,
-            )
+        subtract_fee_from_amount = validated_data.pop(
+            "subtract_fee_from_amount"
         )
+        tx = models.Transaction(**validated_data)
+        return tx.send(subtract_fee_from_amount=subtract_fee_from_amount)
 
 
 class AddressSerializer(serializers.ModelSerializer):

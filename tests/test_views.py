@@ -172,8 +172,7 @@ class TestTransactionViewSetIntegration:
                 "from_address": os.environ.get("GETH_SEND_FROM_ADDRESS"),
                 "to_address": os.environ.get("GETH_IN_WALLET_ADDRESS"),
                 "amount": Decimal('0.00003'),
-                # TODO: Create new addr with default
-                # password
+                # TODO: Create new addr with default password
                 "password": "abc",
             },
         }
@@ -185,32 +184,31 @@ class TestTransactionViewSetIntegration:
         assert response.status_code == 201
         assert models.Transaction.objects.count() == 1
         result = response.json()
-        # assert Decimal(result["amount"]) == amount
         assert Decimal(result["amount"]) + Decimal(result["fee"]) == amount
         assert isinstance(result["txid"], str)
         assert len(result["txid"]) > 20
 
-    # @staticmethod
-    # @pytest.mark.django_db
-    # @pytest.mark.usefixtures("geth_node")
-    # def test_post_without_password_to_ethereum_address(
-    #     client, ethereum_address
-    # ):
-    #     amount = 0.0000001
-    #     response = client.post(
-    #         urls.reverse("transaction-list"),
-    #         data={
-    #             "currency": "ethereum",
-    #             "from_address": ethereum_address.value,
-    #             "to_address": os.environ.get("GETH_IN_WALLET_ADDRESS"),
-    #             "amount": 0.0000001,
-    #             "subtract_fee_from_amount": False,
-    #         },
-    #     )
-    #     assert response.status_code == 201
-    #     assert models.Transaction.objects.count() == 1
-    #     result = response.json()
-    #     assert float(result["amount"]) == amount
-    #     assert float(result["fee"])
-    #     assert isinstance(result["txid"], str)
-    #     assert len(result["txid"]) > 20
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("geth_node")
+    def test_post_without_password_to_ethereum_address(
+        client, ethereum_address
+    ):
+        amount = 0.0000001
+        response = client.post(
+            urls.reverse("transaction-list"),
+            data={
+                "currency": "ethereum",
+                "from_address": ethereum_address.value,
+                "to_address": os.environ.get("GETH_IN_WALLET_ADDRESS"),
+                "amount": 0.0000001,
+                "subtract_fee_from_amount": False,
+            },
+        )
+        assert response.status_code == 201
+        assert models.Transaction.objects.count() == 1
+        result = response.json()
+        assert float(result["amount"]) == amount
+        assert float(result["fee"])
+        assert isinstance(result["txid"], str)
+        assert len(result["txid"]) > 20
