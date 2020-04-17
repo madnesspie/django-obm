@@ -121,9 +121,9 @@ class Transaction(models.Model):
     def currency(self) -> Currency:
         return self.node.currency
 
-    def send(self):
+    def send(self, subtract_fee_from_amount: bool = False):
         tx = {
-            "amount": float(self.amount),
+            "amount": self.amount,
             "to_address": self.to_address.value,
         }
         if self.currency.name == "ethereum":
@@ -133,10 +133,13 @@ class Transaction(models.Model):
         elif self.currency.name == "bitcoin" and self.fee:
             tx["fee"] = self.fee
 
-        sent_tx = self.node.send_transaction(**tx)
+        sent_tx = self.node.send_transaction(
+            **tx, subtract_fee_from_amount=subtract_fee_from_amount,
+        )
         self.node.close()
         self.txid = sent_tx["txid"]
         self.fee = sent_tx["fee"]
+        self.amount = sent_tx["amount"]
         self.timestamp = sent_tx["timestamp"]
         self.save()
         return self
