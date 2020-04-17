@@ -99,9 +99,11 @@ class TestAddressViewSetIntegration:
         )
         assert response.status_code == 201
         assert models.Address.objects.count() == 1
-        address_value = response.json()["value"]
-        assert isinstance(address_value, str)
-        assert len(address_value) > 20
+        result = response.json()
+        assert isinstance(result["value"], str)
+        assert len(result["value"]) > 20
+        if node.name == 'geth':
+            assert result["password"] == ""
 
 
 

@@ -19,6 +19,7 @@ from django_obm import exceptions, models
 class TestCurrency:
     # @staticmethod
     # @pytest.mark.django_db
+    # TODO: Add validate currency name
     # def test_create_rises_node_does_not_exist_error():
     #     with pytest.raises(django_exceptions.ValidationError):
     #         models.Currency.objects.create(name="LOL")

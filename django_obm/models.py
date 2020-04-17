@@ -11,11 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import functools
 from typing import TypeVar
 
 from django.conf import settings
-from django.core import exceptions as django_exceptions
 from django.db import models
 from obm import connectors, validators
 from obm.sync import mixins
@@ -146,10 +144,7 @@ class Transaction(models.Model):
 
 class Node(models.Model, mixins.ConnectorMixin):
     # TODO: Add validators
-    name = models.CharField(
-        max_length=200,
-        unique=True,
-    )
+    name = models.CharField(max_length=200, unique=True,)
     currency = models.ForeignKey(
         to=Currency,
         on_delete=models.CASCADE,
@@ -183,7 +178,9 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Listen for JSON-RPC connections on this port.",
     )
     timeout = models.FloatField(
-        default=getattr(settings, "OBM_NODE_TIMEOUT", 3),
+        default=getattr(
+            settings, "OBM_NODE_TIMEOUT", connectors.DEFAULT_TIMEOUT
+        ),
         help_text="Timeout for call of node JSON RPC.",
     )
 
