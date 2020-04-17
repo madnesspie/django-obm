@@ -20,6 +20,91 @@ from django import urls
 from django_obm import models
 
 
+class TestCurrencyViewSet:
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_currency", "ethereum_currency")
+    def test_get(client):
+        response = client.get(urls.reverse("currency-list"))
+        assert response.status_code == 200
+        result = response.json()
+        assert len(result) == 2
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get_estimated_fee(monkeypatch, client, node):
+        monkeypatch.setattr(
+            models.Node, "estimate_fee", lambda *_, **__: 0.0001,
+        )
+        response = client.get(
+            urls.reverse("currency-estimated-fee", args=(node.id,),)
+        )
+        assert response.status_code == 200
+        result = response.json()
+        assert result["estimated_fee"] == 0.0001
+
+
+@pytest.mark.integration
+class TestCurrencyViewSetIntegration:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get_estimated_fee(client, node):
+        ethereum_tx = {
+            "to_address": str(os.environ.get("GETH_IN_WALLET_ADDRESS")),
+            "amount": 10,
+        }
+        response = client.get(
+            urls.reverse("currency-estimated-fee", args=(node.id,)),
+            data=ethereum_tx,
+        )
+        assert response.status_code == 200
+        result = response.json()
+        assert isinstance(result["estimated_fee"], float)
+
+
+class TestAddressViewSet:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_get(client):
+        response = client.get(urls.reverse("address-list"))
+        assert response.status_code == 200
+        result = response.json()
+        assert result == []
+
+    @staticmethod
+    @pytest.mark.django_db
+    def test_post(monkeypatch, client, node):
+
+        monkeypatch.setattr(
+            models.Node, "create_address", lambda *_, **__: "fake-addr",
+        )
+
+        response = client.post(
+            urls.reverse("address-list"),
+            data={"currency": node.connector.currency},
+        )
+        assert response.status_code == 201
+        assert models.Address.objects.count() == 1
+        assert response.json()["value"] == "fake-addr"
+
+
+@pytest.mark.integration
+class TestAddressViewSetIntegration:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_post(client, node):
+        response = client.post(
+            urls.reverse("address-list"),
+            data={"currency": node.connector.currency},
+        )
+        assert response.status_code == 201
+        assert models.Address.objects.count() == 1
+        address_value = response.json()["value"]
+        assert isinstance(address_value, str)
+        assert len(address_value) > 20
+
+
+
 class TestTransactionViewSet:
     @staticmethod
     @pytest.mark.django_db
@@ -29,7 +114,6 @@ class TestTransactionViewSet:
         assert response.status_code == 200
         result = response.json()
         assert len(result) == 1
-
 
     @staticmethod
     @pytest.mark.django_db
@@ -64,7 +148,7 @@ class TestTransactionViewSet:
         assert models.Transaction.objects.count() == 1
         result = response.json()
         assert result["txid"] == "fake-txid"
-        assert Decimal(result["fee"]) == Decimal('0.00001')
+        assert Decimal(result["fee"]) == Decimal("0.00001")
 
 
 @pytest.mark.integration
@@ -124,87 +208,3 @@ class TestTransactionViewSetIntegration:
         assert float(result["fee"])
         assert isinstance(result["txid"], str)
         assert len(result["txid"]) > 20
-
-
-class TestAddressViewSet:
-    @staticmethod
-    @pytest.mark.django_db
-    def test_get(client):
-        response = client.get(urls.reverse("address-list"))
-        assert response.status_code == 200
-        result = response.json()
-        assert result == []
-
-    @staticmethod
-    @pytest.mark.django_db
-    def test_post(monkeypatch, client, node):
-
-        monkeypatch.setattr(
-            models.Node, "create_address", lambda *_, **__: "fake-addr",
-        )
-
-        response = client.post(
-            urls.reverse("address-list"),
-            data={"currency": node.connector.currency},
-        )
-        assert response.status_code == 201
-        assert models.Address.objects.count() == 1
-        assert response.json()["value"] == "fake-addr"
-
-
-@pytest.mark.integration
-class TestAddressViewSetIntegration:
-    @staticmethod
-    @pytest.mark.django_db
-    def test_post(client, node):
-        response = client.post(
-            urls.reverse("address-list"),
-            data={"currency": node.connector.currency},
-        )
-        assert response.status_code == 201
-        assert models.Address.objects.count() == 1
-        address_value = response.json()["value"]
-        assert isinstance(address_value, str)
-        assert len(address_value) > 20
-
-
-class TestCurrencyViewSet:
-    @staticmethod
-    @pytest.mark.django_db
-    @pytest.mark.usefixtures("bitcoin_currency", "ethereum_currency")
-    def test_get(client):
-        response = client.get(urls.reverse("currency-list"))
-        assert response.status_code == 200
-        result = response.json()
-        assert len(result) == 2
-
-    @staticmethod
-    @pytest.mark.django_db
-    def test_get_estimated_fee(monkeypatch, client, node):
-        monkeypatch.setattr(
-            models.Node, "estimate_fee", lambda *_, **__: 0.0001,
-        )
-        response = client.get(
-            urls.reverse("currency-estimated-fee", args=(node.id,),)
-        )
-        assert response.status_code == 200
-        result = response.json()
-        assert result["estimated_fee"] == 0.0001
-
-
-@pytest.mark.integration
-class TestCurrencyViewSetIntegration:
-    @staticmethod
-    @pytest.mark.django_db
-    def test_get_estimated_fee(client, node):
-        ethereum_tx = {
-            "to_address": str(os.environ.get("GETH_IN_WALLET_ADDRESS")),
-            "amount": 10,
-        }
-        response = client.get(
-            urls.reverse("currency-estimated-fee", args=(node.id,)),
-            data=ethereum_tx,
-        )
-        assert response.status_code == 200
-        result = response.json()
-        assert isinstance(result["estimated_fee"], float)

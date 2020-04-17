@@ -11,11 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
 from typing import TypeVar
 
 from django.conf import settings
+from django.core import exceptions as django_exceptions
 from django.db import models
-from obm import connectors
+from obm import connectors, validators
 from obm.sync import mixins
 
 from django_obm import exceptions, managers
@@ -25,7 +27,7 @@ TNode = TypeVar("TNode", bound="Node")
 
 
 class Currency(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True,)
 
     class Meta:
         verbose_name_plural = "currencies"
@@ -49,7 +51,6 @@ class Currency(models.Model):
 
 
 class Address(models.Model):
-    # TODO: Rename to value
     value = models.CharField(max_length=500,)
     currency = models.ForeignKey(
         to=Currency,
@@ -136,16 +137,19 @@ class Transaction(models.Model):
 
         sent_tx = self.node.send_transaction(**tx)
         self.node.close()
-        self.txid = sent_tx['txid']
-        self.fee = sent_tx['fee']
-        self.timestamp = sent_tx['timestamp']
+        self.txid = sent_tx["txid"]
+        self.fee = sent_tx["fee"]
+        self.timestamp = sent_tx["timestamp"]
         self.save()
         return self
 
 
 class Node(models.Model, mixins.ConnectorMixin):
     # TODO: Add validators
-    name = models.CharField(max_length=200, unique=True,)
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+    )
     currency = models.ForeignKey(
         to=Currency,
         on_delete=models.CASCADE,
@@ -197,10 +201,7 @@ class Node(models.Model, mixins.ConnectorMixin):
         return self.name
 
     def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
-        if self.name not in connectors.MAPPING:
-            raise exceptions.NodeDoesNotExistError(
-                f'The "{self.name}" node does\'t supported.'
-            )
+        validators.validate_node_is_supported(self.name)
         default_nodes = self.currency.nodes.filter(is_default=True).exclude(
             id=self.id
         )
