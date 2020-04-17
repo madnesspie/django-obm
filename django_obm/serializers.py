@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from django.conf import settings
 from rest_framework import serializers
 
 from django_obm import models
@@ -28,6 +29,14 @@ class TransactionSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=False)
     currency = serializers.SlugRelatedField(
         slug_field="name", queryset=models.Currency.objects.all(),
+    )
+    subtract_fee_from_amount = serializers.BooleanField(
+        required=False,
+        default=getattr(
+            settings,
+            "OBM_REST_SUBTRACT_TRANSACTION_FEE_FROM_AMOUNT_DEFAULT",
+            False,
+        ),
     )
 
     class Meta:
@@ -49,6 +58,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             "block_number",
             "fee",
             "timestamp",
+            "subtract_fee_from_amount",
         ]
 
     def validate(self, attrs):
@@ -87,8 +97,11 @@ class TransactionSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        tx = models.Transaction.objects.create(**validated_data)
-        return tx.send()
+        subtract_fee_from_amount = validated_data.pop(
+            "subtract_fee_from_amount"
+        )
+        tx = models.Transaction(**validated_data)
+        return tx.send(subtract_fee_from_amount=subtract_fee_from_amount)
 
 
 class AddressSerializer(serializers.ModelSerializer):

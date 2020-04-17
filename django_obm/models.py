@@ -15,7 +15,7 @@ from typing import TypeVar
 
 from django.conf import settings
 from django.db import models
-from obm import connectors
+from obm import connectors, validators
 from obm.sync import mixins
 
 from django_obm import exceptions, managers
@@ -25,7 +25,7 @@ TNode = TypeVar("TNode", bound="Node")
 
 
 class Currency(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True,)
 
     class Meta:
         verbose_name_plural = "currencies"
@@ -49,7 +49,6 @@ class Currency(models.Model):
 
 
 class Address(models.Model):
-    # TODO: Rename to value
     value = models.CharField(max_length=500,)
     currency = models.ForeignKey(
         to=Currency,
@@ -122,9 +121,9 @@ class Transaction(models.Model):
     def currency(self) -> Currency:
         return self.node.currency
 
-    def send(self):
+    def send(self, subtract_fee_from_amount: bool = False):
         tx = {
-            "amount": float(self.amount),
+            "amount": self.amount,
             "to_address": self.to_address.value,
         }
         if self.currency.name == "ethereum":
@@ -134,11 +133,14 @@ class Transaction(models.Model):
         elif self.currency.name == "bitcoin" and self.fee:
             tx["fee"] = self.fee
 
-        sent_tx = self.node.send_transaction(**tx)
+        sent_tx = self.node.send_transaction(
+            **tx, subtract_fee_from_amount=subtract_fee_from_amount,
+        )
         self.node.close()
-        self.txid = sent_tx['txid']
-        self.fee = sent_tx['fee']
-        self.timestamp = sent_tx['timestamp']
+        self.txid = sent_tx["txid"]
+        self.fee = sent_tx["fee"]
+        self.amount = sent_tx["amount"]
+        self.timestamp = sent_tx["timestamp"]
         self.save()
         return self
 
@@ -179,7 +181,9 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Listen for JSON-RPC connections on this port.",
     )
     timeout = models.FloatField(
-        default=getattr(settings, "OBM_NODE_TIMEOUT", 3),
+        default=getattr(
+            settings, "OBM_NODE_TIMEOUT", connectors.DEFAULT_TIMEOUT
+        ),
         help_text="Timeout for call of node JSON RPC.",
     )
 
@@ -197,10 +201,7 @@ class Node(models.Model, mixins.ConnectorMixin):
         return self.name
 
     def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
-        if self.name not in connectors.MAPPING:
-            raise exceptions.NodeDoesNotExistError(
-                f'The "{self.name}" node does\'t supported.'
-            )
+        validators.validate_node_is_supported(self.name)
         default_nodes = self.currency.nodes.filter(is_default=True).exclude(
             id=self.id
         )

@@ -29,18 +29,26 @@ DATABASES = {
 }
 
 # Django OBM
-OBM_NODE_TIMEOUT = 2
+OBM_NODE_TIMEOUT = 60
 OBM_LIST_TRANSACTIONS_COUNT = 10
+OBM_REST_SUBTRACT_TRANSACTION_FEE_FROM_AMOUNT_DEFAULT = True
 OBM_COLLECT_TRANSACTION_FREQUENCY = 10
 OBM_NODES_INITIAL_CONFIG = [
     {
-        "currency": {"name": "BTC"},
+        "currency": {"name": "bitcoin"},
         "name": "bitcoin-core",
         "is_default": True,
         "rpc_username": "testnet_user",
         "rpc_password": "testnet_pass",
         "rpc_host": "localhost",
         "rpc_port": 18332,
+    },
+    {
+        "currency": {"name": "ethereum"},
+        "name": "geth",
+        "is_default": True,
+        "rpc_host": 'localhost',
+        "rpc_port": 8545,
     },
 ]
 
