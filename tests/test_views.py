@@ -112,7 +112,7 @@ class TestAddressViewSetIntegration:
 class TestTransactionViewSet:
     @staticmethod
     @pytest.mark.django_db
-    @pytest.mark.usefixtures("btc_transaction")
+    @pytest.mark.usefixtures("bitcoin_transaction")
     def test_get(client):
         response = client.get(urls.reverse("transaction-list"))
         assert response.status_code == 200

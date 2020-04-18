@@ -62,7 +62,7 @@ class Address(models.Model):
         unique_together = (("value", "currency"),)
 
     def __str__(self):
-        return f"{self.currency}:{self.value}"
+        return self.value
 
 
 class Transaction(models.Model):
@@ -112,10 +112,14 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.currency}:{self.txid}"
 
-    # @property
-    # def amount_with_fee(self):
-    #     # TODO: amount with fee only for 'send' category
-    #     return self.amount - abs(self.fee)
+    @property
+    def confirmations_number(self) -> int:
+        # TODO: To obm
+        if self.block_number:
+            latest_block_number = self.node.get_latest_block_number()
+            self.node.close()
+            return latest_block_number - self.block_number
+        return 0
 
     @property
     def currency(self) -> Currency:
