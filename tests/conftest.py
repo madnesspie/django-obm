@@ -143,7 +143,7 @@ def bitcoin_transaction(bitcoin_core_node):
             value="send",
             currency=bitcoin_core_node.currency,
         ),
-        txid="'874511dfc4468e5db2ed7bb17d13449e17822fa6cc2a942acfa101a7128bc2ec'",
+        txid="874511dfc4468e5db2ed7bb17d13449e17822fa6cc2a942acfa101a7128bc2ec",
         category="send",
         amount=Decimal("0.0000086600"),
         fee=Decimal('0.0000013400'),

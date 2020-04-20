@@ -106,6 +106,8 @@ class Transaction(models.Model):
         null=True, help_text="Transaction creation or detection timestamp.",
     )
 
+    objects = managers.TransactionManager()
+
     class Meta:
         unique_together = (("node", "txid"),)
 

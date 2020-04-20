@@ -58,24 +58,12 @@ class NodeManager(models.Manager):
             node.close()
         return recent_transactions
 
-    def bulk_create_recent_transactions(self) -> list:
-        # collected_txs += self.transaction_model.objects.bulk_create(  # type: ignore
-        #     [
-        #         self.transaction_model(  # type: ignore
-        #             node=node,
-        #             from_address=to_address(
-        #                 tx.pop("from_address"), node.currency
-        #             ),
-        #             to_address=to_address(
-        #                 tx.pop("to_address"), node.currency,
-        #             ),
-        #             **omit_info(tx),
-        #         )
-        #         for tx in recent_txs
-        #     ],
-        #     ignore_conflicts=True,
-        # )
-        pass
+    def sync_recent_transactions(self, limit: int = 50) -> list:
+        recent_tx = self.fetch_recent_transactions(limit)
+        return self.transaction_model.objects.bulk_create(  # type: ignore
+            recent_tx, ignore_conflicts=True,
+        )
+
 
 class TransactionManager(models.Manager):
     def sync(self) -> list:
@@ -98,16 +86,16 @@ class TransactionManager(models.Manager):
 
         txs_by_node = collections.defaultdict(list)
         for tx in self.filter(block_number=None):
-            txs_by_node[tx.node.connector.name].append(tx)
+            txs_by_node[tx.node].append(tx)
 
         synchronized_txs = []
         for node, txs in txs_by_node.items():
             current_txs = node.fetch_in_wallet_transactions(
-                txs.values_list("txid", flat=True)  # type: ignore
+                [tx.txid for tx in txs]
             )
-            synchronized_txs += self.bulk_update(
-                update(txs, current_txs), ["block_number"]
-            )
+            updated_txs = update(txs, current_txs)
+            synchronized_txs += updated_txs
+            self.bulk_update(updated_txs, ["block_number"])
             node.close()
 
         return synchronized_txs
