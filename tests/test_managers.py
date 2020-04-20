@@ -15,19 +15,29 @@ import pytest
 
 from django_obm import models
 
+# @staticmethod
+# @pytest.mark.django_db
+# @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
+# def test_fetch_recent_transactions():
+#     # Calls twice to check that method ignores conflicts
+#     models.Node.objects.fetch_recent_transactions()
+#     txs = models.Node.objects.fetch_recent_transactions()
+#     for tx in txs:
+#         queryset = models.Transaction.objects.filter(txid=tx.txid)
+#         assert queryset.count() == 1
+#         tx_from_db = queryset.first()
+#         assert tx_from_db
+#         assert isinstance(tx_from_db.pk, int)
+
 
 @pytest.mark.integration
-class TestIntegrationNodeManager:
+class TestNodeManagerIntegration:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
-    def test_collect_transactions():
-        # Calls twice to check that method ignores conflicts
-        models.Node.objects.collect_transactions()
-        txs = models.Node.objects.collect_transactions()
+    def test_fetch_recent_transactions():
+        limit = 5
+        txs = models.Node.objects.fetch_recent_transactions(limit)
+        assert len(txs) <= limit * 2
         for tx in txs:
-            queryset = models.Transaction.objects.filter(txid=tx.txid)
-            assert queryset.count() == 1
-            tx_from_db = queryset.first()
-            assert tx_from_db
-            assert isinstance(tx_from_db.pk, int)
+            assert isinstance(tx, models.Transaction)
