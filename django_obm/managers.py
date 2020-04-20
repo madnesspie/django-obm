@@ -58,11 +58,23 @@ class NodeManager(models.Manager):
             node.close()
         return recent_transactions
 
-    def sync_recent_transactions(self, limit: int = 50) -> list:
+    def bulk_create_recent_transactions(self, limit: int = 50) -> list:
+        """Create in the database recent transactions from blockchain.
+
+        Args:
+            limit: Limit of recent transactions to create. Defaults to 50.
+
+        Returns:
+            List of created recent transactions.
+        """
         recent_tx = self.fetch_recent_transactions(limit)
         return self.transaction_model.objects.bulk_create(  # type: ignore
             recent_tx, ignore_conflicts=True,
         )
+
+    def sync_transactions(self, recent_limit: int = 50):
+        self.bulk_create_recent_transactions(recent_limit)
+        self.transaction_model.objects.sync()  # type: ignore
 
 
 class TransactionManager(models.Manager):

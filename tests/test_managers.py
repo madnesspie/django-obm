@@ -31,16 +31,27 @@ class TestNodeManagerIntegration:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
-    def test_sync_recent_transactions():
+    def test_bulk_create_recent_transactions():
         # Calls twice to check that method ignores conflicts
-        models.Node.objects.sync_recent_transactions(limit=1)
-        txs = models.Node.objects.sync_recent_transactions(limit=5)
+        models.Node.objects.bulk_create_recent_transactions(limit=1)
+        txs = models.Node.objects.bulk_create_recent_transactions(limit=5)
         for tx in txs:
             queryset = models.Transaction.objects.filter(txid=tx.txid)
             assert queryset.count() == 1
             tx_from_db = queryset.first()
             assert tx_from_db
             assert isinstance(tx_from_db.pk, int)
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures(
+        "bitcoin_core_node", "geth_node"
+    )
+    def test_sync_transactions(bitcoin_transaction):
+        models.Node.objects.sync_transactions(recent_limit=5)
+        assert 1 < models.Transaction.objects.count() <= 11
+        bitcoin_transaction.refresh_from_db()
+        assert bitcoin_transaction.block_number is not None
 
 
 @pytest.mark.integration
