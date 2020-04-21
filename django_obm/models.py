@@ -187,9 +187,7 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Listen for JSON-RPC connections on this port.",
     )
     timeout = models.FloatField(
-        default=getattr(
-            settings, "OBM_NODE_TIMEOUT", connectors.DEFAULT_TIMEOUT
-        ),
+        default=connectors.DEFAULT_TIMEOUT,
         help_text="Timeout for call of node JSON RPC.",
     )
 
