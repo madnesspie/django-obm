@@ -68,3 +68,12 @@ class TestNode:
                 rpc_host="example.com",
                 rpc_port=18332,
             )
+
+
+@pytest.mark.integration
+class TestTransaction:
+    @staticmethod
+    @pytest.mark.django_db
+    def test_confirmations_number(bitcoin_transaction):
+        bitcoin_transaction.sync()
+        assert bitcoin_transaction.confirmations_number > 0

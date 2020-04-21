@@ -17,17 +17,56 @@ from django_obm import models
 
 
 @pytest.mark.integration
-class TestIntegrationNodeManager:
+class TestNodeManagerIntegration:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
-    def test_collect_transactions():
+    def test_fetch_recent_transactions():
+        txs = models.Node.objects.fetch_recent_transactions(limit=5)
+        # Because there are two nodes in the database
+        assert len(txs) <= 5 * 2
+        for tx in txs:
+            assert isinstance(tx, models.Transaction)
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_core_node", "geth_node")
+    def test_bulk_create_recent_transactions():
         # Calls twice to check that method ignores conflicts
-        models.Node.objects.collect_transactions()
-        txs = models.Node.objects.collect_transactions()
+        models.Node.objects.bulk_create_recent_transactions(limit=1)
+        txs = models.Node.objects.bulk_create_recent_transactions(limit=5)
         for tx in txs:
             queryset = models.Transaction.objects.filter(txid=tx.txid)
             assert queryset.count() == 1
             tx_from_db = queryset.first()
             assert tx_from_db
             assert isinstance(tx_from_db.pk, int)
+
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures(
+        "bitcoin_core_node", "geth_node"
+    )
+    def test_sync_transactions(bitcoin_transaction):
+        txs = models.Node.objects.sync_transactions(recent_limit=5)
+        # One tx exists and 5 for each node will added
+        assert len(txs) == 11
+        bitcoin_transaction.refresh_from_db()
+        assert bitcoin_transaction.block_number is not None
+        # Tests txs order
+        prev_block = txs[0].block_number
+        for tx in txs:
+            assert tx.block_number <= prev_block
+            prev_block = tx.block_number
+
+
+@pytest.mark.integration
+class TestTransactionManagerIntegration:
+    @staticmethod
+    @pytest.mark.django_db
+    @pytest.mark.usefixtures("bitcoin_transaction")
+    def test_sync():
+        txs = models.Transaction.objects.sync()
+        assert isinstance(txs, list)
+        assert len(txs) == 1
+        assert txs[0].block_number is not None

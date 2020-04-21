@@ -56,20 +56,21 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         frequency = options["frequency"]
-        self.log(f"Start receipts processing with {frequency} sec. frequency")
+        self.log(
+            f"Start sync transactions proccess with "
+            f"{frequency} sec. frequency"
+        )
 
         while True:
-            self.log("Run receipts processing")
+            self.log("Run synchronization")
             try:
-                result = models.Node.objects.collect_transactions()
+                result = models.Node.objects.sync_transactions()
             except Exception as exc:  # pylint: disable=broad-except
                 if options["raise_errors"]:
                     raise exc
                 self.log(traceback.format_exc(), style=self.style.ERROR)
             else:
-                self.log(
-                    "Collected recently transactions", style=self.style.SUCCESS
-                )
+                self.log("Synchronized transactions", style=self.style.SUCCESS)
 
             if options["once"]:
                 break

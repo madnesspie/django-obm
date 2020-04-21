@@ -15,6 +15,7 @@
 # pylint: disable = redefined-outer-name
 
 import os
+from decimal import Decimal
 
 import dotenv
 import pytest
@@ -134,19 +135,20 @@ def node(
     }
     return node_mapping[request.param]
 
-
 @pytest.fixture
-def btc_transaction(bitcoin_core_node):
+def bitcoin_transaction(bitcoin_core_node):
     tx = models.Transaction.objects.create(
         node=bitcoin_core_node,
         to_address=models.Address.objects.create(
-            value="fake-addr",
+            value="send",
             currency=bitcoin_core_node.currency,
         ),
-        txid="fake-txid",
-        category="receive",
-        amount=0.5,
-        block_number=6200,
+        txid="874511dfc4468e5db2ed7bb17d13449e17822fa6cc2a942acfa101a7128bc2ec",
+        category="send",
+        amount=Decimal("0.0000086600"),
+        fee=Decimal('0.0000013400'),
+        block_number=None,
+        timestamp=1587206493,
     )
     yield tx
     tx.delete()

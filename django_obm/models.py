@@ -13,7 +13,6 @@
 # limitations under the License.
 from typing import TypeVar
 
-from django.conf import settings
 from django.db import models
 from obm import connectors, validators
 from obm.sync import mixins
@@ -62,10 +61,10 @@ class Address(models.Model):
         unique_together = (("value", "currency"),)
 
     def __str__(self):
-        return f"{self.currency}:{self.value}"
+        return self.value
 
 
-class Transaction(models.Model):
+class Transaction(models.Model, mixins.TransactionMixin):
     node = models.ForeignKey(
         to="Node",
         on_delete=models.CASCADE,
@@ -106,16 +105,22 @@ class Transaction(models.Model):
         null=True, help_text="Transaction creation or detection timestamp.",
     )
 
+    objects = managers.TransactionManager()
+
     class Meta:
         unique_together = (("node", "txid"),)
 
     def __str__(self):
         return f"{self.currency}:{self.txid}"
 
-    # @property
-    # def amount_with_fee(self):
-    #     # TODO: amount with fee only for 'send' category
-    #     return self.amount - abs(self.fee)
+    @property
+    def confirmations_number(self) -> int:
+        # TODO: To obm
+        if self.block_number:
+            latest_block_number = self.node.get_latest_block_number()
+            self.node.close()
+            return latest_block_number - self.block_number
+        return 0
 
     @property
     def currency(self) -> Currency:
@@ -181,9 +186,7 @@ class Node(models.Model, mixins.ConnectorMixin):
         help_text="Listen for JSON-RPC connections on this port.",
     )
     timeout = models.FloatField(
-        default=getattr(
-            settings, "OBM_NODE_TIMEOUT", connectors.DEFAULT_TIMEOUT
-        ),
+        default=connectors.DEFAULT_TIMEOUT,
         help_text="Timeout for call of node JSON RPC.",
     )
 

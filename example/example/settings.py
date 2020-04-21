@@ -120,15 +120,21 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Django OBM
-BLOCKCHAIN_NODE_TIMEOUT = 1
-BLOCKCHAIN_NODES_INITIAL_CONFIG = [
+OBM_NODES_INITIAL_CONFIG = [
     {
-        "currency": {"name": "BTC", "min_confirmations": 2,},
+        "currency": {"name": "bitcoin"},
         "name": "bitcoin-core",
         "is_default": True,
         "rpc_username": "testnet_user",
         "rpc_password": "testnet_pass",
         "rpc_host": "localhost",
         "rpc_port": 18332,
+    },
+    {
+        "currency": {"name": "ethereum"},
+        "name": "geth",
+        "is_default": True,
+        "rpc_host": 'localhost',
+        "rpc_port": 8545,
     },
 ]
