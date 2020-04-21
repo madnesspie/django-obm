@@ -62,7 +62,7 @@ class Command(BaseCommand):
         )
 
         while True:
-            self.log("Run receipts processing")
+            self.log("Run synchronization")
             try:
                 result = models.Node.objects.sync_transactions()
             except Exception as exc:  # pylint: disable=broad-except
@@ -70,9 +70,7 @@ class Command(BaseCommand):
                     raise exc
                 self.log(traceback.format_exc(), style=self.style.ERROR)
             else:
-                self.log(
-                    "Synced recently transactions", style=self.style.SUCCESS
-                )
+                self.log("Synchronized transactions", style=self.style.SUCCESS)
 
             if options["once"]:
                 break

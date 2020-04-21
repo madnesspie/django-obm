@@ -48,10 +48,16 @@ class TestNodeManagerIntegration:
         "bitcoin_core_node", "geth_node"
     )
     def test_sync_transactions(bitcoin_transaction):
-        models.Node.objects.sync_transactions(recent_limit=5)
-        assert 1 < models.Transaction.objects.count() <= 11
+        txs = models.Node.objects.sync_transactions(recent_limit=5)
+        # One tx exists and 5 for each node will added
+        assert len(txs) == 11
         bitcoin_transaction.refresh_from_db()
         assert bitcoin_transaction.block_number is not None
+        # Tests txs order
+        prev_block = txs[0].block_number
+        for tx in txs:
+            assert tx.block_number <= prev_block
+            prev_block = tx.block_number
 
 
 @pytest.mark.integration

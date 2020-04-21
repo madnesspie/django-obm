@@ -25,10 +25,10 @@ class TestCommand:
     def test_command():
         out = io.StringIO()
         management.call_command(
-            "collect_transactions", once=True, stdout=out,
+            "run_sync_transactions", once=True, stdout=out,
         )
         assert "Start" in out.getvalue()
-        assert "Collected" in out.getvalue()
+        assert "Synchronized" in out.getvalue()
 
     @staticmethod
     @pytest.mark.django_db
@@ -43,6 +43,6 @@ class TestCommand:
     def test_frequency(options, output):
         out = io.StringIO()
         management.call_command(
-            "collect_transactions", **options, once=True, stdout=out,
+            "run_sync_transactions", **options, once=True, stdout=out,
         )
         assert output in out.getvalue()
