@@ -70,6 +70,7 @@ class TestNode:
             )
 
 
+@pytest.mark.integration
 class TestTransaction:
     @staticmethod
     @pytest.mark.django_db
