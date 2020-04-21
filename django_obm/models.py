@@ -64,7 +64,7 @@ class Address(models.Model):
         return self.value
 
 
-class Transaction(models.Model):
+class Transaction(models.Model, mixins.TransactionMixin):
     node = models.ForeignKey(
         to="Node",
         on_delete=models.CASCADE,
