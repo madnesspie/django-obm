@@ -73,8 +73,21 @@ class NodeManager(models.Manager):
         )
 
     def sync_transactions(self, recent_limit: int = 50):
-        self.bulk_create_recent_transactions(recent_limit)
-        self.transaction_model.objects.sync()  # type: ignore
+        def remove_duplicates(recent_txs, synchronized_txs):
+            recent_txs = {tx.txid: tx for tx in recent_txs}
+            synchronized_txs = {tx.txid: tx for tx in synchronized_txs}
+            for txid, tx in recent_txs.items():
+                if txid not in synchronized_txs:
+                    synchronized_txs[txid] = tx
+            return sorted(
+                synchronized_txs.values(),
+                key=lambda tx: tx.block_number,
+                reverse=True,
+            )
+
+        recent_txs = self.bulk_create_recent_transactions(recent_limit)
+        synchronized_txs = self.transaction_model.objects.sync()  # type: ignore
+        return remove_duplicates(recent_txs, synchronized_txs)
 
 
 class TransactionManager(models.Manager):
