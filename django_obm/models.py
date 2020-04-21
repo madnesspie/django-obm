@@ -13,7 +13,6 @@
 # limitations under the License.
 from typing import TypeVar
 
-from django.conf import settings
 from django.db import models
 from obm import connectors, validators
 from obm.sync import mixins

@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import collections
-from typing import Optional
 
-from django.conf import settings
 from django.db import models
 
 
