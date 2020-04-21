@@ -16,9 +16,12 @@ import io
 import pytest
 from django.core import management
 
+from django_obm import models
+
 
 @pytest.mark.django_db
 def test_command():
     out = io.StringIO()
     management.call_command("init_nodes", stdout=out)
+    assert models.Node.objects.all().count() > 0
     assert "successfully" in out.getvalue()
