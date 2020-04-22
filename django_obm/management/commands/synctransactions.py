@@ -23,20 +23,20 @@ from django_obm import models
 
 class Command(BaseCommand):
     DEFAULT_FREQUENCY = 60
-    help = "Processes receipts with specified frequency."
+    help = "Sync transactions with blockchain with specified frequency."
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--once",
             action="store_true",
             default=False,
-            help="Run receipts processing only once.",
+            help="Run sync transaction only once.",
         )
         parser.add_argument(
             "--raise-errors",
             action="store_true",
             default=False,
-            help="Raise any error that occur when method.",
+            help="Raise any error that occur and stop the daemon.",
         )
         parser.add_argument(
             "--frequency",
@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 self.DEFAULT_FREQUENCY,
             ),
             type=int,
-            help="Raise any error that occur due execution.",
+            help="The frequency of sync transactions running.",
         )
 
     def log(self, msg, style=None):

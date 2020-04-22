@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import sys
+
 import pytest
 
 from django_obm import models
@@ -56,8 +58,9 @@ class TestNodeManagerIntegration:
         # Tests txs order
         prev_block = txs[0].block_number
         for tx in txs:
-            assert tx.block_number <= prev_block
-            prev_block = tx.block_number
+            block_number = tx.block_number or sys.maxsize
+            assert block_number <= prev_block
+            prev_block = block_number
 
 
 @pytest.mark.integration

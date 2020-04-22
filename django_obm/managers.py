@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import collections
+import sys
 
 from django.db import models
 
@@ -79,11 +80,18 @@ class NodeManager(models.Manager):
                     synchronized_txs[txid] = tx
             return sorted(
                 synchronized_txs.values(),
-                key=lambda tx: tx.block_number,
+                key=lambda tx: (
+                    # If block_number is None it means that transaction still
+                    # in mempool (wait for confirmation). In this case, it
+                    # should be considered as the newest (with the highest
+                    # block number).
+                    sys.maxsize if tx.block_number is None else tx.block_number
+                ),
                 reverse=True,
             )
 
         recent_txs = self.bulk_create_recent_transactions(recent_limit)
+        # TODO: Exclude transactions that have just added
         synchronized_txs = self.transaction_model.objects.sync()  # type: ignore
         return remove_duplicates(recent_txs, synchronized_txs)
 

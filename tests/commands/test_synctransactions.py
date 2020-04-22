@@ -25,7 +25,7 @@ class TestCommand:
     def test_command():
         out = io.StringIO()
         management.call_command(
-            "run_sync_transactions", once=True, stdout=out,
+            "synctransactions", once=True, stdout=out,
         )
         assert "Start" in out.getvalue()
         assert "Synchronized" in out.getvalue()
@@ -40,9 +40,9 @@ class TestCommand:
             ({"frequency": 15}, "15 sec. frequency",),
         ),
     )
-    def test_frequency(options, output):
+    def test_command_with_frequency(options, output):
         out = io.StringIO()
         management.call_command(
-            "run_sync_transactions", **options, once=True, stdout=out,
+            "synctransactions", **options, once=True, stdout=out,
         )
         assert output in out.getvalue()
