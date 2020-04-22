@@ -84,6 +84,7 @@ class NodeManager(models.Manager):
             )
 
         recent_txs = self.bulk_create_recent_transactions(recent_limit)
+        # TODO: Exclude transactions that have just added
         synchronized_txs = self.transaction_model.objects.sync()  # type: ignore
         return remove_duplicates(recent_txs, synchronized_txs)
 
