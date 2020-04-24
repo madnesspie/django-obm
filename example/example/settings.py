@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
+
+from django_obm import logger
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +28,7 @@ SECRET_KEY = "eux65c21$8^h$4&ng*nlaytk1%ikn!!kfmdr2&_a8cpn25m@5s"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # type: ignore
 
 
 # Application definition
@@ -119,6 +122,45 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] %(levelname)-7s  %(name)-25s %(message)s",
+            "formatTime": "%d/%m/%Y %H:%M:%S",
+            "style": "%",
+        },
+    },
+    "filters": {
+        "info_filter": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": logger.info_filter,
+        },
+    },
+    "handlers": {
+        "stdout": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "filters": ["info_filter"],
+            "formatter": "verbose",
+        },
+        "stderr": {
+            "level": "WARNING",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django_obm.management.commands.synctransactions": {
+            "handlers": ["stdout", "stderr"],
+            "level": "DEBUG",
+        }
+    },
+}
+
 # Django OBM
 OBM_NODES_INITIAL_CONFIG = [
     {
@@ -134,7 +176,7 @@ OBM_NODES_INITIAL_CONFIG = [
         "currency": {"name": "ethereum"},
         "name": "geth",
         "is_default": True,
-        "rpc_host": 'localhost',
+        "rpc_host": "localhost",
         "rpc_port": 8545,
     },
 ]

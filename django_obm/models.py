@@ -116,7 +116,7 @@ class Transaction(models.Model, mixins.TransactionMixin):
     @property
     def confirmations_number(self) -> int:
         # TODO: To obm
-        if self.block_number:
+        if self.block_number is not None:
             latest_block_number = self.node.get_latest_block_number()
             self.node.close()
             return latest_block_number - self.block_number

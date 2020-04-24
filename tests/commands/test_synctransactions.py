@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import io
-
 import pytest
 from django.core import management
 
@@ -22,13 +20,12 @@ class TestCommand:
     @staticmethod
     @pytest.mark.django_db
     @pytest.mark.usefixtures("bitcoin_core_node")
-    def test_command():
-        out = io.StringIO()
+    def test_command(caplog):
         management.call_command(
-            "synctransactions", once=True, stdout=out,
+            "synctransactions", once=True
         )
-        assert "Start" in out.getvalue()
-        assert "Synchronized" in out.getvalue()
+        assert "Start" in caplog.text
+        assert "Synchronized" in caplog.text
 
     @staticmethod
     @pytest.mark.django_db
@@ -40,9 +37,8 @@ class TestCommand:
             ({"frequency": 15}, "15 sec. frequency",),
         ),
     )
-    def test_command_with_frequency(options, output):
-        out = io.StringIO()
+    def test_command_with_frequency(caplog, options, output):
         management.call_command(
-            "synctransactions", **options, once=True, stdout=out,
+            "synctransactions", **options, once=True
         )
-        assert output in out.getvalue()
+        assert output in caplog.text

@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import sys
+
+from django_obm import logger
 
 SECRET_KEY = "fake-key"
 INSTALLED_APPS = [
@@ -26,6 +29,45 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
+}
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] %(levelname)-7s  %(name)-25s %(message)s",
+            "formatTime": "%d/%m/%Y %H:%M:%S",
+            "style": "%",
+        },
+    },
+    "filters": {
+        "info_filter": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": logger.info_filter,
+        },
+    },
+    "handlers": {
+        "stdout": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "filters": ["info_filter"],
+            "formatter": "verbose",
+        },
+        "stderr": {
+            "level": "WARNING",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django_obm.management.commands.synctransactions": {
+            "handlers": ["stdout", "stderr"],
+            "level": "DEBUG",
+        }
+    },
 }
 
 # Django OBM
@@ -46,7 +88,7 @@ OBM_NODES_INITIAL_CONFIG = [
         "currency": {"name": "ethereum"},
         "name": "geth",
         "is_default": True,
-        "rpc_host": 'localhost',
+        "rpc_host": "localhost",
         "rpc_port": 8545,
     },
 ]
