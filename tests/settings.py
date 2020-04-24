@@ -37,8 +37,9 @@ LOGGING = {
     "disable_existing_loggers": True,
     "formatters": {
         "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",
+            "format": "[%(asctime)s] %(levelname)-7s  %(name)-25s %(message)s",
+            "formatTime": "%d/%m/%Y %H:%M:%S",
+            "style": "%",
         },
     },
     "filters": {
@@ -87,7 +88,7 @@ OBM_NODES_INITIAL_CONFIG = [
         "currency": {"name": "ethereum"},
         "name": "geth",
         "is_default": True,
-        "rpc_host": 'localhost',
+        "rpc_host": "localhost",
         "rpc_port": 8545,
     },
 ]

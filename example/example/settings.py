@@ -128,8 +128,9 @@ LOGGING = {
     "disable_existing_loggers": True,
     "formatters": {
         "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",
+            "format": "[%(asctime)s] %(levelname)-7s  %(name)-25s %(message)s",
+            "formatTime": "%d/%m/%Y %H:%M:%S",
+            "style": "%",
         },
     },
     "filters": {

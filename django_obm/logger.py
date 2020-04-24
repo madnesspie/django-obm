@@ -1,7 +1,5 @@
 import logging
 
-from django.conf import settings
-
 logging.addLevelName(logging.DEBUG, "🐛 DEBUG")
 logging.addLevelName(logging.INFO, "📑 INFO")
 logging.addLevelName(logging.WARNING, "⚠️ WARNING")
