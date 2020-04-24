@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import sys
+
+from django_obm import logger
 
 SECRET_KEY = "fake-key"
 INSTALLED_APPS = [
@@ -26,6 +29,44 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
+}
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+    },
+    "filters": {
+        "info_filter": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": logger.info_filter,
+        },
+    },
+    "handlers": {
+        "stdout": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "filters": ["info_filter"],
+            "formatter": "verbose",
+        },
+        "stderr": {
+            "level": "WARNING",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django_obm.management.commands.synctransactions": {
+            "handlers": ["stdout", "stderr"],
+            "level": "DEBUG",
+        }
+    },
 }
 
 # Django OBM

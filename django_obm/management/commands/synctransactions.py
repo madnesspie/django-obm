@@ -13,16 +13,16 @@
 # limitations under the License.
 import time
 import traceback
-from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from django_obm import models
+from django_obm import logger, models
 
 
 class Command(BaseCommand):
     DEFAULT_FREQUENCY = 60
+    logger = logger.get(__name__)
     help = "Sync transactions with blockchain with specified frequency."
 
     def add_arguments(self, parser):
@@ -50,28 +50,25 @@ class Command(BaseCommand):
             help="The frequency of sync transactions running.",
         )
 
-    def log(self, msg, style=None):
-        msg = f"{datetime.now()}:   {msg}"
-        self.stdout.write(style(msg) if style else msg)
-
     def handle(self, *args, **options):
         frequency = options["frequency"]
-        self.log(
+        self.logger.info(
             f"Start sync transactions proccess with "
             f"{frequency} sec. frequency"
         )
 
         while True:
-            self.log("Run synchronization")
+            self.logger.debug("Run synchronization")
             try:
                 result = models.Node.objects.sync_transactions()
             except Exception as exc:  # pylint: disable=broad-except
                 if options["raise_errors"]:
                     raise exc
-                self.log(traceback.format_exc(), style=self.style.ERROR)
+                self.logger.error(traceback.format_exc())
             else:
-                self.log("Synchronized transactions", style=self.style.SUCCESS)
+                self.logger.debug("Synchronized transactions")
 
             if options["once"]:
                 break
+            self.logger.debug(f"Sleep for {frequency} sec.")
             time.sleep(frequency)
