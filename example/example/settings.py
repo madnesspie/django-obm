@@ -10,10 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import logging
 import os
 import sys
-
-from django_obm import logger
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -123,6 +122,12 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Logging
+logging.addLevelName(logging.DEBUG, "🐛 DEBUG")
+logging.addLevelName(logging.INFO, "📑 INFO")
+logging.addLevelName(logging.WARNING, "⚠️ WARNING")
+logging.addLevelName(logging.ERROR, "🚨 ERROR")
+logging.addLevelName(logging.CRITICAL, "💥 CRITICAL")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -136,7 +141,7 @@ LOGGING = {
     "filters": {
         "info_filter": {
             "()": "django.utils.log.CallbackFilter",
-            "callback": logger.info_filter,
+            "callback": lambda record: record.levelno < logging.WARNING,
         },
     },
     "handlers": {
