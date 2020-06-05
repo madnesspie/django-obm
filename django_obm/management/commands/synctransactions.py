@@ -61,7 +61,7 @@ class Command(BaseCommand):
         while True:
             self.logger.debug("Run synchronization")
             try:
-                result = models.Node.objects.sync_transactions()
+                models.Node.objects.sync_transactions()
             except Exception as exc:  # pylint: disable=broad-except
                 if options["raise_errors"]:
                     raise exc
