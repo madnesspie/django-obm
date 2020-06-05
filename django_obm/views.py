@@ -48,11 +48,14 @@ class CurrencyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CurrencySerializer
     queryset = models.Currency.objects.all()
 
-    @decorators.action(detail=True, methods=["get"])
-    def estimated_fee(
-        self, request, pk=None
-    ):  # pylint: disable=unused-argument
-        currency = self.get_object()
+    # pylint: disable=unused-argument, no-self-use
+    @decorators.action(detail=False, methods=["post"])
+    def estimate_fee(self, request):
+        serializer = serializers.CurrencyEstimateFeeSerializer(
+            data=request.data
+        )
+        assert serializer.is_valid(raise_exception=True)
+        currency = serializer.validated_data["currency"]
         node = currency.default_node
         estimated_fee = node.estimate_fee(
             from_address=request.query_params.get("from_address"),

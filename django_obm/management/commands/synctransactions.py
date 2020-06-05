@@ -11,18 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 import time
 import traceback
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from django_obm import logger, models
+from django_obm import models
 
 
 class Command(BaseCommand):
     DEFAULT_FREQUENCY = 60
-    logger = logger.get(__name__)
+    logger = logging.getLogger(__name__)
     help = "Sync transactions with blockchain with specified frequency."
 
     def add_arguments(self, parser):
@@ -60,7 +61,7 @@ class Command(BaseCommand):
         while True:
             self.logger.debug("Run synchronization")
             try:
-                result = models.Node.objects.sync_transactions()
+                models.Node.objects.sync_transactions()
             except Exception as exc:  # pylint: disable=broad-except
                 if options["raise_errors"]:
                     raise exc

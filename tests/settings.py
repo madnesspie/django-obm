@@ -11,10 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 import os
 import sys
-
-from django_obm import logger
 
 SECRET_KEY = "fake-key"
 INSTALLED_APPS = [
@@ -32,6 +31,12 @@ DATABASES = {
 }
 
 # Logging
+logging.addLevelName(logging.DEBUG, "🐛 DEBUG")
+logging.addLevelName(logging.INFO, "📑 INFO")
+logging.addLevelName(logging.WARNING, "⚠️ WARNING")
+logging.addLevelName(logging.ERROR, "🚨 ERROR")
+logging.addLevelName(logging.CRITICAL, "💥 CRITICAL")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -45,7 +50,7 @@ LOGGING = {
     "filters": {
         "info_filter": {
             "()": "django.utils.log.CallbackFilter",
-            "callback": logger.info_filter,
+            "callback": lambda record: record.levelno < logging.WARNING,
         },
     },
     "handlers": {

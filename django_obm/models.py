@@ -203,7 +203,7 @@ class Node(models.Model, mixins.ConnectorMixin):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
+    def save(self, *args, **kwargs):  # pylint: disable=arguments-differ, signature-differs
         validators.validate_node_is_supported(self.name)
         default_nodes = self.currency.nodes.filter(is_default=True).exclude(
             id=self.id
