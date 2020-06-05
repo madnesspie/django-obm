@@ -125,10 +125,13 @@ def geth_node(ethereum_currency):
     node.delete()
 
 
+# pylint: disable=unused-argument
 @pytest.fixture(params=["bitcoin-core", "geth"])
 def node(
-    request, geth_node, bitcoin_core_node
-):  # pylint: disable=unused-argument
+    request,
+    geth_node,
+    bitcoin_core_node
+):
     node_mapping = {
         'bitcoin-core': bitcoin_core_node,
         'geth': geth_node,

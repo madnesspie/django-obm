@@ -32,12 +32,17 @@ class TestCurrencyViewSet:
 
     @staticmethod
     @pytest.mark.django_db
-    def test_get_estimated_fee(monkeypatch, client, node):
+    def test_get_estimate_fee(monkeypatch, client, node):
         monkeypatch.setattr(
-            models.Node, "estimate_fee", lambda *_, **__: 0.0001,
+            models.Node,
+            "estimate_fee",
+            lambda *_, **__: 0.0001,
         )
-        response = client.get(
-            urls.reverse("currency-estimated-fee", args=(node.id,),)
+        response = client.post(
+            urls.reverse("currency-estimate-fee"),
+            data={
+                "currency": node.connector.currency,
+            }
         )
         assert response.status_code == 200
         result = response.json()
@@ -48,13 +53,14 @@ class TestCurrencyViewSet:
 class TestCurrencyViewSetIntegration:
     @staticmethod
     @pytest.mark.django_db
-    def test_get_estimated_fee(client, node):
+    def test_get_estimate_fee(client, node):
         ethereum_tx = {
+            "currency": node.connector.currency,
             "to_address": str(os.environ.get("GETH_IN_WALLET_ADDRESS")),
             "amount": 10,
         }
-        response = client.get(
-            urls.reverse("currency-estimated-fee", args=(node.id,)),
+        response = client.post(
+            urls.reverse("currency-estimate-fee"),
             data=ethereum_tx,
         )
         assert response.status_code == 200

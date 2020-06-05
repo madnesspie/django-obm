@@ -129,3 +129,20 @@ class AddressSerializer(serializers.ModelSerializer):
         return models.Address.objects.create(
             value=address_value, currency=currency,
         )
+
+
+# pylint: disable=abstract-method
+class CurrencyEstimateFeeSerializer(serializers.Serializer):
+    currency = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        currency_name = attrs["currency"]
+        currency = models.Currency.objects \
+            .filter(name=currency_name) \
+            .first()
+        if not currency:
+            raise serializers.ValidationError(
+                f"Currency '{currency.name}'' does not exist."
+            )
+        attrs["currency"] = currency
+        return attrs
