@@ -117,8 +117,8 @@ class Transaction(models.Model, mixins.TransactionMixin):
     def confirmations_number(self) -> int:
         # TODO: To obm
         if self.block_number is not None:
-            latest_block_number = self.node.get_latest_block_number()
-            self.node.close()
+            with self.node:
+                latest_block_number = self.node.get_latest_block_number()
             return latest_block_number - self.block_number
         return 0
 
@@ -138,10 +138,12 @@ class Transaction(models.Model, mixins.TransactionMixin):
         elif self.currency.name == "bitcoin" and self.fee:
             tx["fee"] = self.fee
 
-        sent_tx = self.node.send_transaction(
-            **tx, subtract_fee_from_amount=subtract_fee_from_amount,
-        )
-        self.node.close()
+        with self.node:
+            sent_tx = self.node.send_transaction(
+                **tx,
+                subtract_fee_from_amount=subtract_fee_from_amount,
+            )
+
         self.txid = sent_tx["txid"]
         self.fee = sent_tx["fee"]
         self.amount = sent_tx["amount"]
@@ -150,7 +152,7 @@ class Transaction(models.Model, mixins.TransactionMixin):
         return self
 
 
-class Node(models.Model, mixins.ConnectorMixin):
+class Node(models.Model, mixins.NodeMixin):
     # TODO: Add validators
     name = models.CharField(max_length=200, unique=True,)
     currency = models.ForeignKey(
