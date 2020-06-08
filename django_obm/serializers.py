@@ -66,7 +66,8 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         # TODO: Add filter with default
         node = models.Node.objects.filter(
-            currency=currency, is_default=True,
+            currency=currency,
+            is_default=True,
         ).first()
         if not node:
             raise serializers.ValidationError(
@@ -117,17 +118,18 @@ class AddressSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         currency = validated_data.pop("currency")
         node = models.Node.objects.filter(
-            currency=currency, is_default=True,
+            currency=currency,
+            is_default=True,
         ).first()
         if not node:
             raise serializers.ValidationError(
                 f"Node for {currency.name} does not registered"
             )
-
-        address_value = node.create_address()
-        node.close()
+        with node:
+            address_value = node.create_address()
         return models.Address.objects.create(
-            value=address_value, currency=currency,
+            value=address_value,
+            currency=currency,
         )
 
 

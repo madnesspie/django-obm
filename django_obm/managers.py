@@ -36,25 +36,30 @@ class NodeManager(models.Manager):
 
         def to_address(value, currency):
             address, _ = self.address_model.objects.get_or_create(
-                value=value, currency=currency
+                value=value,
+                currency=currency,
             )
             return address
 
         recent_transactions = []
         for node in self.all():
-            node_recent_transactions = node.fetch_recent_transactions(limit)
+            with node:
+                node_recent_transactions = node.fetch_recent_transactions(limit)
             recent_transactions += [
                 self.transaction_model(  # type: ignore
                     node=node,
                     from_address=to_address(
-                        tx.pop("from_address"), node.currency
+                        tx.pop("from_address"),
+                        node.currency,
                     ),
-                    to_address=to_address(tx.pop("to_address"), node.currency,),
+                    to_address=to_address(
+                        tx.pop("to_address"),
+                        node.currency,
+                    ),
                     **omit_info(tx),
                 )
                 for tx in node_recent_transactions
             ]
-            node.close()
         return recent_transactions
 
     def bulk_create_recent_transactions(self, limit: int = 50) -> list:
@@ -121,12 +126,12 @@ class TransactionManager(models.Manager):
 
         synchronized_txs = []
         for node, txs in txs_by_node.items():
-            current_txs = node.fetch_in_wallet_transactions(
-                [tx.txid for tx in txs]
-            )
+            with node:
+                current_txs = node.fetch_in_wallet_transactions(
+                    [tx.txid for tx in txs]
+                )
             updated_txs = update(txs, current_txs)
             synchronized_txs += updated_txs
             self.bulk_update(updated_txs, ["block_number"])
-            node.close()
 
         return synchronized_txs
