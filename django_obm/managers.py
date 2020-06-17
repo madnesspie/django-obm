@@ -35,6 +35,8 @@ class NodeManager(models.Manager):
             return {key: value for key, value in tx.items() if key != "info"}
 
         def to_address(value, currency):
+            if value is None:
+                return value
             address, _ = self.address_model.objects.get_or_create(
                 value=value,
                 currency=currency,

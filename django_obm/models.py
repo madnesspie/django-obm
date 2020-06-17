@@ -48,7 +48,10 @@ class Currency(models.Model):
 
 
 class Address(models.Model):
-    value = models.CharField(max_length=500,)
+    value = models.CharField(
+        max_length=500,
+        null=True,
+    )
     currency = models.ForeignKey(
         to=Currency,
         on_delete=models.CASCADE,
