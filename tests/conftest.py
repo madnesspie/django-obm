@@ -73,6 +73,11 @@ def client():
 
 
 @pytest.fixture
+def requests_client():
+    return drf_test.RequestsClient()
+
+
+@pytest.fixture
 def bitcoin_currency():
     currency = models.Currency.objects.create(name="bitcoin")
     yield currency
