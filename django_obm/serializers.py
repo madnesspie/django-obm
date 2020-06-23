@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from django.conf import settings
-from rest_framework import serializers
+from obm import exceptions as obm_exceptions
+from rest_framework import exceptions, serializers
 
 from django_obm import models
 
@@ -102,7 +103,10 @@ class TransactionSerializer(serializers.ModelSerializer):
             "subtract_fee_from_amount"
         )
         tx = models.Transaction(**validated_data)
-        return tx.send(subtract_fee_from_amount=subtract_fee_from_amount)
+        try:
+            return tx.send(subtract_fee_from_amount=subtract_fee_from_amount)
+        except obm_exceptions.NodeError as exc:
+            raise exceptions.ValidationError(exc.args[0])
 
 
 class AddressSerializer(serializers.ModelSerializer):
