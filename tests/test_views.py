@@ -57,7 +57,7 @@ class TestCurrencyViewSetIntegration:
         ethereum_tx = {
             "currency": node.connector.currency,
             "to_address": str(os.environ.get("GETH_IN_WALLET_ADDRESS")),
-            "amount": 10,
+            "amount": "10",
         }
         response = client.post(
             urls.reverse("currency-estimate-fee"),

@@ -25,7 +25,7 @@ class CurrencySerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    from_address = serializers.CharField(required=False)
+    from_address = serializers.CharField(required=False, allow_null=True)
     to_address = serializers.CharField(required=True)
     password = serializers.CharField(required=False)
     currency = serializers.SlugRelatedField(
@@ -140,6 +140,8 @@ class AddressSerializer(serializers.ModelSerializer):
 # pylint: disable=abstract-method
 class CurrencyEstimateFeeSerializer(serializers.Serializer):
     currency = serializers.CharField(required=True)
+    to_address = serializers.CharField(required=False, allow_null=True)
+    amount = serializers.FloatField(required=False, allow_null=True)
 
     def validate(self, attrs):
         currency_name = attrs["currency"]
@@ -150,5 +152,16 @@ class CurrencyEstimateFeeSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 f"Currency '{currency.name}'' does not exist."
             )
+        if currency.name == "ethereum":
+            to_address = attrs.get("to_address")
+            if to_address is None:
+                raise serializers.ValidationError(
+                    "Field 'to_address' is required for ethereum."
+                )
+            amount = attrs.get("amount")
+            if amount is None:
+                raise serializers.ValidationError(
+                    "Field 'amount' is required for ethereum."
+                )
         attrs["currency"] = currency
         return attrs

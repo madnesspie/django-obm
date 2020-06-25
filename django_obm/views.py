@@ -55,20 +55,19 @@ class CurrencyViewSet(viewsets.ModelViewSet):
             data=request.data
         )
         assert serializer.is_valid(raise_exception=True)
-        currency = serializer.validated_data["currency"]
-        node = currency.default_node
-        estimated_fee = node.estimate_fee(
-            from_address=request.query_params.get("from_address"),
-            to_address=request.query_params.get("to_address"),
-            amount=request.query_params.get("amount"),
-            fee={
-                "gas": request.query_params.get("gas"),
-                "gas_price": request.query_params.get("gas_price"),
-            },
-            data=request.query_params.get("data"),
-            conf_target=request.query_params.get("conf_target", 1),
-        )
-        node.close()
+        data = serializer.validated_data
+        currency = data["currency"]
+        to_address = data["to_address"]
+        amount = data["amount"]
+        with currency.default_node as node:
+            estimated_fee = node.estimate_fee(
+                from_address=None,
+                to_address=to_address,
+                amount=amount,
+            )
         return response.Response(
-            {"currency": currency.name, "estimated_fee": estimated_fee,}
+            {
+                "currency": currency.name,
+                "estimated_fee": estimated_fee,
+            }
         )
