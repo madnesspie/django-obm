@@ -106,12 +106,12 @@ def ethereum_address(ethereum_currency):
 def bitcoin_core_node(bitcoin_currency):
     node = models.Node.objects.create(
         name="bitcoin-core",
-        currency=bitcoin_currency,
         is_default=True,
-        rpc_username="testnet_user",
-        rpc_password="testnet_pass",
-        rpc_host="127.0.0.1",
-        rpc_port=18332,
+        currency=bitcoin_currency,
+        rpc_host=os.getenv("BITCOIN_CORE_HOST", "localhost"),
+        rpc_port=int(os.getenv("BITCOIN_CORE_PORT", "18332")),
+        rpc_username=os.getenv("BITCOIN_CORE_USERNAME", "testnet_user"),
+        rpc_password=os.getenv("BITCOIN_CORE_PASSWORD", "testnet_pass"),
     )
     yield node
     node.delete()
@@ -123,8 +123,8 @@ def geth_node(ethereum_currency):
         name="geth",
         currency=ethereum_currency,
         is_default=True,
-        rpc_host="127.0.0.1",
-        rpc_port=8545,
+        rpc_host=os.getenv("GETH_HOST", "localhost"),
+        rpc_port=int(os.getenv("GETH_PORT", "8545")),
     )
     yield node
     node.delete()
