@@ -42,6 +42,8 @@ class TestCurrencyViewSet:
             urls.reverse("currency-estimate-fee"),
             data={
                 "currency": node.connector.currency,
+                "to_address": "fake",
+                "amount": "11"
             }
         )
         assert response.status_code == 200
