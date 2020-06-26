@@ -134,14 +134,17 @@ class Transaction(models.Model, mixins.TransactionMixin):
             "amount": self.amount,
             "to_address": self.to_address.value,
         }
-        if self.currency.name == "ethereum":
-            if self.from_address:
-                tx["from_address"] = self.from_address.value
-                tx["password"] = self.from_address.password
-        elif self.currency.name == "bitcoin" and self.fee:
-            tx["fee"] = self.fee
-
         with self.node:
+            if self.currency.name == "ethereum":
+                if self.from_address:
+                    tx["from_address"] = self.from_address.value
+                    tx["password"] = self.from_address.password
+                    tx["fee"] = {
+                        "gas": connectors.ethereum.to_hex(150_000)
+                    }
+            elif self.currency.name == "bitcoin" and self.fee:
+                tx["fee"] = self.fee
+
             sent_tx = self.node.send_transaction(
                 **tx,
                 subtract_fee_from_amount=subtract_fee_from_amount,
