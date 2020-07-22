@@ -82,15 +82,7 @@ Support the developer
 
 Sponsors
 --------
-Special thanks for `Swapzilla <https://www.swapzilla.co/>`_ project that
-paid me part of the development.
-
-.. figure:: https://raw.githubusercontent.com/madnesspie/django-obm/d285241038bb8d325599e8c4dddb567468daae81/docs/swapzilla.jpeg
-  :width: 100%
-  :figwidth: image
-  :alt: Swapzilla logo
-
-You can also become the sponsor and get priority development of the features
+You can become the sponsor and get priority development of the features
 you require. Just `contact me <https://github.com/madnesspie>`_.
 
 Buy me a beer
